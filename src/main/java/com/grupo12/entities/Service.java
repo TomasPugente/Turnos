@@ -1,34 +1,36 @@
-package com.grupo12.SistemaTurnos.entities;
+package com.grupo12.entities;
+
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Entity
-@Table(name="locality")
+@Table(name="service")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Locality {
+public class Service {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idLocality;
+    private int idServicio;
 
     @Column(name="name")
     private String name;
-
-	public Locality(Long idLocality, String name) {
-		super();
-		this.idLocality = idLocality;
-		this.name = name;
-	}
-
     
+    @Column(name="detail")
+    private String detail;
+
+    @ManyToMany(mappedBy = "services")
+    private Set<Date> dates;
 }

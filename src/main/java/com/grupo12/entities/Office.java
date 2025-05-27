@@ -1,4 +1,4 @@
-package com.grupo12.SistemaTurnos.entities;
+package com.grupo12.entities;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

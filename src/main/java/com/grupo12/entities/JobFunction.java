@@ -1,4 +1,4 @@
-package com.grupo12.SistemaTurnos.entities;
+package com.grupo12.entities;
 
 import java.util.Set;
 
