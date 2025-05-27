@@ -9,7 +9,7 @@ public class ViewRouteHelper {
     
  
 	
-	public final static String DEGREE_INDEX = "client/index";
+	public final static String CLIENT_INDEX = "client/index";
 	
 	
 	public final static String ROUTE_INDEX = "/index";

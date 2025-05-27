@@ -1,8 +1,8 @@
 package com.grupo12.entities;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Set;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +30,9 @@ public class Date {
 
     @Column(name="date")
     private LocalDate date;
+    
+    @Column(name="hour")
+    private LocalTime hour;
 
     @OneToMany(mappedBy = "date")
     private Set<Turn> appointments;
@@ -40,10 +43,11 @@ public class Date {
         inverseJoinColumns = @JoinColumn(name = "service_id"))
     private Set<Service> services;
 
-	public Date(int idDate, LocalDate date) {
+	public Date(int idDate, LocalDate date, LocalTime hour) {
 		super();
 		this.idDate = idDate;
 		this.date = date;
+		this.hour = hour;
 	}
     
     

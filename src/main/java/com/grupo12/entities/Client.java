@@ -22,16 +22,16 @@ import lombok.Setter;
 @Setter
 public class Client extends Person {
 	
-	@Column(name="name")
-	private String name;
+	@Column(name="code")
+	private String code;
 	
     @OneToMany(mappedBy = "client")
     private Set<Turn> appointmentHistory;
 
 	public Client(int idPerson, String name, int dni, LocalDate dateOfBirth, String password, Contact contact,
-			int idClient, String name2) {
+			int idClient, String code) {
 		super(idPerson, name, dni, dateOfBirth, password, contact);
-		name = name2;
+		this.code = code;
 	}
     
     
