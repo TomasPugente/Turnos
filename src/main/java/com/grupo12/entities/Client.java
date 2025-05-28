@@ -11,6 +11,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
@@ -20,6 +21,7 @@ import lombok.Setter;
 @PrimaryKeyJoinColumn(name="idClient", referencedColumnName="idPerson")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Client extends Person {
 	
 	@Column(name="code")
@@ -28,13 +30,11 @@ public class Client extends Person {
     @OneToMany(mappedBy = "client")
     private Set<Turn> appointmentHistory;
 
-	public Client(int idPerson, String name, int dni, LocalDate dateOfBirth, String password, Contact contact,
-			int idClient, String code) {
-		super(idPerson, name, dni, dateOfBirth, password, contact);
-		this.code = code;
-	}
-    
-    
-	
 
+	public Client(int idPerson, String name, int dni, LocalDate dateOfBirth, String password, Contact contact, String code) {
+	    super(idPerson, name, dni, dateOfBirth, password, contact);
+	    this.code = code;
+	}
+
+    
 }
