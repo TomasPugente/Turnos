@@ -37,20 +37,6 @@ public class ClientService implements IClientService {
 	public List<Client> getAll() {
 		return clientRepository.findAll();
 	}
-
-	/*@Override
-	public void insertOrUpdate(ClientDTO clientDTO) {
-	    if (clientDTO.getIdPerson() != null) {
-	        // actualizar
-	        Client existing = clientRepository.findById(clientDTO.getIdPerson()).orElseThrow();
-	        // actualizar campos manualmente...
-	        clientRepository.save(existing);
-	    } else {
-	        // nuevo
-	        Client client = clientConverter.DTOToEntity(clientDTO);
-	        clientRepository.save(client);
-	    }
-	}*/
 	
 	@Override
 	@Transactional

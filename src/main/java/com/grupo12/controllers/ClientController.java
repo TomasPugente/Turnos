@@ -50,31 +50,6 @@ public class ClientController {
             return "client/list";
     }
 
-    /*@GetMapping("/new")
-    public String newClientForm(Model model) {
-        model.addAttribute("client", new ClientDTO());
-        model.addAttribute("localities", localityService.getAll());
-        return "client/new";
-    }*/
-    
-    /*@GetMapping("/form")
-    public String showClientForm(@RequestParam(name = "id", required = false) Integer id, Model model) {
-        if (id != null) {
-            Optional<Client> client = clientService.getById(id);
-            if (client.isPresent()) {
-                model.addAttribute("client", clientConverter.entityToDTO(client.get()));
-            } else {
-                return "redirect:/clients";
-            }
-        } else {
-            model.addAttribute("client", new ClientDTO());
-        }
-
-        model.addAttribute("localities", localityService.getAll());
-        return "client/form";
-    }*/
-    
-
     // Mostrar el formulario para crear o editar
     @GetMapping({"/form", "/form/{id}"})
     public String showForm(@PathVariable(required = false) Integer id, Model model) {
@@ -108,17 +83,6 @@ public class ClientController {
         clientService.insertOrUpdate(clientDTO);
         return "redirect:/clients";
     }
-    
-    /*@GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model) {
-        Optional<Client> client = clientService.getById(id);
-        if (client.isPresent()) {
-            ClientDTO dto = clientConverter.entityToDTO(client.get());
-            model.addAttribute("client", dto);
-            return "client/edit";
-        }
-        return "redirect:/clients";
-    }*/
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") int id) {
