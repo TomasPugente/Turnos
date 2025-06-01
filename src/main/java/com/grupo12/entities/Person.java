@@ -14,17 +14,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class Person {
+public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idPerson;
+    private Integer idPerson;
 
     @Column(name="name")
     private String name;
     
     @Column(name="dni")
-    private int dni;
+    private String dni;
 
     @Column(name="dateOfBirth")
     private LocalDate dateOfBirth;
@@ -36,7 +36,7 @@ public abstract class Person {
     @JoinColumn(name = "contact_id")
     private Contact contact;
 
-	public Person(int idPerson, String name, int dni, LocalDate dateOfBirth, String password, Contact contact) {
+	public Person(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password, Contact contact) {
 		super();
 		this.idPerson = idPerson;
 		this.name = name;

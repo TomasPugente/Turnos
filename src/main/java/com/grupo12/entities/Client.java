@@ -31,7 +31,7 @@ public class Client extends Person {
     private Set<Turn> appointmentHistory;
 
 
-	public Client(int idPerson, String name, int dni, LocalDate dateOfBirth, String password, Contact contact, String code) {
+	public Client(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password, Contact contact, String code) {
 	    super(idPerson, name, dni, dateOfBirth, password, contact);
 	    this.code = code;
 	}

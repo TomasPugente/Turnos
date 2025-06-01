@@ -40,7 +40,7 @@ public class Employee extends Person {
     @OneToMany(mappedBy = "employee")
     private Set<Turn> appointments;
 
-	public Employee(int idPerson, String name, int dni, LocalDate dateOfBirth, String password, Contact contact,
+	public Employee(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password, Contact contact,
 			     LocalDate entryDate, String cuit) {
 		super(idPerson, name, dni, dateOfBirth, password, contact);
 		this.entryDate = entryDate;
