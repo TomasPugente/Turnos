@@ -12,7 +12,7 @@ import com.grupo12.models.EmployeeDTO;
 import com.grupo12.repositories.IEmployeeRepository;
 import com.grupo12.services.IEmployeeService;
 
-public class EmployeeService implements IEmployeeService{
+public class EmployeeService implements IEmployeeService {
 
 	@Autowired
 	@Qualifier("employeeRepository")
@@ -21,11 +21,12 @@ public class EmployeeService implements IEmployeeService{
 	@Autowired
 	@Qualifier("employeeConverter")
 	private EmployeeConverter employeeConverter;
-	
+
 	@Override
-	public Optional<Employee> getById(int idPerson)  { //throws RuntimeException, Excepcion para hacer despues
+	public Optional<Employee> getById(int idPerson) { // throws RuntimeException, Excepcion para hacer despues
 		return employeeRepository.findById(idPerson);// Optional<Client> client = findById(idPerson);
-		                                            //.orElseThrow(() -> new RuntimeException("Cliente con id " + idPerson + " no encontrado"));
+														// .orElseThrow(() -> new RuntimeException("Cliente con id " +
+														// idPerson + " no encontrado"));
 	}
 
 	@Override
@@ -47,6 +48,6 @@ public class EmployeeService implements IEmployeeService{
 		} catch (Exception e) {
 			return false;
 		}
-		
+
 	}
 }

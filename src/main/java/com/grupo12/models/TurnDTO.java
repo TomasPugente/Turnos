@@ -18,7 +18,7 @@ public class TurnDTO {
     private int idTurn;
 
     private String state;
- 
+
     private boolean active;
     
     private String observation;

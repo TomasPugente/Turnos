@@ -2,7 +2,6 @@ package com.grupo12.entities;
 
 import java.time.LocalDateTime;
 
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,47 +17,45 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-
 @Entity
-@Table(name="turn")
+@Table(name = "turn")
 @Getter
 @Setter
 @NoArgsConstructor
 public class Turn {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idTurn;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int idTurn;
 
-    @Column(name="state")
-    private String state;
-    
-	@Column(name="createdat")
+	@Column(name = "state")
+	private String state;
+
+	@Column(name = "createdAt")
 	@CreationTimestamp
 	private LocalDateTime createdAt;
-	
-	@Column(name="updatedat")
+
+	@Column(name = "updateDate")
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;
-	
-	@Column(name="active")
-    private boolean active;
-    
-	@Column(name="observation")
-    private String observation;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+	@Column(name = "active")
+	private boolean active;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+	@Column(name = "observation")
+	private String observation;
 
-    @ManyToOne
-    @JoinColumn(name = "date_id")
-    private Date date;
+	@ManyToOne
+	@JoinColumn(name = "client_id")
+	private Client client;
+
+	@ManyToOne
+	@JoinColumn(name = "employee_id")
+	private Employee employee;
+
+	@ManyToOne
+	@JoinColumn(name = "date_id")
+	private Date date;
 
 	public Turn(int idTurn, String state, boolean active, String observation, Client client, Employee employee,
 			Date date) {
@@ -72,7 +69,4 @@ public class Turn {
 		this.date = date;
 	}
 
-
-    
-    
 }
