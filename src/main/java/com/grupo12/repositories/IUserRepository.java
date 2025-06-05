@@ -12,7 +12,7 @@ import com.grupo12.entities.User;
 @Repository("userRepository")
 public interface IUserRepository extends JpaRepository<User, Serializable> {
 
-    @Query("Select u from User u where u.email = (:username)")
+    @Query("Select u from User u where u.username = (:username)")
     public abstract User FindByUsernameAndFetchRolesEagerly(@Param("username") String username);
 
 }
