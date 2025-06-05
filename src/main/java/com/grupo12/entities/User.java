@@ -43,7 +43,7 @@ public class User {
     @Column(name = "updatedAt")
     private LocalDateTime updatedAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "User")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private Set<UserRole> userRoles = new HashSet<UserRole>();
 
 }
