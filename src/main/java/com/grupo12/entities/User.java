@@ -1,5 +1,6 @@
 package com.grupo12.entities;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,10 +15,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Entity
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Data
 @Table(name = "user")
 public class User {
@@ -33,17 +34,16 @@ public class User {
     private String password;
 
     @Column(name = "enabled")
-    private String enabled;
+    private Boolean enabled;
 
     @Column(name = "createdAt")
     @CreationTimestamp
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updatedAt")
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "User")
-    @SuppressWarnings("unused")
     private Set<UserRole> userRoles = new HashSet<UserRole>();
 
 }
