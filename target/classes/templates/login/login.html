@@ -1,12 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+	<meta charset="UTF-8">
+	<title>Iniciar Sesion</title>
+	<link rel="stylesheet" href="/css/styles.css">
+</head>	
 <body>
-    <h1> Bienvenido</h1>
-
+<body>
+    <h1> Iniciar Sesion</h1>
+	<div th:if="${param.error}" class="alert alert-danger">
+		Credenciales invalidas
+	</div>
+	<div th:if="${param.logout}" class="alert alert-success">
+			Sesion cerrada exitosamente
+		</div>
+	<form th:action="@{/login}" method="post">
+		<div>
+			<label for="email">Email:</label>
+			<input type="text" id="email" name="email" required/>
+		</div>
+		<div>
+			<label for="password">Contraseña:</label>
+			<input type="text" id="password" name="password" required/>
+		</div>
+		<div>
+			<button type="submit">Entrar</button>
+		</div>
+	</form>
+	<a href="/">Volver a inicio</a>
 </body>
 </html>
