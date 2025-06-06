@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Mis Turnos Pendientes</title>
+	<link rel="stylesheet" href="/css/styles.css">
+</head>	
+<body>
+	<h1>Turnos Asignados (Pendientes de Llamar)</h1>
+	
+	<div th:if="${successMessage}" class="alert alert-success">
+		<p th:text="${successMessage}"></p>
+	</div>
+	<div th:if="${errorMessage" class="alert alert-danger">
+		<p th:text="${errorMessage}"></p>
+	</div>
+	
+	<h2 th:if="${pendingTurns.isEmpty()}">No hay turnos pendientes para llamar en este momento</h2>
+	
+	<div th:if="${!pendingTurns.isEmpty()}">
+		<h3>Proximo turno a llamar: </h3>
+		<p th:if="${pendingTurns.size() > 0}">
+			Turno #<span th:text="${pendingTurns[0].id}"></span>
+			Cliente: <span th:text="${pendingTurns[0].clientName}"></span>
+			Servicio: <span th:text="${pendingTurns[0].serviceName}"></span>
+			Hora: <span th:text="${#temporals.format(pendingTurns[0].startTime,'dd-MM-yyyy HH:mm')}"></span>
+		</p>
+		<form th:action="@{/employee/turns/call-next}" method="post">
+			<input type="hidden" name="employeeId" th:value="${employeeId}"/>
+			<button type="submit">Llamar Siguiente Turno</button>
+		</form>
+		
+		<h3>Todos Los Turnos Pendientes:</h3>
+		<table>
+			<thead>
+				<tr>
+					<th>ID Turno</th>
+					<th>Cliente</th>
+					<th>Servicio</th>
+					<th>Hora Inicio</th>
+					<th>Estado</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="turn: ${pendingTurns}">
+					<td th:text="${turn.id}"></td>
+					<td th:text="${turn.clientName}"></td>
+					<td th:text="${turn.serviceName}"></td>
+					<td th:text="${#temporals.format(turn.startTime,'dd-MM-yyyy HH:mm')}"></td>
+					<td th:text="${turn.status}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<p><a href="/employee/turns/manage">Gestionar Todos Mis Turnos (Cambiar Estado)</a></p>
+		<p><a href="/employee/turns/enable">Habilitar Nuevos Turnos</a></p>
+		<a href="/">Volver a inicio</a>
+	</body>
+</html>

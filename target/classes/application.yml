@@ -1,0 +1,39 @@
+server:
+  servlet:
+    encoding:
+      mapping:
+        utf-8: UTF-8
+  port: 8080
+  
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${USERNAME}
+    password: ${PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      dialect: org.hibernate.dialect.MySQL8Dialect
+  security:
+    user:
+      name: admin
+      password: admin
+  thymeleaf:
+    cache: false
+mail: <!-- CONFIGURACIÓN PARA EL ENVÍO DE CORREO ELECTRÓNICO (Spring Mail)-->
+host: smtp.gmail.com # Por ejemplo, para Gmail. Cambia si usas otro proveedor.
+port: 587 # Puerto SMTP (587 para TLS/STARTTLS, 465 para SSL)
+username: gestordeturnosunla@gmail.com # Tu dirección de correo electrónico
+password: gestordeturnos2025 # Si usas Gmail, necesita una "contraseña de aplicación"
+properties:
+  mail:
+    smtp:
+      auth: true
+      starttls:
+        enable: true # Habilitar STARTTLS (recomendado para la mayoría de los servidores)
+      ssl:
+        trust: "*" # Para permitir certificados no confiables (solo para desarrollo)
