@@ -43,8 +43,7 @@ public class UserRole {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public UserRole(int id, User user, String role) {
-        this.id = id;
+    public UserRole(User user, String role) {
         this.user = user;
         this.role = role;
     }
