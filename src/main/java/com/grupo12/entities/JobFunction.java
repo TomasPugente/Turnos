@@ -22,9 +22,12 @@ public class JobFunction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idJobFunction;
+    private Integer idJobFunction;
 
-    @Column(name = "name")
+    /*@Column(name = "name")
+    private Integer idJobFunction;*/
+    
+    @Column(name="name")
     private String name;
 
     @Column(name = "description")
@@ -33,11 +36,21 @@ public class JobFunction {
     @ManyToMany(mappedBy = "functions")
     private Set<Employee> employees;
 
-    public JobFunction(int idJobFunction, String name, String description) {
+
+    /*public JobFunction(int idJobFunction, String name, String description) {
         super();
         this.idJobFunction = idJobFunction;
         this.name = name;
         this.description = description;
-    }
+    }*/
 
+
+	public JobFunction(Integer idJobFunction, String name, String description) {
+		super();
+		this.idJobFunction = idJobFunction;
+		this.name = name;
+		this.description = description;
+	}
+    
+    
 }

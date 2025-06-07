@@ -34,4 +34,6 @@ public interface ITurnService {
 	void deleteTurn(int id);
 	List<TurnDTO> findUpcomingTurns(LocalDateTime fromTime, LocalDateTime toTime);
 	
+	
 }
+

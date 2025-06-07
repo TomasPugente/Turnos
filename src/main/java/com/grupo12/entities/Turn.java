@@ -34,9 +34,6 @@ public class Turn {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idTurn;
-
-    @Column(name="state")
-    private String state;
     
 	@Column(name="createdat")
 	@CreationTimestamp
@@ -119,3 +116,8 @@ public class Turn {
     
     
 }
+
+
+
+
+
