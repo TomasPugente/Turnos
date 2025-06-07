@@ -8,7 +8,7 @@ server:
 spring:
   datasource:
     url: ${DB_URL}
-    username: ${USER}
+    username: ${USERNAME}
     password: ${PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
@@ -24,5 +24,16 @@ spring:
       password: admin
   thymeleaf:
     cache: false
-
-
+mail: <!-- CONFIGURACIÓN PARA EL ENVÍO DE CORREO ELECTRÓNICO (Spring Mail)-->
+host: smtp.gmail.com # Por ejemplo, para Gmail. Cambia si usas otro proveedor.
+port: 587 # Puerto SMTP (587 para TLS/STARTTLS, 465 para SSL)
+username: gestordeturnosunla@gmail.com # Tu dirección de correo electrónico
+password: gestordeturnos2025 # Si usas Gmail, necesita una "contraseña de aplicación"
+properties:
+  mail:
+    smtp:
+      auth: true
+      starttls:
+        enable: true # Habilitar STARTTLS (recomendado para la mayoría de los servidores)
+      ssl:
+        trust: "*" # Para permitir certificados no confiables (solo para desarrollo)
