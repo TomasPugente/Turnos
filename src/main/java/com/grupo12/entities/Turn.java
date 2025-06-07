@@ -69,7 +69,7 @@ public class Turn {
     private Service service;
     
     @Column (name="start_time",nullable=false)
-    private LocalDateTime starTime;
+    private LocalDateTime startTime;
     
     @Column (name="end_time",nullable=false)//calculado en base a start_time y service.durationMinutes
     private LocalDateTime endTime;
@@ -90,7 +90,7 @@ public class Turn {
     }
     
 	public Turn(int idTurn, String state, boolean active, String observation, Client client, Employee employee,
-			Date date,Service service,LocalDateTime starTime,LocalDateTime endTime,TurnStatus status,LocalDateTime creationTime) {
+			Date date,Service service,LocalDateTime startTime,LocalDateTime endTime,TurnStatus status,LocalDateTime creationTime) {
 		super();
 		this.idTurn = idTurn;
 		this.state = state;
@@ -100,7 +100,7 @@ public class Turn {
 		this.employee = employee;
 		this.date = date;
 		this.service=service;
-		this.starTime=starTime;
+		this.startTime=startTime;
 		this.endTime=endTime;
 		this.status=status;
 		this.creationTime=creationTime;

@@ -16,7 +16,7 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name="client")
+@Table(name="client") //nombra a la tabla de bd
 @DiscriminatorValue("CLIENT")
 @PrimaryKeyJoinColumn(name="idClient", referencedColumnName="idPerson")
 @Getter

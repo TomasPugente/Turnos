@@ -9,15 +9,17 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.AllArgsConstructor;
 
 @Data
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ContactDTO {
 
     private int idContact;
-
+    
     @NotBlank(message = "Debe ingresar la calle")
     private String street;
     
@@ -33,7 +35,7 @@ public class ContactDTO {
     @Valid
     @NotNull(message = "Debe seleccionar una localidad")
     private LocalityDTO locality;
-
+/*
 	public ContactDTO(int idContact, String street, String number, String email, String phone, LocalityDTO locality) {
 		this.idContact = idContact;
 		this.street = street;
@@ -41,5 +43,5 @@ public class ContactDTO {
 		this.email = email;
 		this.phone = phone;
 		this.locality = locality;
-	}
+	}*/
 }

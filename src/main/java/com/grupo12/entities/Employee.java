@@ -24,7 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class Employee extends Person {
 
     @Column(name="entryDate")

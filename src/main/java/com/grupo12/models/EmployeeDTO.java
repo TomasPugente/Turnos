@@ -10,14 +10,19 @@ import com.grupo12.entities.Turn;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class EmployeeDTO extends PersonDTO {
 
+	private String name;
+	private LocalDate dateOfBirth;
+	private String password;
+	private ContactDTO contact;
     private LocalDate entryDate;
-    
     private String cuit;
 
     private Set<JobFunction> functions;

@@ -8,10 +8,12 @@ import java.util.stream.Collectors;
 import com.grupo12.models.TurnDTO;
 import com.grupo12.services.ITurnService;
 import com.grupo12.services.implementation.ServiceService;
+
 import com.grupo12.entities.TurnStatus;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -27,6 +29,7 @@ import com.grupo12.security.EmployeeDetails;
 
 @Controller
 @RequestMapping("/employee")
+@Component("employeeConverter")
 public class EmployeeController {
 
 	@Autowired
@@ -89,7 +92,7 @@ public class EmployeeController {
 	public String showManageTurns(Model model) {
 		int employeeId=getCurrentLoggedInEmployeeId();
 		List<TurnDTO> employeeTurns=turnService.getTurnsByEmployeeId(employeeId);
-		model.addAttribute("employeeTurns ",employeeTurns);
+		model.addAttribute("employeeTurns",employeeTurns);
 		return "employee/manage-turns";//Mapea a src/main/resources/templates/employee/manage-turns.html
 	}
 	
@@ -97,7 +100,7 @@ public class EmployeeController {
 	public String updateTurnStatus(@RequestParam("turnId") int turnId,@RequestParam("newStatus")String newStatus,RedirectAttributes redirectAttributes) {
 		try {
 			TurnDTO updateTurn=turnService.updateTurnStatus(turnId, newStatus);
-			redirectAttributes.addFlashAttribute("successMessage)"," Estado del turno #"+updateTurn.getIdTurn()+" actualizado a "+updateTurn.getStatus()+".");
+			redirectAttributes.addFlashAttribute("successMessage"," Estado del turno #"+updateTurn.getIdTurn()+" actualizado a "+updateTurn.getStatus()+".");
 			
 		}catch (IllegalArgumentException | EntityNotFoundException | IllegalStateException e) {
 			redirectAttributes.addFlashAttribute("errorMessage",e.getMessage());

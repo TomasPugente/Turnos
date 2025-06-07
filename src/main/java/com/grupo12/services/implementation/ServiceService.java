@@ -20,9 +20,10 @@ import com.grupo12.repositories.IServiceRepository;
 import com.grupo12.services.IServiceService;
 import com.grupo12.converters.ServicesConverter;
 
+
 import jakarta.persistence.EntityNotFoundException;
 
-@Service
+@Service("serviceService")
 public class ServiceService implements IServiceService{
 
 	@Autowired
@@ -56,7 +57,7 @@ public class ServiceService implements IServiceService{
 		// TODO Auto-generated method stub
 		com.grupo12.entities.Service existingService=serviceRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Servicio no encontrado con ID: "+id));
 		existingService.setName(serviceDTO.getName());
-		existingService.setDetail(serviceDTO.getDescription());
+		existingService.setDescription(serviceDTO.getDescription());
 		existingService.setDurationMinutes(serviceDTO.getDurationMinutes());
 		com.grupo12.entities.Service updateService=serviceRepository.save(existingService);
 		return serviceConverter.toDTO(updateService);

@@ -2,31 +2,34 @@ package com.grupo12.security;
 
 import com.grupo12.entities.Employee;
 import com.grupo12.entities.JobFunction;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class EmployeeDetails implements UserDetails{
-	private int idPerson;
+	private int idEmployee;
 	private String username; //generalmente el email o un identificador unico para el login
 	private String password;
 	private String name;
 	private Set<String> roles; 
 	//constructor que toma una entidad Employee y la convierte en EmployeeDetails
 	public EmployeeDetails(Employee employee) {
-		this.idPerson=employee.getIdPerson();
-		this.username=employee.getContact().getEmail();
+		this.idEmployee=employee.getIdPerson();
+		//asegurarse de que getContact() no sea null
+		this.username=(employee.getContact().getEmail()!=null)?employee.getContact().getEmail():null;
 		this.password=employee.getPassword();
 		this.name=employee.getName();
 		
 		//mapea las JobFunctions a roles 
-		this.roles=employee.getFunctions()!=null? employee.getFunctions().stream().map(JobFunction::getName)//obtiene el nombre de cada JobFunction
-				.collect(Collectors.toSet()):Collections.emptySet();
+		this.roles=employee.getFunctions()!=null? employee.getFunctions().stream().map(JobFunction::getName).collect(Collectors.toSet()):Collections.emptySet();
 	}
 	
 	@Override
@@ -36,6 +39,7 @@ public class EmployeeDetails implements UserDetails{
 		//Añade el prefijo "ROLE_" 
 		return roles.stream().map(role-> new SimpleGrantedAuthority("ROLE_"+role.toUpperCase())).collect(Collectors.toList());
 	}
+	
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
@@ -55,8 +59,8 @@ public class EmployeeDetails implements UserDetails{
 		return true;
 	}
 	
-	public Long getIdPerson() {
-		return (long) idPerson;
+	public int getIdEmployee() {
+		return  idEmployee;
 	}
 	public String getName() {
 		return name;

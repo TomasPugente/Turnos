@@ -1,22 +1,21 @@
 package com.grupo12.models;
 
-
-
-
 import java.util.Date;
 
 import com.grupo12.entities.Contact;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
-
+import lombok.Data;
 
 @Getter
 @Setter
+@Data                                                                                         
 @NoArgsConstructor
 @AllArgsConstructor //Ya genera el constructor de todos los argumentos
 public class TurnDTO {
@@ -28,7 +27,6 @@ public class TurnDTO {
     private ClientDTO client;
     private EmployeeDTO employee;
     private Date date;
-    private Integer idServicio;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String status; //Representa el enum como String
@@ -55,6 +53,13 @@ public class TurnDTO {
     
     //Campos para el servicio
     private String serviceName;
+    private Integer idService;
+    
+    //Campos de la fecha
+    private int dateId;
+    private LocalDate turnDate;
+    private LocalTime turnHour;
+    
     /*public Employee(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password, Contact contact,
 			     LocalDate entryDate, String cuit) {
 		super(idPerson, name, dni, dateOfBirth, password, contact);

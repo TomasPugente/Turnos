@@ -106,5 +106,14 @@ public class ClientConverter {
         if (localityDTO == null) return null;
         return new Locality(localityDTO.getIdLocality(), localityDTO.getName());
     }
+
+	public ILocalityService getLocalityService() {
+		return localityService;
+	}
+
+	public void setLocalityService(ILocalityService localityService) {
+		this.localityService = localityService;
+	}
+    
 }
 

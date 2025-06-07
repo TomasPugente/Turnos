@@ -49,7 +49,7 @@ public class TurnConverter {
 			
 		}
 		if(turn.getService()!=null) {
-			dto.setIdServicio(turn.getService().getIdServicio());
+			dto.setIdService(turn.getService().getIdService());
 			dto.setServiceName(turn.getService().getName());
 		}
 		dto.setStatus(turn.getStatus().name()); //convertir enum a String

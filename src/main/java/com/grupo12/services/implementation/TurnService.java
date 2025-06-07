@@ -50,14 +50,14 @@ public class TurnService implements ITurnService {
 		// TODO Auto-generated method stub
 		//Este metodo se usa para que un Cliente pida un turno, o para que un Admin lo cree con un Cliente
 		//Los turnos habilitados por empleados(CU009) No tendran ClienteID al inicio
-		if(turnDTO.getIdServicio()==null||turnDTO.getStartTime()==null) {
+		if(turnDTO.getIdService()==null||turnDTO.getStartTime()==null) {
 			throw new IllegalArgumentException("Servicio y hora de inicio son obligatorios!!!");
 		}
 		Client client =null;
 		if(turnDTO.getClientIdPerson() != null) {
 			client=clientRepository.findById(turnDTO.getClientIdPerson()).orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con ID: "+turnDTO.getClientIdPerson()));
 		}
-		com.grupo12.entities.Service service=serviceRepository.findById(turnDTO.getIdServicio()).orElseThrow(()-> new EntityNotFoundException("Servicio no encontrado con ID: "+turnDTO.getIdServicio()));
+		com.grupo12.entities.Service service=serviceRepository.findById(turnDTO.getIdService()).orElseThrow(()-> new EntityNotFoundException("Servicio no encontrado con ID: "+turnDTO.getIdService()));
 		
 		Employee employee=null;
 		if(turnDTO.getEmployeeIdPerson()!=null) {
@@ -70,7 +70,7 @@ public class TurnService implements ITurnService {
 		turn.setEmployee(employee);
 		
 		turn.setCreationTime(LocalDateTime.now());
-		turn.setEndTime(turn.getStarTime().plusMinutes(service.getDurationMinutes()));
+		turn.setEndTime(turn.getStartTime().plusMinutes(service.getDurationMinutes()));
 		
 		//Para turno que se crean por solicitud de cliente, el estado inicial es PENDIENTE
 		if(turn.getStatus()==null) {
@@ -80,7 +80,7 @@ public class TurnService implements ITurnService {
 		
 		//Validacion de solapamiento para el empleado si esta asignado
 		if(employee!=null) {
-			List<Turn> conflictingTurns=turnRepository.findConflictingTurnForEmployee(employee.getIdPerson(), turn.getStarTime(), turn.getEndTime());
+			List<Turn> conflictingTurns=turnRepository.findConflictingTurnForEmployee(employee.getIdPerson(), turn.getStartTime(), turn.getEndTime());
 			if(!conflictingTurns.isEmpty())
 			{
 				throw new IllegalArgumentException("El empleado ya tiene un turno programado que se solapa en este horario!!");
@@ -140,7 +140,7 @@ public class TurnService implements ITurnService {
 		employeeRepository.findById(employeeId).orElseThrow(()->new EntityNotFoundException("Empleado no encontrado con ID: "+employeeId));
 		
 		//Buscar el proximo turno PENDIENTE para este empleado
-		Optional<Turn>nextTurn=turnRepository.findNextPendingTurnByEmployeedId(employeeId);
+		Optional<Turn>nextTurn=turnRepository.findNextPendingTurnByEmployeeId(employeeId);
 		if(nextTurn.isPresent()) {
 			Turn turnToCall=nextTurn.get();
 			turnToCall.setStatus(TurnStatus.EN_ATENCION);//Cambiar estado a "en atencion"
@@ -156,15 +156,15 @@ public class TurnService implements ITurnService {
 	public TurnDTO enableSingleTurn(TurnDTO turnDTO) {
 		// TODO Auto-generated method stub
 		//Validaciones para habilitar un turno
-		if(turnDTO.getEmployeeIdPerson()==null || turnDTO.getIdServicio()==null || turnDTO.getStartTime()==null) {
+		if(turnDTO.getEmployeeIdPerson()==null || turnDTO.getIdService()==null || turnDTO.getStartTime()==null) {
 			throw new IllegalArgumentException("Empleado, servicio y hora de inicio son obligatorios para habilitar un turno!!");
 		}
 		Employee employee=employeeRepository.findById(turnDTO.getEmployeeIdPerson()).orElseThrow(()->new EntityNotFoundException("Empleado no encontrado con ID: "+turnDTO.getEmployeeIdPerson()));
-		com.grupo12.entities.Service service=serviceRepository.findById(turnDTO.getIdServicio()).orElseThrow(()-> new EntityNotFoundException("Servicio no encontrado con ID: "+turnDTO.getIdServicio()));
+		com.grupo12.entities.Service service=serviceRepository.findById(turnDTO.getIdService()).orElseThrow(()-> new EntityNotFoundException("Servicio no encontrado con ID: "+turnDTO.getIdService()));
 		Turn turn=new Turn();
 		turn.setEmployee(employee);
 		turn.setService(service);
-		turn.setStarTime(turnDTO.getStartTime());
+		turn.setStartTime(turnDTO.getStartTime());
 		turn.setEndTime(turnDTO.getStartTime().plusMinutes(service.getDurationMinutes()));
 		turn.setStatus(TurnStatus.PENDIENTE); //Los turnos habilitados inician como PENDIENTE
 		
@@ -172,7 +172,7 @@ public class TurnService implements ITurnService {
 		//No se asigna cliente en este punto. el Cliente lo toma despues
 		
 		//Validar solapamiento con otros turnos del empleado
-		List<Turn> conflictingTurns=turnRepository.findConflictingTurnForEmployee(employee.getIdPerson(), turn.getStarTime(), turn.getEndTime());
+		List<Turn> conflictingTurns=turnRepository.findConflictingTurnForEmployee(employee.getIdPerson(), turn.getStartTime(), turn.getEndTime());
 		if(!conflictingTurns.isEmpty()) {
 			throw new IllegalArgumentException("Ya existe un turno o disponibilidad para el empleado en este horario: "+conflictingTurns.get(0).getIdTurn());
 		}
@@ -210,7 +210,7 @@ public class TurnService implements ITurnService {
 				Turn turn=new Turn();
 				turn.setEmployee(employee);
 				turn.setService(service);
-				turn.setStarTime(currentTurnStart);
+				turn.setStartTime(currentTurnStart);
 				turn.setEndTime(currentTurnEnd);
 				turn.setStatus(TurnStatus.PENDIENTE);
 				turn.setCreationTime(LocalDateTime.now());

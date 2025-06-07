@@ -15,11 +15,11 @@ public interface ITurnRepository extends JpaRepository<Turn, Integer> {
 	//PARA CU008: Buscar turnos pendientes por empleado, ordenados por hora de inicio
 	List<Turn> findByEmployeddIdAndStatusOrderByStartTimeAsc(int employeeId, TurnStatus status);
 	//PARA CU008: Buscar el proximo urno pendiente para un empleado
-	@Query("SELECT t FROM Turn t WHERE t.employee.id = : employeeId AND t.status = 'PENDIENTE' ORDER BY t.startTime ASC LIMIT 1") 
-	Optional<Turn> findNextPendingTurnByEmployeedId(int employeeId);
+	@Query("SELECT t FROM Turn t WHERE t.employee.id = :employeeId AND t.status = 'PENDIENTE' ORDER BY t.startTime ASC LIMIT 1") 
+	Optional<Turn> findNextPendingTurnByEmployeeId(int employeeId);
 	
 	//PARA CU009 (validacion de disponibilidad): Comprobar solapamientos 
-	@Query("SELECT t FROM Turn t WHERE t.employeed.id = : employeeId AND t.startTime AND t.status NOT IN ('CANCELADO', 'AUSENTE', 'ATENDIDO')")
+	@Query("SELECT t FROM Turn t WHERE t.employeed.id = :employeeId AND t.startTime AND t.status NOT IN ('CANCELADO', 'AUSENTE', 'ATENDIDO')")
 	List<Turn> findConflictingTurnForEmployee(int employeeId, LocalDateTime starTime, LocalDateTime endTime);
 	
 	//PARA CU011: Buscar turnos proximos para recordatorios
