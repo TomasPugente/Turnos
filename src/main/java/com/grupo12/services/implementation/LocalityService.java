@@ -13,15 +13,16 @@ import com.grupo12.services.ILocalityService;
 
 @Service("localityService")
 public class LocalityService implements ILocalityService {
-
+	
 	private ILocalityRepository localityRepository;
 
 	private ModelMapper modelMapper = new ModelMapper();
-
+	
 	public LocalityService(ILocalityRepository localityRepository) {
 		this.localityRepository = localityRepository;
 	}
 
+	
 	@Override
 	public Optional<Locality> getById(int idLocality) {
 		return localityRepository.findById(idLocality);
@@ -32,7 +33,7 @@ public class LocalityService implements ILocalityService {
 		return localityRepository.findAll();
 	}
 
-	@Override
+	@Override  
 	public LocalityDTO insertOrUpdate(LocalityDTO localityDTO) {
 		Locality locality = localityRepository.save(modelMapper.map(localityDTO, Locality.class));
 		return modelMapper.map(locality, LocalityDTO.class);

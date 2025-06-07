@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Service("userService")
 @NoArgsConstructor
 public class UserService implements UserDetailsService {
-
+	
     @Autowired
     @Qualifier("userRepository")
     private IUserRepository userRepository;

@@ -1,9 +1,13 @@
 package com.grupo12.models;
 
 import jakarta.validation.constraints.Min;
-import lombok.NoArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Data
 @NoArgsConstructor
 public class LocalityDTO {

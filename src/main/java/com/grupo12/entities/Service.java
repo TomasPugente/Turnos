@@ -33,4 +33,7 @@ public class Service {
 
     @ManyToMany(mappedBy = "services")
     private Set<Date> dates;
+    
+    @Column(name="duration_minutes", nullable=false)
+    private int durationMinutes;
 }

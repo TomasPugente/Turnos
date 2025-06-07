@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.grupo12.entities.Locality;
+import com.grupo12.models.EmployeeDTO;
 import com.grupo12.models.LocalityDTO;
 
 public interface ILocalityService {
