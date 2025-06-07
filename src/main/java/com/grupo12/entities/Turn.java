@@ -29,7 +29,7 @@ public class Turn {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idTurn;
+    private Integer idTurn;
 
     @Column(name="state")
     private String state;

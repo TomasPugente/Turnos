@@ -26,7 +26,7 @@ public class Date {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idDate;
+    private Integer idDate;
 
     @Column(name="date")
     private LocalDate date;
@@ -43,7 +43,7 @@ public class Date {
         inverseJoinColumns = @JoinColumn(name = "service_id"))
     private Set<Service> services;
 
-	public Date(int idDate, LocalDate date, LocalTime hour) {
+	public Date(Integer idDate, LocalDate date, LocalTime hour) {
 		super();
 		this.idDate = idDate;
 		this.date = date;

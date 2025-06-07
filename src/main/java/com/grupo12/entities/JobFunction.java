@@ -24,7 +24,7 @@ public class JobFunction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idJobFunction;
+    private Integer idJobFunction;
     
     @Column(name="name")
     private String name;
@@ -35,7 +35,7 @@ public class JobFunction {
     @ManyToMany(mappedBy = "functions")
     private Set<Employee> employees;
 
-	public JobFunction(int idJobFunction, String name, String description) {
+	public JobFunction(Integer idJobFunction, String name, String description) {
 		super();
 		this.idJobFunction = idJobFunction;
 		this.name = name;

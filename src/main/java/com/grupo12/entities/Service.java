@@ -23,7 +23,7 @@ public class Service {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idServicio;
+    private Integer idService;
 
     @Column(name="name")
     private String name;
@@ -33,4 +33,13 @@ public class Service {
 
     @ManyToMany(mappedBy = "services")
     private Set<Date> dates;
+
+	public Service(Integer idService, String name, String detail) {
+		super();
+		this.idService = idService;
+		this.name = name;
+		this.detail = detail;
+	}
+    
+    
 }

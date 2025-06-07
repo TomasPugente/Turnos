@@ -11,7 +11,6 @@ import com.grupo12.entities.Locality;
 import com.grupo12.models.ClientDTO;
 import com.grupo12.models.ContactDTO;
 import com.grupo12.models.LocalityDTO;
-import com.grupo12.services.IClientService;
 import com.grupo12.services.ILocalityService;
 
 

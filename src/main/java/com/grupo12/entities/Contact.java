@@ -24,7 +24,7 @@ public class Contact {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idContact;
+    private Integer idContact;
 
     @Column(name="street")
     private String street;
@@ -42,7 +42,7 @@ public class Contact {
     @JoinColumn(name = "locality_id")
     private Locality locality;
 
-	public Contact(int idContact, String street, String number, String email, String phone, Locality locality) {
+	public Contact(Integer idContact, String street, String number, String email, String phone, Locality locality) {
 		super();
 		this.idContact = idContact;
 		this.street = street;

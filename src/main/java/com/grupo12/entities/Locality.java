@@ -19,12 +19,12 @@ public class Locality {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idLocality;
+    private Integer idLocality;
 
     @Column(name="name")
     private String name;
 
-	public Locality(int idLocality, String name) {
+	public Locality(Integer idLocality, String name) {
 		super();
 		this.idLocality = idLocality;
 		this.name = name;
