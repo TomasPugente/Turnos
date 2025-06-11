@@ -14,30 +14,32 @@
 	<!-- Core theme CSS (includes Bootstrap)-->
 	<link href="/css/styles.css" rel="stylesheet" />
 </head>
-<body>
-<h1 class="m-1">Clientes</h1>
-<a href="/clients/form"><button type="button" class="btn btn-primary m-1">Agregar Cliente</button></a>
-<table class="table table-dark table-striped">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>DNI</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="client : ${clients}">
-        <td th:text="${client.idPerson}"></td>
-        <td th:text="${client.name}"></td>
-        <td th:text="${client.dni}"></td>
-        <td>
-            <!-- Botones de editar o eliminar -->
-			<a th:href="@{'/clients/form/' + ${client.idPerson}}"><button type="button" class="btn btn-secondary me-2 px-3 py-2">Editar</button></a> |
-			<a th:href="@{'/clients/delete/' + ${client.idPerson}}" onclick="return confirm('¿Seguro que deseas eliminar este cliente?')"><button type="button" class="btn btn-danger px-3 py-2">Eliminar</button></a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<br>
+	
+	<a th:href="@{/}" class="m-1 p-1 btn btn-primary">Volver al inicio</a><br></br>
+	<h1 class="m-1 p-1">Clientes</h1>
+	<a href="/clients/form"><button type="button" class="btn btn-primary m-1 p-1">Agregar Cliente</button></a>
+	<table class="m-1 p-1 table table-dark table-striped">
+	    <thead>
+	    <tr>
+	        <th>ID</th>
+	        <th>Nombre</th>
+	        <th>DNI</th>
+	        <th>Acciones</th>
+	    </tr>
+	    </thead>
+	    <tbody>
+	    <tr th:each="client : ${clients}">
+	        <td th:text="${client.idPerson}"></td>
+	        <td th:text="${client.name}"></td>
+	        <td th:text="${client.dni}"></td>
+	        <td>
+	            <!-- Botones de editar o eliminar -->
+				<a th:href="@{'/clients/form/' + ${client.idPerson}}"><button type="button" class="btn btn-secondary me-2 px-3 py-2">Editar</button></a> |
+				<a th:href="@{'/clients/delete/' + ${client.idPerson}}" onclick="return confirm('¿Seguro que deseas eliminar este cliente?')"><button type="button" class="btn btn-danger px-3 py-2">Eliminar</button></a>
+	        </td>
+	    </tr>
+	    </tbody>
+	</table>
 </body>
 </html>

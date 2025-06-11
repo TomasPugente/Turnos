@@ -17,7 +17,7 @@ public class TurnDTO {
 
     private int idTurn;
 
-    private String state;
+    private String status;
  
     private boolean active;
     
@@ -29,11 +29,11 @@ public class TurnDTO {
 
     private Date date;
 
-	public TurnDTO(int idTurn, String state, boolean active, String observation, ClientDTO client, EmployeeDTO employee,
+	public TurnDTO(int idTurn, String status, boolean active, String observation, ClientDTO client, EmployeeDTO employee,
 			Date date) {
 		super();
 		this.idTurn = idTurn;
-		this.state = state;
+		this.status = status;
 		this.active = active;
 		this.observation = observation;
 		this.client = client;

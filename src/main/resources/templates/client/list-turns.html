@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mis Turnos</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Mis Turnos</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Servicio</th>
+                <th>Empleado</th>
+                <th>Fecha</th>
+                <th>Hora Inicio</th>
+                <th>Hora Fin</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="turn : ${turns}">
+                <td th:text="${turn.service.name}">Servicio</td>
+                <td th:text="${turn.employee.name}">Empleado</td>
+                <td th:text="${turn.date.date}">Fecha</td>
+                <td th:text="${turno.status}">Estado</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/client/reserve-turn}">Solicitar nuevo turno</a>
+</body>
+</html>

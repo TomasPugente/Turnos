@@ -8,11 +8,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,8 +34,9 @@ public class Turn {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idTurn;
 
-    @Column(name="state")
-    private String state;
+    @Enumerated(EnumType.STRING)
+    @Column (name="status",nullable=false)
+    private TurnStatus status; //PENDIENTE, EN_ATENCION, ATENDIDO, AUSENTE, CANCELADO
     
 	@Column(name="createdat")
 	@CreationTimestamp
@@ -59,12 +63,20 @@ public class Turn {
     @ManyToOne
     @JoinColumn(name = "date_id")
     private Date date;
+    
+    @PrePersist
+    protected void onCreate() {
+    	LocalDateTime createdAt = LocalDateTime.now();
+    	if(status==null) {
+    		status=TurnStatus.PENDIENTE;//Estado predeterminado para los turnos recién creados
+    	}
+    }
 
-	public Turn(int idTurn, String state, boolean active, String observation, Client client, Employee employee,
+	public Turn(int idTurn, TurnStatus status, boolean active, String observation, Client client, Employee employee,
 			Date date) {
 		super();
 		this.idTurn = idTurn;
-		this.state = state;
+		this.status = status;
 		this.active = active;
 		this.observation = observation;
 		this.client = client;
