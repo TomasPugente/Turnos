@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 import com.grupo12.converters.ClientConverter;
 import com.grupo12.entities.Client;
 import com.grupo12.models.ClientDTO;
@@ -31,47 +30,48 @@ public class ClientController {
     @Autowired
     @Qualifier("clientService")
     private IClientService clientService;
-    
+
     @Autowired
     @Qualifier("localityService")
     private ILocalityService localityService;
-    
-	@Autowired
-	@Qualifier("clientConverter")
-	private ClientConverter clientConverter;
-	
+
+    @Autowired
+    @Qualifier("clientConverter")
+    private ClientConverter clientConverter;
+
     @GetMapping
     public String listClients(Model model) {
         List<ClientDTO> clientDTOs = clientService.getAll().stream()
                 .map(client -> clientConverter.entityToDTO(client))
                 .collect(Collectors.toList());
 
-            model.addAttribute("clients", clientDTOs);
-            return "client/list";
+        model.addAttribute("clients", clientDTOs);
+        return "client/list";
     }
-  
 
     // Mostrar el formulario para crear o editar
-    @GetMapping({"/form", "/form/{id}"})
+    @GetMapping({ "/form", "/form/{id}" })
     public String showForm(@PathVariable(required = false) Integer id, Model model) {
         if (id != null) {
-        	Optional<Client> client = clientService.getById(id);
-        	if (client.isPresent()) {
-        	    model.addAttribute("clientDTO", clientConverter.entityToDTO(client.get())); // para editar
-        	} else {
-        	    return "redirect:/clients";
-        	}
-        	
+            Optional<Client> client = clientService.getById(id);
+            if (client.isPresent()) {
+                model.addAttribute("clientDTO", clientConverter.entityToDTO(client.get())); // para editar
+            } else {
+                return "redirect:/clients";
+            }
+
         } else {
             model.addAttribute("clientDTO", new ClientDTO()); // para nuevo
         }
         model.addAttribute("localities", localityService.getAll());
         return "client/form"; // templates/client/form.html
     }
-   
+
     @PostMapping("/save")
-    public String saveClient(@Valid @ModelAttribute("clientDTO") ClientDTO clientDTO, BindingResult bindingResult,Model model) {
-        if (clientDTO.getIdPerson() == null || !clientService.isSameClientDni(clientDTO.getIdPerson(), clientDTO.getDni())) {
+    public String saveClient(@Valid @ModelAttribute("clientDTO") ClientDTO clientDTO, BindingResult bindingResult,
+            Model model) {
+        if (clientDTO.getIdPerson() == null
+                || !clientService.isSameClientDni(clientDTO.getIdPerson(), clientDTO.getDni())) {
             if (clientService.existsByDni(clientDTO.getDni())) {
                 bindingResult.rejectValue("dni", "duplicateDni", "El DNI ya está registrado");
             }
@@ -84,12 +84,13 @@ public class ClientController {
         clientService.insertOrUpdate(clientDTO);
         return "redirect:/clients";
     }
+    /*
+     * @GetMapping("/delete/{id}")
+     * public String delete(@PathVariable("id") int id) {
+     * clientService.remove(id);
+     * 
+     * return "redirect:/clients";
+     * }
+     */
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int id) {
-        clientService.remove(id);
-        return "redirect:/clients";
-    }
-   
 }
-

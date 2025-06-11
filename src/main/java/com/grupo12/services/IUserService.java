@@ -1,5 +1,11 @@
 package com.grupo12.services;
 
-public class IUserService {
+import com.grupo12.entities.User;
 
+public interface IUserService {
+    User save(User user);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 }

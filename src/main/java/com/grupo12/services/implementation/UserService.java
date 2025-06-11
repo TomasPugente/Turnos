@@ -9,44 +9,68 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.grupo12.entities.User;
 import com.grupo12.entities.UserRole;
 import com.grupo12.repositories.IUserRepository;
-
-import lombok.NoArgsConstructor;
+import com.grupo12.services.IUserService;
 
 @Service("userService")
-@NoArgsConstructor
-public class UserService implements UserDetailsService {
-	
+
+public class UserService implements UserDetailsService, IUserService {
+
     @Autowired
     @Qualifier("userRepository")
     private IUserRepository userRepository;
 
+    private BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.grupo12.entities.User user = userRepository.FindByUsernameAndFetchRolesEagerly(username);
+        User user = userRepository.FindByUsernameAndFetchRolesEagerly(username);
         return buildUser(user, buildGrantedAuthorities(user.getUserRoles()));
     }
 
-    private User buildUser(com.grupo12.entities.User user,
-            List<GrantedAuthority> grantedAuthorities) {
-        return new User(user.getUsername(), user.getPassword(),
+    private org.springframework.security.core.userdetails.User buildUser(User user,
+            List<GrantedAuthority> authorities) {
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
                 user.getEnabled(), true, true, true,
-                grantedAuthorities);
+                authorities);
     }
 
-    private List<GrantedAuthority> buildGrantedAuthorities(Set<UserRole> userRoles) {
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-
-        for (UserRole userRole : userRoles) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(userRole.getRole()));
+    private List<GrantedAuthority> buildGrantedAuthorities(Set<UserRole> roles) {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        for (UserRole role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getRole()));
         }
-        return new ArrayList<>(grantedAuthorities);
+        return new ArrayList<>(authorities);
+    }
+
+    @Override
+    public User save(User user) {
+        user.setPassword(pe.encode(user.getPassword()));
+        user.setEnabled(true);
+        System.out.println("Saving user: " + user.getUsername());
+        UserRole defaultRole = new UserRole(user, "ROLE_USER");
+        user.getUserRoles().add(defaultRole);
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

@@ -14,12 +14,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @RequiredArgsConstructor
-@Data
+@Getter
+@Setter
 @Table(name = "user")
 public class User {
 
@@ -35,6 +37,9 @@ public class User {
 
     @Column(name = "enabled")
     private Boolean enabled;
+
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
 
     @Column(name = "createdAt")
     @CreationTimestamp
