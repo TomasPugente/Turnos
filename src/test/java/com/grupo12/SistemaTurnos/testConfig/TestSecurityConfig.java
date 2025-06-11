@@ -1,4 +1,4 @@
-package com.grupo12.testConfig;
+/*package com.grupo12.testConfig;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -11,4 +11,4 @@ public class TestSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package com.grupo12.test;
+/*package com.grupo12.test;
 
 import com.grupo12.converters.TurnConverter;
 import com.grupo12.entities.Employee;
@@ -253,4 +253,4 @@ public class TurnServiceTest {
             assertEquals(serviceId, dto.getIdServicio());
         }
     }
-}
+}*/

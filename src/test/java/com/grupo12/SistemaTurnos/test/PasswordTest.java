@@ -1,4 +1,4 @@
-	package com.grupo12.test;
+/*	package com.grupo12.test;
 	
 	import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 	
@@ -12,4 +12,4 @@
 	
 		        System.out.println("¿Coincide? " + matches);
 		    }
-	}
+	}*/

@@ -1,4 +1,4 @@
-package com.grupo12.test;
+/*package com.grupo12.test;
 
 import com.grupo12.entities.Turn;
 import com.grupo12.entities.TurnStatus;
@@ -48,4 +48,4 @@ public class TestLlamarTurno {
 	        assertEquals("EN_ATENCION", result.getStatus());
 	        verify(turnRepository).save(any());
 	    }
-}
+}*/

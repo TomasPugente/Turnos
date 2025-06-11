@@ -1,5 +1,6 @@
 package com.grupo12.entities;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -30,6 +31,9 @@ public class Service {
     
     @Column(name="detail")
     private String detail;
+    
+    @Column(name="durationMinutes")
+    private int durationMinutes;
 
     @ManyToMany(mappedBy = "services")
     private Set<Date> dates;
@@ -40,6 +44,8 @@ public class Service {
 		this.name = name;
 		this.detail = detail;
 	}
+
+
     
     
 }

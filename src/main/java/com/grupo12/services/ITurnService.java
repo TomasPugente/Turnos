@@ -1,10 +1,13 @@
 package com.grupo12.services;
 
+import com.grupo12.entities.Client;
+import com.grupo12.entities.Turn;
 import com.grupo12.models.TurnDTO;
 import com.grupo12.models.TurnMultipleDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -34,6 +37,28 @@ public interface ITurnService {
 	void deleteTurn(int id);
 	List<TurnDTO> findUpcomingTurns(LocalDateTime fromTime, LocalDateTime toTime);
 	
+	//public Turn requestAnAppointment(Long idClient, Long idService, LocalDate date);
+	
+	public List<Turn> GetAvailableAppointments(); 
+	
+	public void reserveTurn(Integer idTurno, String username);
+
+	public List<Turn> getAvailableTurns();
+	
+	//public void reserveAppointment(Long idTurno, String username);
+
+	
+	public void assignTurnToClient(Turn turn, Client client);
+	
+    List<Turn> getTurnsByClient(Client client);
+    
+    Map<String, List<Turn>> getTurnsGroupedByStatus(Client client);
+    
+    void save(Turn turno);
+	Optional<TurnDTO> getTurnById(Integer id);
+	
 	
 }
+
+
 

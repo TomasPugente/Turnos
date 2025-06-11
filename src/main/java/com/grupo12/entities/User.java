@@ -38,6 +38,9 @@ public class User {
 
     @Column(name = "enabled")
     private Boolean enabled;
+    
+    @Column(name = "reset_token")
+    private String resetToken;
 
     @Column(name = "createdAt")
     @CreationTimestamp

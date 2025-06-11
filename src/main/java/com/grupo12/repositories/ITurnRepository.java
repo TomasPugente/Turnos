@@ -1,4 +1,5 @@
 
+
 package com.grupo12.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Pageable;
 
+import com.grupo12.entities.Client;
 import com.grupo12.entities.Turn;
 import com.grupo12.entities.TurnStatus;
 
@@ -36,5 +38,23 @@ public interface ITurnRepository extends JpaRepository<Turn, Integer> {
 	List<Turn> findByEmployee_IdPersonOrderByStartTimeAsc(int employeeId);
 	List<Turn> findByClientIdPersonOrderByStartTimeAsc(int clientId);
 	List<Turn> findByStatus(TurnStatus status);
+
+	List<Turn> findByClient(Client client);
+
+	List<Turn> findByState(String string);
+
+	Optional<Turn> findById(Integer idTurno);
+
+	List<Turn> findAvailableTurns();
 	
+	
+    /*@Query("SELECT t FROM Turn t WHERE t.client IS NULL AND t.status = 'PENDIENTE' AND t.active = true")
+    List<Turn> findAvailableTurns();
+    
+    List<Turn> findByClient(Client client);
+    List<Turn> findByClientIsNullAndStatus(TurnStatus status);*/
+
 }
+
+
+

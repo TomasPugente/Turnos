@@ -37,7 +37,7 @@ public class TurnConverter {
 	            dto.setClientName(turn.getClient().getName());
 	            dto.setClientDni(turn.getClient().getDni());
 	            dto.setClientDateOfBirth(turn.getClient().getDateOfBirth());
-	            dto.setClientPassword(turn.getClient().getPassword());
+	            dto.setClientPassword(turn.getClient().getUser().getPassword());
 	            if (turn.getClient().getContact() != null) {
 	                dto.setClientEmail(turn.getClient().getContact().getEmail());
 	            }
@@ -48,7 +48,7 @@ public class TurnConverter {
 	            dto.setEmployeeName(turn.getEmployee().getName());
 	            dto.setEmployeeDni(turn.getEmployee().getDni());
 	            dto.setEmployeeDateOfBirth(turn.getEmployee().getDateOfBirth());
-	            dto.setEmployeePassword(turn.getEmployee().getPassword());
+	            dto.setEmployeePassword(turn.getEmployee().getUser().getPassword());
 	            dto.setEmployeeCuit(turn.getEmployee().getCuit());
 	            dto.setEmployeeEntryDate(turn.getEmployee().getEntryDate());
 	            if (turn.getEmployee().getContact() != null) {
@@ -57,7 +57,7 @@ public class TurnConverter {
 	        }
 
 	        if (turn.getService() != null) {
-	            dto.setIdServicio(turn.getService().getIdServicio());
+	            dto.setIdServicio(turn.getService().getIdService());
 	            dto.setServiceName(turn.getService().getName());
 	        }
 	        dto.setReminderSent(turn.isReminderSent());

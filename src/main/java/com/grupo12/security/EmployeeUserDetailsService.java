@@ -24,7 +24,7 @@ public class EmployeeUserDetailsService implements UserDetailsService{
 		  Employee employee = employeeRepository.findByEmail(email)
 		            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-		  return new org.springframework.security.core.userdetails.User(employee.getContact().getEmail(), employee.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_EMPLOYEE")));
+		  return new org.springframework.security.core.userdetails.User(employee.getContact().getEmail(), employee.getUser().getPassword(), List.of(new SimpleGrantedAuthority("ROLE_EMPLOYEE")));
 	}
 	
 }

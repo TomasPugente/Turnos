@@ -86,7 +86,7 @@ public class ServiceService implements IServiceService{
 	public List<ServiceDTO> getAllDTO() {
         return serviceRepository.findAll().stream().map(service ->
         new ServiceDTO(
-            service.getIdServicio(),
+            service.getIdService(),
             service.getName(),
             service.getDetail(),
             service.getDurationMinutes()

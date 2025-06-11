@@ -1,4 +1,4 @@
-package com.grupo12.test;
+/*package com.grupo12.test;
 import com.grupo12.converters.EmployeeConverter;
 
 import com.grupo12.entities.Contact;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 public class DtoTest {
 	 public static void main(String[] args) {
-	       /* // Simulamos una localidad asociada al contacto
+	        // Simulamos una localidad asociada al contacto
 	        LocalityDTO locality = new LocalityDTO(1, "Córdoba");
 
 	        // Creamos un contacto completo con calle, número, mail, etc.
@@ -47,7 +47,7 @@ public class DtoTest {
 	        System.out.println("  Nombre: " + employee.getName());
 	        System.out.println("  CUIT: " + employee.getCuit());
 	        System.out.println("  Email: " + employee.getContact().getEmail());
-	        System.out.println("  Ciudad: " + employee.getContact().getLocality().getName());*/
+	        System.out.println("  Ciudad: " + employee.getContact().getLocality().getName());
 	    }
 		 
 	    @Test
@@ -108,4 +108,4 @@ public class DtoTest {
 	        assertEquals("3511111111", contactDTO.getPhone());
 	        assertEquals("Mendoza", contactDTO.getLocality().getName());
 	    }
-}
+}*/

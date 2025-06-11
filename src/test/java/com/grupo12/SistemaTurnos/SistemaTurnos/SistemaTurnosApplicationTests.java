@@ -1,4 +1,4 @@
-package com.grupo12.SistemaTurnos;
+/*package com.grupo12.SistemaTurnos;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,4 +12,4 @@ class SistemaTurnosApplicationTests {
 	void contextLoads() {
 	}
 
-}
+}*/

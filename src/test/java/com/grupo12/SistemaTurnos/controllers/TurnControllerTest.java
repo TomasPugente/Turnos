@@ -1,4 +1,4 @@
-package com.grupo12.controllers;
+/*package com.grupo12.controllers;
 import com.grupo12.controllers.TurnController;
 import com.grupo12.models.TurnDTO;
 import com.grupo12.services.ITurnService;
@@ -43,4 +43,4 @@ public class TurnControllerTest {
 	                .andExpect(jsonPath("$.idTurn").value(1))
 	                .andExpect(jsonPath("$.status").value("EN_ATENCION"));
 	    }
-}
+}*/

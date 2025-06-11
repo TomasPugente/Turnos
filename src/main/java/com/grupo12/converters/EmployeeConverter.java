@@ -17,10 +17,11 @@ public class EmployeeConverter {
         return new EmployeeDTO(
         	employee.getIdPerson(),
         	employee.getName(),
+        	employee.getSurname(),
         	employee.getDni(),
         	employee.getDateOfBirth(),
-        	employee.getPassword(),
             contactToDTO(employee.getContact()),
+            null,
             employee.getEntryDate(),
             employee.getCuit()
         );
@@ -33,7 +34,7 @@ public class EmployeeConverter {
     	    employee.setName(employeeDTO.getName());
     	    employee.setDni(employeeDTO.getDni());
     	    employee.setDateOfBirth(employeeDTO.getDateOfBirth());
-    	    employee.setPassword(employeeDTO.getPassword());
+    	    employee.getUser().setPassword(employeeDTO.getUser().getPassword());
     	    employee.setContact(contactToEntity(employeeDTO.getContact()));
     	    employee.setEntryDate(employeeDTO.getEntryDate());
     	    employee.setCuit(employeeDTO.getCuit());

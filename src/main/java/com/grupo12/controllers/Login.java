@@ -19,12 +19,12 @@
 	                        @RequestParam(name="logout", required=false) String logout) {
 	        model.addAttribute("error", error);
 	        model.addAttribute("logout", logout);
-	        return ViewRouteHelper.LOGIN;
+	        return ViewRouteHelper.USER_LOGIN;
 	    }
 	
 	    @GetMapping("/Register")
 	    public String getMethodName(@RequestParam String param) {
-	        return ViewRouteHelper.REGISTER;
+	        return ViewRouteHelper.USER_REGISTER;
 	    }
 	    
 	}

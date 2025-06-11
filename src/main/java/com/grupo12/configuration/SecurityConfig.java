@@ -1,6 +1,4 @@
-package com.grupo12.config;
-
-import com.grupo12.security.UserDetailsServiceImpl; // Este es el bueno
+/*import com.grupo12.security.UserDetailsServiceImpl; // Este es el bueno
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,7 +67,7 @@ public class SecurityConfig {
                 .permitAll()
             )
             .build();
-    }*/
+    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -81,4 +79,4 @@ public class SecurityConfig {
             .logout(logout -> logout.disable()) // 🚫 DESACTIVAR LOGOUT
             .build();
     }
-}
+}*/

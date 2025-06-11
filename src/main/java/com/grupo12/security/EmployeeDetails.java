@@ -23,7 +23,7 @@ public class EmployeeDetails implements UserDetails{
 	public EmployeeDetails(Employee employee) {
 		this.idEmployee=employee.getIdPerson();
 		this.username=employee.getContact().getEmail();
-		this.password=employee.getPassword();
+		this.password=employee.getUser().getPassword();
 		this.name=employee.getName();
 		
 		//mapea las JobFunctions a roles 

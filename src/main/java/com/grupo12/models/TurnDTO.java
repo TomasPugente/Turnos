@@ -21,7 +21,7 @@ import lombok.Data;
 public class TurnDTO {
 
     private int idTurn;
-    private String state;
+ 
     private boolean active;
     private String observation;	
     private ClientDTO client;
@@ -78,6 +78,18 @@ public class TurnDTO {
 	public void setReminderSent(Boolean reminderSent2) {
 		// TODO Auto-generated method stub
 		this.reminderSent=reminderSent2;
+	}
+	
+	public TurnDTO(int idTurn, String status, boolean active, String observation, ClientDTO client, EmployeeDTO employee,
+			Date date) {
+		super();
+		this.idTurn = idTurn;
+		this.status = status;
+		this.active = active;
+		this.observation = observation;
+		this.client = client;
+		this.employee = employee;
+		this.date = date;
 	}
 
 	public Boolean getReminderSent() {
