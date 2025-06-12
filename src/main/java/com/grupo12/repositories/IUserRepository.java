@@ -11,8 +11,12 @@ import com.grupo12.entities.User;
 
 @Repository("userRepository")
 public interface IUserRepository extends JpaRepository<User, Serializable> {
-	
-	@Query("Select u from User u where u.username = (:username)")
-	public abstract User FindByUsernameAndFetchRolesEagerly(@Param("username") String username);
+
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.userRoles WHERE u.username = :username")
+    public abstract User FindByUsernameAndFetchRolesEagerly(@Param("username") String username);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 
 }

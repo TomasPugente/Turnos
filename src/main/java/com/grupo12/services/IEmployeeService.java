@@ -11,8 +11,8 @@ public interface IEmployeeService {
 	public Optional<Employee> getById(int idPerson);
 
 	public List<Employee> getAll();
-	
+
 	public EmployeeDTO insertOrUpdate(EmployeeDTO employeeDTO);
-	
+
 	public boolean remove(int idPerson);
 }
