@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.grupo12.converters.ClientConverter;
 import com.grupo12.entities.Client;
+import com.grupo12.entities.UserRole;
 import com.grupo12.models.ClientDTO;
 import com.grupo12.repositories.IClientRepository;
 import com.grupo12.services.IClientService;
@@ -25,6 +27,8 @@ public class ClientService implements IClientService {
 	@Autowired
 	@Qualifier("clientConverter")
 	private ClientConverter clientConverter;
+
+	private BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
 
 	@Override
 	public Optional<Client> getById(int idPerson) { // Excepcion para hacer despues
@@ -89,4 +93,13 @@ public class ClientService implements IClientService {
 		return existingClient.get().getIdPerson().equals(idPerson);
 	}
 
+	public Client save(Client client) {
+
+		client.getUser().setPassword(pe.encode(client.getUser().getPassword()));
+		client.getUser().setEnabled(true);
+		System.out.println("Saving user: " + client.getUser().getUsername());
+		UserRole defaultRole = new UserRole(client.getUser(), "ROLE_USER");
+		client.getUser().getUserRoles().add(defaultRole);
+		return clientRepository.save(client);
+	}
 }

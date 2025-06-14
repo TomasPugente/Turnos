@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Register - UNLa</title>
+    <title>Register</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/styles.css" rel="stylesheet" />
 
     <style>
         body {
@@ -75,44 +75,53 @@
 <body>
 
     <div class="register-card">
-        <h3>Crear una cuenta</h3>
+        <h3>Create Your Account</h3>
 
         <!-- Formulario de registro -->
-        <form th:action="@{/registeruser}" th:object="${user}" method="post">
+        <form th:action="@{/registeruser}" th:object="${client}" method="post">
             <div class="form-group mb-3">
-                <label for="username">Usuario</label>
-                <input type="text" th:field="*{username}" id="username" class="form-control" placeholder="Ingrese su usuario" required />
+                <input type="text" th:field="*{name}" id="name" class="form-control" placeholder="name" required />
+                <input type="text" th:field="*{surname}"id="surname" class="form-control" placeholder="surname" required />
+            </div>
+            <div class="form-group mb-3">
+                <input type="text" th:field="*{dni}" id="dni" class="form-control" placeholder="DNI" required />
+            </div>
+            <div class="form-group mb-3">
+                <input type="date" th:field="*{dateOfBirth}" id="dateOfBirth" class="form-control" placeholder="dateOfBirth" required />
+            </div>
+            <div class="form-group mb-3">
+                <input type="text" th:field="*{contact.phone}" id="phone" class="form-control" placeholder="Phone number" required />
+            </div>
+                <div class="form-group mb-3">
+                <input type="text" th:field="*{user.username}" id="username" class="form-control" placeholder="Username" required />
             </div>
 
             <div class="form-group mb-3">
-                <label for="email">Correo electrónico</label>
-                <input type="email" th:field="*{email}" id="email" class="form-control" placeholder="ejemplo@correo.com" required />
-                <small class="form-text">Nunca compartiremos tu correo con nadie más.</small>
+                <input type="email" th:field="*{user.email}" id="email" class="form-control" placeholder="example@mail.com" required />
             </div>
 
             <div class="form-group mb-3">
-                <label for="password">Contraseña</label>
-                <input type="password" th:field="*{password}" id="password" class="form-control" placeholder="Ingrese una contraseña" required minlength="6" />
+                <input type="password" th:field="*{user.password}" id="password" class="form-control" placeholder="Password" required minlength="6" />
+                <small class="form-text">Your password must be at least 6 characters long.</small>
             </div>
 
             <div class="form-group mb-4">
-                <label for="confirmPassword">Confirmar contraseña</label>
-                <input type="password" th:field="*{confirmPassword}" id="confirmPassword" class="form-control" placeholder="Repita la contraseña" required minlength="6" />
+                <input type="password" th:field="*{user.confirmPassword}" id="confirmPassword" class="form-control" placeholder="Confirm your password" required minlength="6" />
             </div>
 
             <!-- Mensajes de error o éxito -->
             <div th:if="${error}" class="alert alert-danger text-center">
-                <span th:text="${error}">Error en el registro</span>
+                <span th:text="${error}">An error has been ocurred</span>
             </div>
             <div th:if="${success}" class="alert alert-success text-center">
-                Cuenta creada correctamente. <a th:href="@{/login}">Iniciar sesión</a>
+                Account created succesfully <a th:href="@{/login}">Log In</a>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
         </form>
 
         <div class="text-center mt-4">
-            <p>¿Ya tienes una cuenta? <a th:href="@{/login}">Iniciar sesión</a></p>
+            <p>Already have an account? <a th:href="@{/login}">Log In</a></p>
         </div>
     </div>
 

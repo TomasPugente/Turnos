@@ -11,20 +11,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.grupo12.entities.Client;
+import com.grupo12.entities.Contact;
 import com.grupo12.entities.User;
 import com.grupo12.helpers.ViewRouteHelper;
-import com.grupo12.models.UserDTO;
+import com.grupo12.models.ClientDTO;
+import com.grupo12.services.implementation.ClientService;
 import com.grupo12.services.implementation.UserService;
 
 import jakarta.validation.Valid;
 
 @Controller
 public class UserController {
+
+    private final ClientService clientService;
     @Autowired
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ClientService clientService) {
         this.userService = userService;
+        this.clientService = clientService;
     }
 
     @GetMapping("/login")
@@ -66,44 +72,58 @@ public class UserController {
     @GetMapping("/register")
     public ModelAndView showRegisterForm() {
         ModelAndView mv = new ModelAndView();
-        mv.addObject("user", new UserDTO());
+        mv.addObject("client", new ClientDTO());
         mv.setViewName(ViewRouteHelper.USER_REGISTER);
         System.out.println("getRegister");
         return mv;
     }
 
     @PostMapping("/registeruser")
-    public ModelAndView registeruser(@Valid @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult) {
+    public ModelAndView registeruser(@Valid @ModelAttribute("client") ClientDTO clientDTO,
+            BindingResult bindingResult) {
         ModelAndView mv = new ModelAndView(ViewRouteHelper.USER_REGISTER);
         try {
-
-            System.out.println("Intentando registrar usuario");
 
             if (bindingResult.hasErrors()) {
                 return mv;
             }
 
-            if (userService.existsByUsername(userDTO.getUsername())) {
-                mv.addObject("error", "El nombre de usuario ya está en uso.");
+            if (userService.existsByUsername(clientDTO.getUser().getUsername())) {
+                mv.addObject("error", "Username is already in use.");
                 return mv;
             }
 
-            if (userService.existsByEmail(userDTO.getEmail())) {
-                mv.addObject("error", "El correo electrónico ya está en uso.");
+            if (userService.existsByEmail(clientDTO.getUser().getEmail())) {
+                mv.addObject("error", "Email is already in use.");
                 return mv;
             }
+
+            Client client = new Client();
+
+            client.setName(clientDTO.getName());
+            client.setSurname(clientDTO.getSurname());
+            client.setDni(clientDTO.getDni());
+            client.setDateOfBirth(clientDTO.getDateOfBirth());
+
+            Contact contact = new Contact();
+            contact.setPhone(clientDTO.getContact().getPhone());
+            contact.setEmail(clientDTO.getUser().getEmail());
 
             User user = new User();
-            user.setUsername(userDTO.getUsername());
-            user.setEmail(userDTO.getEmail());
-            user.setPassword(userDTO.getPassword());
+            user.setUsername(clientDTO.getUser().getUsername());
+            user.setEmail(clientDTO.getUser().getEmail());
+            user.setPassword(clientDTO.getUser().getPassword());
             user.setEnabled(true);
-            System.out.println("Registrando usuario: " + user.getUsername());
-            userService.save(user);
 
+            // Asignar el user al client
+            client.setUser(user);
+
+            // Guardar el user (o podrías guardar el client si querés persistirlo con el
+            // user relacionado)
+            clientService.save(client);
             mv.setViewName("redirect:/login?registered=true");
         } catch (Exception e) {
-            mv.addObject("error", "Error al registrar el usuario: " + e.getMessage());
+            mv.addObject("error", "A problem has been ocurred: " + e.getMessage());
 
         }
         return mv;

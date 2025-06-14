@@ -13,10 +13,10 @@ public class EmployeeConverter {
         return new EmployeeDTO(
                 employee.getIdPerson(),
                 employee.getName(),
+                employee.getSurname(),
                 employee.getDni(),
                 employee.getDateOfBirth(),
-                employee.getPassword(),
-                contactToDTO(employee.getContact()),
+                contactToDTO(employee.getContact()), null,
                 employee.getEntryDate(),
                 employee.getCuit());
     }
@@ -25,12 +25,12 @@ public class EmployeeConverter {
         return new Employee(
                 employeeDTO.getIdPerson(),
                 employeeDTO.getName(),
+                employeeDTO.getSurname(),
                 employeeDTO.getDni(),
                 employeeDTO.getDateOfBirth(),
-                employeeDTO.getPassword(),
                 contactToEntity(employeeDTO.getContact()),
                 employeeDTO.getEntryDate(),
-                employeeDTO.getCuit());
+                employeeDTO.getCuit(), null);
     }
 
     private ContactDTO contactToDTO(Contact contact) {
