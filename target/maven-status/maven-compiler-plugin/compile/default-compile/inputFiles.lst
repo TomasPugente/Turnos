@@ -25,6 +25,7 @@ C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\models\Employ
 C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\models\LocalityDTO.java
 C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\models\PersonDTO.java
 C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\models\TurnDTO.java
+C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\models\UserDTO.java
 C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\repositories\IClientRepository.java
 C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\repositories\IEmployeeRepository.java
 C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\repositories\ILocalityRepository.java
@@ -39,3 +40,4 @@ C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\services\impl
 C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\services\IUserService.java
 C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\services\PersonaService.java
 C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\SistemaTurnosApplication.java
+C:\Users\tumip\Desktop\RepoGitHub\Turnos\src\main\java\com\grupo12\TestBCryptPasswordEncoder.java

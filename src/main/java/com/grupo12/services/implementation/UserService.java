@@ -28,7 +28,7 @@ public class UserService implements UserDetailsService, IUserService {
     @Qualifier("userRepository")
     private IUserRepository userRepository;
 
-    private BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
