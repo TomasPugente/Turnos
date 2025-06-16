@@ -28,7 +28,7 @@ public class ClientService implements IClientService {
 	@Qualifier("clientConverter")
 	private ClientConverter clientConverter;
 
-	private BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
+	private final BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
 
 	@Override
 	public Optional<Client> getById(int idPerson) { // Excepcion para hacer despues

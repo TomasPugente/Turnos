@@ -19,13 +19,16 @@
         }
 
         .register-card {
-            background-color: white;
-            padding: 2.5rem 3rem;
-            border-radius: 1rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 450px;
+        background-color: white;
+        padding: 2.5rem 3rem;
+        border-radius: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 580px;
+        margin: 0 auto;
+        height: 690px;
         }
+
 
         .form-control {
             border-radius: 0.5rem;
@@ -79,46 +82,56 @@
 
         <!-- Formulario de registro -->
         <form th:action="@{/registeruser}" th:object="${client}" method="post">
-            <div class="form-group mb-3">
-                <input type="text" th:field="*{name}" id="name" class="form-control" placeholder="name" required />
-                <input type="text" th:field="*{surname}"id="surname" class="form-control" placeholder="surname" required />
-            </div>
-            <div class="form-group mb-3">
-                <input type="text" th:field="*{dni}" id="dni" class="form-control" placeholder="DNI" required />
-            </div>
-            <div class="form-group mb-3">
-                <input type="date" th:field="*{dateOfBirth}" id="dateOfBirth" class="form-control" placeholder="dateOfBirth" required />
-            </div>
-            <div class="form-group mb-3">
-                <input type="text" th:field="*{contact.phone}" id="phone" class="form-control" placeholder="Phone number" required />
-            </div>
-                <div class="form-group mb-3">
-                <input type="text" th:field="*{user.username}" id="username" class="form-control" placeholder="Username" required />
-            </div>
+    <div class="row mb-3">
+        <div class="col">
+            <input type="text" th:field="*{name}" id="name" class="form-control" placeholder="Name" required />
+        </div>
+        <div class="col">
+            <input type="text" th:field="*{surname}" id="surname" class="form-control" placeholder="Surname" required />
+        </div>
+    </div>
 
-            <div class="form-group mb-3">
-                <input type="email" th:field="*{user.email}" id="email" class="form-control" placeholder="example@mail.com" required />
-            </div>
+    <div class="row mb-3">
+        <div class="col">
+            <input type="text" th:field="*{dni}" id="dni" class="form-control" placeholder="DNI" required />
+        </div>
+        <div class="col">
+            <input type="date" th:field="*{dateOfBirth}" id="dateOfBirth" class="form-control" placeholder="dd/mm/yyyy" required />
+        </div>
+    </div>
 
-            <div class="form-group mb-3">
-                <input type="password" th:field="*{user.password}" id="password" class="form-control" placeholder="Password" required minlength="6" />
-                <small class="form-text">Your password must be at least 6 characters long.</small>
-            </div>
+    <div class="mb-3">
+        <input type="text" th:field="*{contact.phone}" id="phone" class="form-control" placeholder="Phone number" required />
+    </div>
 
-            <div class="form-group mb-4">
-                <input type="password" th:field="*{user.confirmPassword}" id="confirmPassword" class="form-control" placeholder="Confirm your password" required minlength="6" />
-            </div>
+    <div class="mb-3">
+        <input type="text" th:field="*{user.username}" id="username" class="form-control" placeholder="Username" required />
+    </div>
 
-            <!-- Mensajes de error o éxito -->
-            <div th:if="${error}" class="alert alert-danger text-center">
-                <span th:text="${error}">An error has been ocurred</span>
-            </div>
-            <div th:if="${success}" class="alert alert-success text-center">
-                Account created succesfully <a th:href="@{/login}">Log In</a>
-            </div>
+    <div class="mb-3">
+        <input type="email" th:field="*{user.email}" id="email" class="form-control" placeholder="example@mail.com" required />
+    </div>
 
-            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-        </form>
+    <div class="mb-3">
+        <input type="password" th:field="*{user.password}" id="password" class="form-control" placeholder="Password" required minlength="6" />
+        <small class="form-text">Your password must be at least 6 characters long.</small>
+    </div>
+
+    <div class="mb-4">
+        <input type="password" th:field="*{user.confirmPassword}" id="confirmPassword" class="form-control" placeholder="Confirm your password" required minlength="6" />
+    </div>
+
+    <!-- Mensajes de error o éxito -->
+    <div th:if="${error}" class="alert alert-danger text-center">
+        <span th:text="${error}">An error has been ocurred</span>
+    </div>
+    <div th:if="${success}" class="alert alert-success text-center">
+        Account created successfully <a th:href="@{/login}">Log In</a>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+</form>
+
 
         <div class="text-center mt-4">
             <p>Already have an account? <a th:href="@{/login}">Log In</a></p>

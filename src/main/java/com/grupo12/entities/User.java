@@ -44,6 +44,9 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @Column(name = "reset_token")
+    private String resetToken;
+
     @Column(name = "createdAt")
     @CreationTimestamp
     private LocalDateTime createdAt;

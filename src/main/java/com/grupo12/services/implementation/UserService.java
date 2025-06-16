@@ -73,4 +73,9 @@ public class UserService implements UserDetailsService, IUserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }

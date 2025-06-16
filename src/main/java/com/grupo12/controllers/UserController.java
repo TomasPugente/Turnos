@@ -1,5 +1,7 @@
 package com.grupo12.controllers;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import com.grupo12.entities.User;
 import com.grupo12.helpers.ViewRouteHelper;
 import com.grupo12.models.ClientDTO;
 import com.grupo12.services.implementation.ClientService;
+import com.grupo12.services.implementation.EmailService;
 import com.grupo12.services.implementation.UserService;
 
 import jakarta.validation.Valid;
@@ -27,6 +30,9 @@ public class UserController {
     private final ClientService clientService;
     @Autowired
     private final UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     public UserController(UserService userService, ClientService clientService) {
         this.userService = userService;
@@ -70,7 +76,7 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public ModelAndView showRegisterForm() {
+    public ModelAndView register() {
         ModelAndView mv = new ModelAndView();
         mv.addObject("client", new ClientDTO());
         mv.setViewName(ViewRouteHelper.USER_REGISTER);
@@ -115,12 +121,13 @@ public class UserController {
             user.setPassword(clientDTO.getUser().getPassword());
             user.setEnabled(true);
 
-            // Asignar el user al client
             client.setUser(user);
-
-            // Guardar el user (o podrías guardar el client si querés persistirlo con el
-            // user relacionado)
             clientService.save(client);
+
+            emailService.sendSimpleMail(user.getEmail(), "Correo de prueba",
+                    "If you are receiving this email, it means that your registration was successful. Welcome "
+                            + client.getName() + " " + client.getSurname() + " to our platform!");
+            System.out.println("Correo enviado correctamente");
             mv.setViewName("redirect:/login?registered=true");
         } catch (Exception e) {
             mv.addObject("error", "A problem has been ocurred: " + e.getMessage());
@@ -133,4 +140,37 @@ public class UserController {
     public String forgotpassword() {
         return ViewRouteHelper.FORGOT_PASSWORD;
     }
+
+    @PostMapping("/forgotpassword")
+    public String forgotPasswordSubmit(@RequestParam("email") String email, Model model) {
+        try {
+
+            User user = userService.findByEmail(email);
+            if (user == null) {
+                model.addAttribute("error", "No existe una cuenta con ese correo electrónico.");
+                return ViewRouteHelper.FORGOT_PASSWORD;
+            }
+
+            String token = UUID.randomUUID().toString();
+            user.setResetToken(token);
+            userService.save(user);
+
+            String resetLink = "http://localhost:8080/resetpassword?token=" + token;
+
+            String subject = "Reset your password";
+            String message = "Hi " + user.getUsername() + ",\n\n"
+                    + "To reset your password, click the link below:\n"
+                    + resetLink + " \n\n"
+                    + "If you did not request this, you can ignore this email.";
+
+            emailService.sendSimpleMail(user.getEmail(), subject, message);
+
+            model.addAttribute("success", "A email has been sent to " + user.getEmail()
+                    + " with instructions to reset your password.");
+        } catch (Exception e) {
+            model.addAttribute("error", "A problem has occurred: " + e.getMessage());
+        }
+        return ViewRouteHelper.FORGOT_PASSWORD;
+    }
+
 }

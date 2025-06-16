@@ -3,7 +3,6 @@ com\grupo12\models\UserDTO.class
 com\grupo12\entities\Person.class
 com\grupo12\SistemaTurnosApplication.class
 com\grupo12\controllers\HomeController.class
-com\grupo12\TestBCryptPasswordEncoder.class
 com\grupo12\entities\UserRole.class
 com\grupo12\models\PersonDTO.class
 com\grupo12\entities\Locality.class
