@@ -28,7 +28,7 @@ public class UserService implements UserDetailsService, IUserService {
     @Qualifier("userRepository")
     private IUserRepository userRepository;
 
-    private BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -58,8 +58,6 @@ public class UserService implements UserDetailsService, IUserService {
         user.setPassword(pe.encode(user.getPassword()));
         user.setEnabled(true);
         System.out.println("Saving user: " + user.getUsername());
-        UserRole defaultRole = new UserRole(user, "ROLE_USER");
-        user.getUserRoles().add(defaultRole);
 
         return userRepository.save(user);
     }
@@ -73,4 +71,15 @@ public class UserService implements UserDetailsService, IUserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public User findByResetToken(String resetToken) {
+        return userRepository.findByResetToken(resetToken);
+    }
+
 }

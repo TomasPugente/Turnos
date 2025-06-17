@@ -23,10 +23,10 @@ public class ClientConverter {
         return new ClientDTO(
                 client.getIdPerson(),
                 client.getName(),
+                client.getSurname(),
                 client.getDni(),
                 client.getDateOfBirth(),
-                client.getPassword(),
-                contactToDTO(client.getContact()),
+                contactToDTO(client.getContact()), null,
                 client.getCode());
     }
 
@@ -34,11 +34,11 @@ public class ClientConverter {
         Client client = new Client(
                 clientDTO.getIdPerson(),
                 clientDTO.getName(),
+                clientDTO.getSurname(),
                 clientDTO.getDni(),
                 clientDTO.getDateOfBirth(),
-                clientDTO.getPassword(),
                 contactToEntity(clientDTO.getContact()),
-                clientDTO.getCode());
+                clientDTO.getCode(), null);
 
         if (clientDTO.getIdPerson() != null) {
             client.setIdPerson(clientDTO.getIdPerson());
@@ -51,8 +51,8 @@ public class ClientConverter {
         existing.setIdPerson(dto.getIdPerson());
         existing.setDni(dto.getDni());
         existing.setName(dto.getName());
+        existing.setSurname(dto.getSurname());
         existing.setDateOfBirth(dto.getDateOfBirth());
-        existing.setPassword(dto.getPassword());
         existing.getContact().setStreet(dto.getContact().getStreet());
         existing.getContact().setNumber(dto.getContact().getNumber());
         existing.getContact().setEmail(dto.getContact().getEmail());

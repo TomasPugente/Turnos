@@ -16,9 +16,9 @@ public class ClientDTO extends PersonDTO {
 
 	private Set<TurnDTO> appointmentHistory;
 
-	public ClientDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password,
-			ContactDTO contact, String code) {
-		super(idPerson, name, dni, dateOfBirth, password, contact);
+	public ClientDTO(Integer idPerson, String name, String surname, String dni, LocalDate dateOfBirth,
+			ContactDTO contact, UserDTO user, String code) {
+		super(idPerson, name, surname, dni, dateOfBirth, user, contact);
 		this.code = code;
 	}
 

@@ -28,9 +28,10 @@ public class Client extends Person {
 	@OneToMany(mappedBy = "client")
 	private Set<Turn> appointmentHistory;
 
-	public Client(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password, Contact contact,
-			String code) {
-		super(idPerson, name, dni, dateOfBirth, password, contact);
+	public Client(Integer idPerson, String name, String surname, String dni, LocalDate dateOfBirth,
+			Contact contact,
+			String code, User user) {
+		super(idPerson, name, dni, dateOfBirth, contact, user);
 		this.code = code;
 	}
 

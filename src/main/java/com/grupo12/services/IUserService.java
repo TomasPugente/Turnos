@@ -8,4 +8,8 @@ public interface IUserService {
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
+
+    User findByEmail(String email);
+
+    User findByResetToken(String resetToken);
 }
