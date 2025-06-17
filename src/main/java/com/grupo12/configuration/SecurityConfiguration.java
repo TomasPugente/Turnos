@@ -36,7 +36,7 @@ public class SecurityConfiguration {
                                                                 "/vendor/bootstrap/**",
                                                                 "/login", "/register", "/register/**",
                                                                 "/forgotpassword", "/forgotpassword/**", "/index",
-                                                                "registeruser")
+                                                                "/resetpassword", "/resetpassword/**")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form

@@ -21,4 +21,6 @@ public interface IUserRepository extends JpaRepository<User, Serializable> {
 
     User findByEmail(String email);
 
+    User findByResetToken(String resetToken);
+
 }

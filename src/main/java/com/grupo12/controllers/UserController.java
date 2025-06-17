@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.grupo12.entities.Client;
 import com.grupo12.entities.Contact;
 import com.grupo12.entities.User;
+import com.grupo12.entities.UserRole;
 import com.grupo12.helpers.ViewRouteHelper;
 import com.grupo12.models.ClientDTO;
 import com.grupo12.services.implementation.ClientService;
@@ -121,6 +122,8 @@ public class UserController {
             user.setPassword(clientDTO.getUser().getPassword());
             user.setEnabled(true);
 
+            UserRole defaultRole = new UserRole(user, "ROLE_USER");
+            user.getUserRoles().add(defaultRole);
             client.setUser(user);
             clientService.save(client);
 
@@ -147,7 +150,7 @@ public class UserController {
 
             User user = userService.findByEmail(email);
             if (user == null) {
-                model.addAttribute("error", "No existe una cuenta con ese correo electrónico.");
+                model.addAttribute("error", "No user found with that email address.");
                 return ViewRouteHelper.FORGOT_PASSWORD;
             }
 
@@ -156,15 +159,15 @@ public class UserController {
             userService.save(user);
 
             String resetLink = "http://localhost:8080/resetpassword?token=" + token;
-
+            System.out.println("Reset link: " + resetLink);
             String subject = "Reset your password";
             String message = "Hi " + user.getUsername() + ",\n\n"
                     + "To reset your password, click the link below:\n"
                     + resetLink + " \n\n"
                     + "If you did not request this, you can ignore this email.";
-
+            System.out.println("Sending email to: " + user.getEmail());
             emailService.sendSimpleMail(user.getEmail(), subject, message);
-
+            System.out.println("Email sent successfully to " + user.getEmail());
             model.addAttribute("success", "A email has been sent to " + user.getEmail()
                     + " with instructions to reset your password.");
         } catch (Exception e) {
@@ -173,4 +176,43 @@ public class UserController {
         return ViewRouteHelper.FORGOT_PASSWORD;
     }
 
+    @GetMapping("/resetpassword")
+    public String resetpassword(@RequestParam("token") String token, Model model) {
+        User user = userService.findByResetToken(token);
+        if (user == null) {
+            model.addAttribute("error", "Token inválido o expirado.");
+        } else {
+
+            model.addAttribute("token", token);
+        }
+
+        return ViewRouteHelper.USER_RESET_PASSWORD;
+    }
+
+    @PostMapping("/resetpassword")
+    public String processReset(
+            @RequestParam("token") String token,
+            @RequestParam("password") String password,
+            @RequestParam("confirmPassword") String confirmPassword,
+            Model model) {
+
+        if (!password.equals(confirmPassword)) {
+            model.addAttribute("error", "Las contraseñas no coinciden.");
+            model.addAttribute("token", token);
+            return ViewRouteHelper.USER_RESET_PASSWORD;
+        }
+
+        User user = userService.findByResetToken(token);
+        if (user == null) {
+            model.addAttribute("error", "Token inválido o expirado.");
+            return ViewRouteHelper.USER_RESET_PASSWORD;
+        }
+
+        user.setPassword(password);
+        user.setResetToken(null);
+        userService.save(user);
+
+        model.addAttribute("success", "Contraseña restablecida correctamente. Iniciá sesión.");
+        return "redirect:/login?resetSuccess";
+    }
 }

@@ -58,8 +58,6 @@ public class UserService implements UserDetailsService, IUserService {
         user.setPassword(pe.encode(user.getPassword()));
         user.setEnabled(true);
         System.out.println("Saving user: " + user.getUsername());
-        UserRole defaultRole = new UserRole(user, "ROLE_USER");
-        user.getUserRoles().add(defaultRole);
 
         return userRepository.save(user);
     }
@@ -78,4 +76,10 @@ public class UserService implements UserDetailsService, IUserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    @Override
+    public User findByResetToken(String resetToken) {
+        return userRepository.findByResetToken(resetToken);
+    }
+
 }

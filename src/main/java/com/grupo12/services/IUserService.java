@@ -10,4 +10,6 @@ public interface IUserService {
     boolean existsByEmail(String email);
 
     User findByEmail(String email);
+
+    User findByResetToken(String resetToken);
 }
