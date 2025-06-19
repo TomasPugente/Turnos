@@ -1,6 +1,7 @@
 package com.grupo12.repositories;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,16 +12,17 @@ import com.grupo12.entities.User;
 
 @Repository("userRepository")
 public interface IUserRepository extends JpaRepository<User, Serializable> {
+	
+	@Query("SELECT u FROM User u JOIN FETCH u.userRoles WHERE u.username = :username")
+	public abstract User FindByUsernameAndFetchRolesEagerly(@Param("username") String username);
 
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.userRoles WHERE u.username = :username")
-    public abstract User FindByUsernameAndFetchRolesEagerly(@Param("username") String username);
+	Optional<User> findByUsername(String username);
 
-    boolean existsByUsername(String username);
+	boolean existsByUsername(String username);
 
-    boolean existsByEmail(String email);
+        boolean existsByEmail(String email);
 
-    User findByEmail(String email);
+        User findByEmail(String email);
 
-    User findByResetToken(String resetToken);
-
+        User findByResetToken(String resetToken);
 }
