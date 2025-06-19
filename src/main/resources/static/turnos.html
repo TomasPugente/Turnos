@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Turnos disponibles</title>
+</head>
+<body>
+    <h1>Generar y seleccionar turnos</h1>
+
+    <h2>🔹 Crear un solo turno</h2>
+    <label>Empleado ID: <input type="number" id="single-employeeId" value="2"></label><br>
+    <label>Servicio ID: <input type="number" id="single-serviceId" value="1"></label><br>
+    <label>Fecha y hora: <input type="datetime-local" id="single-startDate" value="2025-06-20T10:00"></label><br>
+    <label>Duración (min): <input type="number" id="single-duration" value="30"></label><br>
+    <button onclick="crearTurnoUnico()">Crear Turno</button>
+
+    <table border="1">
+        <thead>
+            <tr><th>Hora inicio</th><th>Hora fin</th><th>Acción</th></tr>
+        </thead>
+        <tbody id="tabla-single"></tbody>
+    </table>
+
+    <hr>
+
+    <h2>🔹 Crear múltiples turnos</h2>
+    <label>Empleado ID: <input type="number" id="multi-employeeId" value="2"></label><br>
+    <label>Servicio ID: <input type="number" id="multi-serviceId" value="1"></label><br>
+    <label>Inicio: <input type="datetime-local" id="multi-startDate" value="2025-06-20T08:00"></label><br>
+    <label>Fin: <input type="datetime-local" id="multi-endDate" value="2025-06-20T12:00"></label><br>
+    <label>Duración (min): <input type="number" id="multi-duration" value="30"></label><br>
+    <button onclick="crearTurnosMultiples()">Crear Turnos</button>
+
+    <table border="1">
+        <thead>
+            <tr><th>Hora inicio</th><th>Hora fin</th><th>Acción</th></tr>
+        </thead>
+        <tbody id="tabla-multiple"></tbody>
+    </table>
+
+    <script>
+        function crearTurnoUnico() {
+            const empId = document.getElementById("single-employeeId").value;
+            const srvId = document.getElementById("single-serviceId").value;
+            const start = document.getElementById("single-startDate").value;
+            const dur = parseInt(document.getElementById("single-duration").value);
+
+            const startDate = new Date(start);
+            const endDate = new Date(startDate.getTime() + dur * 60000);
+
+            const turnoDTO = {
+                employee: { idPerson: empId },
+                idServicio: srvId,
+                startTime: startDate.toISOString(),
+                endTime: endDate.toISOString()
+            };
+
+            fetch("/turns/enable/single", {
+                method: "POST", // El navegador no permite GET con body, así que cambiamos a POST aquí
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(turnoDTO)
+            })
+            .then(res => res.json())
+            .then(turno => {
+                const tabla = document.getElementById("tabla-single");
+                tabla.innerHTML = "";
+                const fila = document.createElement("tr");
+                fila.innerHTML = `
+                    <td>${turno.startTime}</td>
+                    <td>${turno.endTime}</td>
+                    <td><button onclick="seleccionarTurno(${turno.idTurn})">Seleccionar</button></td>
+                `;
+                tabla.appendChild(fila);
+            });
+        }
+
+        function crearTurnosMultiples() {
+            const empId = document.getElementById("multi-employeeId").value;
+            const srvId = document.getElementById("multi-serviceId").value;
+            const start = document.getElementById("multi-startDate").value;
+            const end = document.getElementById("multi-endDate").value;
+            const dur = document.getElementById("multi-duration").value;
+
+            const url = `/turns/enable/multiple?employeeId=${empId}&serviceId=${srvId}&startDate=${start}&endDate=${end}&durationMinutes=${dur}`;
+            fetch(url)
+                .then(res => res.json())
+                .then(turnos => {
+                    const tabla = document.getElementById("tabla-multiple");
+                    tabla.innerHTML = "";
+                    turnos.forEach(turno => {
+                        const fila = document.createElement("tr");
+                        fila.innerHTML = `
+                            <td>${turno.startTime}</td>
+                            <td>${turno.endTime}</td>
+                            <td><button onclick="seleccionarTurno(${turno.idTurn})">Seleccionar</button></td>
+                        `;
+                        tabla.appendChild(fila);
+                    });
+                });
+        }
+
+        function seleccionarTurno(idTurn) {
+            alert("Turno seleccionado: " + idTurn);
+            // Aquí podrías enviar un PUT al backend para reservarlo si querés
+        }
+    </script>
+</body>
+</html>

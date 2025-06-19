@@ -4,13 +4,20 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
 import com.grupo12.entities.Employee;
 
-@Repository("employeeRepository")
-public interface IEmployeeRepository extends JpaRepository<Employee, Serializable> {
-    boolean existsByDni(String dni);
+@Repository
+public interface IEmployeeRepository extends JpaRepository<Employee, Integer> {
+	boolean existsByDni(String dni);
+	
+	@Query("SELECT e FROM Employee e WHERE e.contact.email = :email")
+	Optional<Employee> findByEmail(String email);
 
-    Optional<Employee> findByDni(String dni);;
+	Optional<Employee> findById(int idPerson);// se hereda de jparepository
+
+	void deleteById(int idPerson);
+
+       Optional<Employee> findByDni(String dni);;
 }

@@ -26,8 +26,8 @@ public class EmployeeDTO extends PersonDTO {
 	public EmployeeDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth,
 			ContactDTO contact, LocalDate entryDate, String cuit) {
 		super(idPerson, name, dni, dateOfBirth, contact);
-		this.entryDate = entryDate;
-		this.cuit = cuit;
 	}
+	
+
 
 }

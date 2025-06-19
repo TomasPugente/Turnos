@@ -19,5 +19,11 @@ public interface IUserService {
     User insertOrUpdate(User user);
 
 	Optional<User> findByEmail(String email);
+
+
+    //User findByEmail(String email);
+
+    User findByResetToken(String resetToken);
+
 }
 

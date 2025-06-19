@@ -1,4 +1,4 @@
-package com.grupo12.configuration;
+/*package com.grupo12.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,7 +36,7 @@ public class SecurityConfiguration {
                                                                 "/vendor/bootstrap/**",
                                                                 "/login", "/register", "/register/**",
                                                                 "/forgotpassword", "/forgotpassword/**", "/index",
-                                                                "registeruser")
+                                                                "/resetpassword", "/resetpassword/**")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
@@ -54,4 +54,4 @@ public class SecurityConfiguration {
                                 .build();
         }
 
-}
+}*/

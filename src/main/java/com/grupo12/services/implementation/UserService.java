@@ -1,4 +1,4 @@
-package com.grupo12.services.implementation;
+/*package com.grupo12.services.implementation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,14 +23,13 @@ import com.grupo12.repositories.IUserRepository;
 import com.grupo12.services.IUserService;
 
 @Service("userService")
-
 public class UserService implements UserDetailsService, IUserService {
 
     @Autowired
     @Qualifier("userRepository")
     private IUserRepository userRepository;
 
-    private BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -62,8 +61,6 @@ public class UserService implements UserDetailsService, IUserService {
         user.setEnabled(true);
         user.setEmail(user.getEmail());
         System.out.println("Saving user: " + user.getUsername());
-        UserRole defaultRole = new UserRole(user, "ROLE_USER");
-        user.getUserRoles().add(defaultRole);
 
         return userRepository.save(user);
     }
@@ -97,4 +94,24 @@ public class UserService implements UserDetailsService, IUserService {
 	public Optional<User> findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-}
+
+	@Override
+	public Optional<Client> getByUser(User user) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<User> findByUsername(String username) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public User findByResetToken(String resetToken) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}*/
+

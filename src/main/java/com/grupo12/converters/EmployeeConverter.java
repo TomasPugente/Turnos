@@ -1,4 +1,4 @@
-package com.grupo12.converters;
+/*package com.grupo12.converters;
 
 import com.grupo12.entities.Contact;
 import com.grupo12.entities.Employee;
@@ -13,9 +13,14 @@ public class EmployeeConverter {
         return new EmployeeDTO(
                 employee.getIdPerson(),
                 employee.getName(),
+                employee.getSurname(),
                 employee.getDni(),
                 employee.getDateOfBirth(),
+
                 contactToDTO(employee.getContact()),
+
+                contactToDTO(employee.getContact()), null,
+
                 employee.getEntryDate(),
                 employee.getCuit());
     }
@@ -24,11 +29,12 @@ public class EmployeeConverter {
         return new Employee(
                 employeeDTO.getIdPerson(),
                 employeeDTO.getName(),
+                employeeDTO.getSurname(),
                 employeeDTO.getDni(),
                 employeeDTO.getDateOfBirth(),
                 contactToEntity(employeeDTO.getContact()),
                 employeeDTO.getEntryDate(),
-                employeeDTO.getCuit());
+                employeeDTO.getCuit(), null);
     }
 
     private ContactDTO contactToDTO(Contact contact) {
@@ -64,4 +70,4 @@ public class EmployeeConverter {
             return null;
         return new Locality(localityDTO.getIdLocality(), localityDTO.getName());
     }
-}
+}*/

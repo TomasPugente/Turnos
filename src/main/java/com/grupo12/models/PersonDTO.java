@@ -11,7 +11,9 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 @Data
 @NoArgsConstructor
 @Valid
@@ -25,6 +27,9 @@ public abstract class PersonDTO {
     @NotBlank(message = "Debe ingresar su nombre")
     protected String name;
 
+    @NotBlank(message = "Debe ingresar su apellido")
+    protected String surname;
+
     // para asegurar de que solo sean numeros
     @Pattern(regexp = "\\d{8}", message = "El DNI debe tener 8 dígitos numéricos")
     protected String dni;
@@ -36,6 +41,9 @@ public abstract class PersonDTO {
 
     @Valid
     protected ContactDTO contact;
+    
+    @Valid
+    protected UserDTO user;
 
     public PersonDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth, ContactDTO contact) {
         super();
@@ -45,5 +53,8 @@ public abstract class PersonDTO {
         this.dateOfBirth = dateOfBirth;
         this.contact = contact;
     }
+
+
+
 
 }

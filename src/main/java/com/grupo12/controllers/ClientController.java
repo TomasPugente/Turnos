@@ -1,4 +1,4 @@
-package com.grupo12.controllers;
+/*package com.grupo12.controllers;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +80,7 @@ public class ClientController {
         if (id != null) {
             Optional<Client> client = clientService.getByIdWithUser(id);
             if (client.isPresent()) {
-                model.addAttribute("clientDTO", clientConverter.entityToDTO(client.get())); // editar
+                //model.addAttribute("clientDTO", clientConverter.entityToDTO(client.get())); // editar
             } else {
                 return "redirect:/clients";
             }
@@ -106,7 +106,7 @@ public class ClientController {
 
             // ✅ Creamos el ClientDTO con ese UserDTO
             ClientDTO clientDTO = new ClientDTO();
-            clientDTO.setUser(userDTO);
+            //clientDTO.setUser(userDTO);
             
             // ✅ Agregar contacto con localidad vacía
             ContactDTO contact = new ContactDTO();
@@ -148,4 +148,4 @@ public class ClientController {
     }
      
 
-}
+}*/

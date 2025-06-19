@@ -9,13 +9,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Data
+
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class ClientDTO extends PersonDTO {
 
 	private String code;
-
 	private Set<TurnDTO> appointmentHistory = new HashSet<>();
 	
 	@Valid
@@ -26,7 +25,9 @@ public class ClientDTO extends PersonDTO {
 		super(idPerson, name, dni, dateOfBirth, contact);
 		this.user = user;
 		this.code = code;
-	}
+	}		
+
+
 	
     public String getUsername() {
         return user != null ? user.getUsername() : null;

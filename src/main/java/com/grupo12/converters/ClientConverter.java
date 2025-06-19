@@ -1,4 +1,4 @@
-package com.grupo12.converters;
+/*package com.grupo12.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,10 +27,12 @@ public class ClientConverter {
         return new ClientDTO(
                 client.getIdPerson(),
                 client.getName(),
+                client.getSurname(),
                 client.getDni(),
                 client.getDateOfBirth(),
                 contactToDTO(client.getContact()),
                 userToDTO(client.getUser()),
+                contactToDTO(client.getContact()), null,
                 client.getCode());
     }
 
@@ -38,11 +40,13 @@ public class ClientConverter {
         Client client = new Client(
                 clientDTO.getIdPerson(),
                 clientDTO.getName(),
+                clientDTO.getSurname(),
                 clientDTO.getDni(),
                 clientDTO.getDateOfBirth(),
                 contactToEntity(clientDTO.getContact()),
                 userToEntity(clientDTO.getUser()),
                 clientDTO.getCode());
+                clientDTO.getCode(), null);
 
         if (clientDTO.getIdPerson() != null) {
             client.setIdPerson(clientDTO.getIdPerson());
@@ -55,11 +59,12 @@ public class ClientConverter {
         existing.setIdPerson(dto.getIdPerson());
         existing.setDni(dto.getDni());
         existing.setName(dto.getName());
+        existing.setSurname(dto.getSurname());
         existing.setDateOfBirth(dto.getDateOfBirth());
         existing.getContact().setStreet(dto.getContact().getStreet());
         existing.getContact().setNumber(dto.getContact().getNumber());
         existing.getContact().setPhone(dto.getContact().getPhone());
-        existing.setCode(dto.getCode());
+       // existing.setCode(dto.getCode());
 
         
         // ✅ Control de null para evitar NPE
@@ -136,5 +141,5 @@ public class ClientConverter {
     }
 
 
-}
+}*/
 

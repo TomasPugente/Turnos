@@ -1,4 +1,4 @@
-package com.grupo12.services.implementation;
+/*package com.grupo12.services.implementation;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,4 +50,10 @@ public class EmployeeService implements IEmployeeService {
 		}
 
 	}
-}
+
+	@Override
+	public List<Employee> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}*/

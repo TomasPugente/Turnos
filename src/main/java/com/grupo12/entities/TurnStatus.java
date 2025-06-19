@@ -7,3 +7,5 @@ public enum TurnStatus{
 	AUSENTE, //El cliente no asistio
 	CANCELADO //El turno fue cancelado (por cliente o empleado)
 }
+
+

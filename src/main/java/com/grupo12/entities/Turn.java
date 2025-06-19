@@ -68,9 +68,13 @@ public class Turn {
 	@ManyToOne
 	@JoinColumn(name = "date_id")
 	private Date date;
+	
+	@ManyToOne
+	@JoinColumn(name = "service_id")
+	private Service service;
 
 	public Turn(int idTurn, TurnStatus status, boolean active, String observation, Client client, Employee employee,
-			Date date) {
+			Date date, Service service) {
 		super();
 		this.idTurn = idTurn;
 		this.status = status;
@@ -80,5 +84,7 @@ public class Turn {
 		this.employee = employee;
 		this.date = date;
 	}
+
+
 
 }

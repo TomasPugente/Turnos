@@ -1,16 +1,21 @@
-package com.grupo12.services.implementation;
+/*package com.grupo12.services.implementation;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.grupo12.converters.ClientConverter;
+//import com.grupo12.converters.ClientConverter;
 import com.grupo12.entities.Client;
+
 import com.grupo12.entities.Contact;
 import com.grupo12.entities.User;
+
+import com.grupo12.entities.UserRole;
+
 import com.grupo12.models.ClientDTO;
 import com.grupo12.repositories.IClientRepository;
 import com.grupo12.repositories.IUserRepository;
@@ -39,7 +44,7 @@ public class ClientService implements IClientService {
 	@Qualifier("clientConverter")
 	private ClientConverter clientConverter;
 
-
+	private final BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
 	@Override
 	public Optional<Client> getById(int idPerson) { // Excepcion para hacer despues
 		return clientRepository.findById(idPerson); // Optional<Client> client = findById(idPerson);
@@ -68,9 +73,9 @@ public class ClientService implements IClientService {
 	        Optional<User> existingUser = userService.findByEmail(clientDTO.getUser().getEmail());
 
 	        if (existingUser.isEmpty()) {
-	            User user = clientConverter.userToEntity(clientDTO.getUser());
-	            User savedUser = userService.insertOrUpdate(user);
-	            client.setUser(savedUser);
+	            //User user = clientConverter.userToEntity(clientDTO.getUser());
+	            //User savedUser = userService.insertOrUpdate(user);
+	            //client.setUser(savedUser);
 	        } else {
 	            client.setUser(existingUser.get());
 	        }
@@ -143,4 +148,14 @@ public class ClientService implements IClientService {
 		return clientRepository.existsByUser(user);
 	}
 
-}
+	public Client save(Client client) {
+
+		client.getUser().setPassword(pe.encode(client.getUser().getPassword()));
+		client.getUser().setEnabled(true);
+		System.out.println("Saving user: " + client.getUser().getUsername());
+		UserRole defaultRole = new UserRole(client.getUser(), "ROLE_USER");
+		client.getUser().getUserRoles().add(defaultRole);
+		return clientRepository.save(client);
+	}
+	
+}*/

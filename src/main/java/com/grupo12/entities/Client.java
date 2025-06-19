@@ -38,10 +38,12 @@ public class Client extends Person {
 	@JoinColumn(name = "id_user")
     private User user;
 
-	public Client(Integer idPerson, String name, String dni, LocalDate dateOfBirth, Contact contact, User user, String code) {
-		super(idPerson, name, dni, dateOfBirth, contact);
-		this.user = user;
+	public Client(Integer idPerson, String name, String surname, String dni, LocalDate dateOfBirth,
+			Contact contact,
+			String code, User user) {
+		super(idPerson, name, dni, dateOfBirth, contact, user);
 		this.code = code;
+		this.user = user;
 		
 	}
     

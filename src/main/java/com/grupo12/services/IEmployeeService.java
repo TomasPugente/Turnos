@@ -15,4 +15,6 @@ public interface IEmployeeService {
 	public EmployeeDTO insertOrUpdate(EmployeeDTO employeeDTO);
 
 	public boolean remove(int idPerson);
+
+	public List<Employee> findAll();
 }
