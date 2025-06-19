@@ -15,7 +15,7 @@
 	<link href="/css/styles.css" rel="stylesheet" />
 </head>
 <body>
-	<h1 th:text="${clientDTO?.idPerson == null ? 'Agregar Cliente' : 'Editar Cliente'}"></h1>
+	<h1 th:text="${clientDTO?.idPerson == null ? 'Cargar datos adicionales' : 'Editar Cliente'}"></h1>
 <form class="row g-3 m-1 p-1" th:action="@{/clients/save}" th:object="${clientDTO}" method="post">
 	<!-- Poner el id sirve para poder editar el cliente -->
 	<input type="hidden" th:field="*{idPerson}" />
@@ -37,6 +37,15 @@
 	</div>
 	
 	<div class="col-md-6">
+	  <label class="form-label">Nombre de Usuario:
+	    <input class="form-control" type="text" th:field="*{user.username}" />
+	    <div th:if="${#fields.hasErrors('user.username')}" class="alert alert-danger">
+	      <p th:errors="*{user.username}"></p>
+	    </div>
+	  </label><br/>
+	</div>
+	
+	<div class="col-md-6">
         <label class="form-label" >Fecha de Nacimiento: <input class="form-control" type="date" th:field="*{dateOfBirth}"/>
 			<div th:if="${#fields.hasErrors('dateOfBirth')}" class="alert alert-danger">
 				<p th:errors="*{dateOfBirth}"></p>
@@ -45,9 +54,9 @@
 	</div>
 	
 	<div class="col-md-6">
-      <label class="form-label" >Contraseña: <input class="form-control" type="password" th:field="*{password}"/>
-		        <div th:if="${#fields.hasErrors('password')}" class="alert alert-danger">
-					<p th:errors="*{password}"></p>
+      <label class="form-label" >Contraseña: <input class="form-control" type="password" th:field="*{user.password}"/>
+		        <div th:if="${#fields.hasErrors('user.password')}" class="alert alert-danger">
+					<p th:errors="*{user.password}"></p>
 				</div>
 		</label><br/>
     </div>
@@ -72,12 +81,13 @@
 		</div>
 		
 		<div class="col-md-6">
-          <label class="form-label">Email: <input class="form-control" type="email" th:field="*{contact.email}"/>
-			         <div th:if="${#fields.hasErrors('contact.email')}" class="alert alert-danger">
-						   <p th:errors="*{contact.email}"></p>
+		  <label class="form-label" >email: <input class="form-control" type="email" th:field="*{user.email}"/>
+			        <div th:if="${#fields.hasErrors('user.email')}" class="alert alert-danger">
+						<p th:errors="*{user.email}"></p>
 					</div>
 			</label><br/>
 		</div>
+
 		
 		<div class="col-md-6">
           <label class="form-label">Teléfono: <input class="form-control" type="text" th:field="*{contact.phone}"/>

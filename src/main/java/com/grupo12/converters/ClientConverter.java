@@ -1,6 +1,5 @@
 package com.grupo12.converters;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -8,102 +7,134 @@ import org.springframework.stereotype.Component;
 import com.grupo12.entities.Client;
 import com.grupo12.entities.Contact;
 import com.grupo12.entities.Locality;
+import com.grupo12.entities.User;
 import com.grupo12.models.ClientDTO;
 import com.grupo12.models.ContactDTO;
 import com.grupo12.models.LocalityDTO;
+import com.grupo12.models.UserDTO;
+import com.grupo12.models.UserDTOForm;
 import com.grupo12.services.ILocalityService;
-
 
 @Component("clientConverter")
 public class ClientConverter {
-	
+
     @Autowired
     @Qualifier("localityService")
     private ILocalityService localityService;
 
     public ClientDTO entityToDTO(Client client) {
+        
         return new ClientDTO(
-            client.getIdPerson(),
-            client.getName(),
-            client.getDni(),
-            client.getDateOfBirth(),
-            client.getPassword(),
-            contactToDTO(client.getContact()),
-            client.getCode()
-        );
+                client.getIdPerson(),
+                client.getName(),
+                client.getDni(),
+                client.getDateOfBirth(),
+                contactToDTO(client.getContact()),
+                userToDTO(client.getUser()),
+                client.getCode());
     }
 
     public Client DTOToEntity(ClientDTO clientDTO) {
-       Client client = new Client(
-            clientDTO.getIdPerson(),
-            clientDTO.getName(),
-            clientDTO.getDni(),
-            clientDTO.getDateOfBirth(),
-            clientDTO.getPassword(),
-            contactToEntity(clientDTO.getContact()),
-            clientDTO.getCode()
-        );
-        
+        Client client = new Client(
+                clientDTO.getIdPerson(),
+                clientDTO.getName(),
+                clientDTO.getDni(),
+                clientDTO.getDateOfBirth(),
+                contactToEntity(clientDTO.getContact()),
+                userToEntity(clientDTO.getUser()),
+                clientDTO.getCode());
+
         if (clientDTO.getIdPerson() != null) {
-    	    client.setIdPerson(clientDTO.getIdPerson());
-    	}
-        
+            client.setIdPerson(clientDTO.getIdPerson());
+        }
+
         return client;
     }
-    
+
     public void updateEntityFromDTO(Client existing, ClientDTO dto) {
-    	existing.setIdPerson(dto.getIdPerson());
+        existing.setIdPerson(dto.getIdPerson());
         existing.setDni(dto.getDni());
         existing.setName(dto.getName());
         existing.setDateOfBirth(dto.getDateOfBirth());
-        existing.setPassword(dto.getPassword());
         existing.getContact().setStreet(dto.getContact().getStreet());
         existing.getContact().setNumber(dto.getContact().getNumber());
-        existing.getContact().setEmail(dto.getContact().getEmail());
         existing.getContact().setPhone(dto.getContact().getPhone());
         existing.setCode(dto.getCode());
+
         
+        // ✅ Control de null para evitar NPE
+        if (existing.getUser() != null && dto.getUser() != null) {
+        	// Actualiza datos del User
+            existing.getUser().setUsername(dto.getUser().getUsername());
+            existing.getUser().setPassword(dto.getUser().getPassword());
+            existing.getUser().setEmail(dto.getUser().getEmail());
+        }
+
         if (dto.getContact().getLocality().getIdLocality() != null) {
             Locality locality = localityService.getById(dto.getContact().getLocality().getIdLocality()).orElse(null);
             existing.getContact().setLocality(locality);
         } else {
-            existing.getContact().setLocality(null); // o dejarla como está
+            existing.getContact().setLocality(null);
         }
     }
 
-
-    private ContactDTO contactToDTO(Contact contact) {
-        if (contact == null) return null;
+    public ContactDTO contactToDTO(Contact contact) {
+        if (contact == null)
+            return null;
         return new ContactDTO(
-            contact.getIdContact(),
-            contact.getStreet(),
-            contact.getNumber(),
-            contact.getEmail(),
-            contact.getPhone(),
-            localityToDTO(contact.getLocality())
-        );
+                contact.getIdContact(),
+                contact.getStreet(),
+                contact.getNumber(),
+                contact.getPhone(),
+                localityToDTO(contact.getLocality()));
     }
 
-    private Contact contactToEntity(ContactDTO contactDTO) {
-        if (contactDTO == null) return null;
+    public Contact contactToEntity(ContactDTO contactDTO) {
+        if (contactDTO == null)
+            return null;
         return new Contact(
-            contactDTO.getIdContact(),
-            contactDTO.getStreet(),
-            contactDTO.getNumber(),
-            contactDTO.getEmail(),
-            contactDTO.getPhone(),
-            localityToEntity(contactDTO.getLocality())
-        );
+                contactDTO.getIdContact(),
+                contactDTO.getStreet(),
+                contactDTO.getNumber(),
+                contactDTO.getPhone(),
+                localityToEntity(contactDTO.getLocality()));
+    }
+    
+    public UserDTOForm userToDTO(User user) {
+        if (user == null) return null;
+
+        UserDTOForm dto = new UserDTOForm();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setPassword(user.getPassword());
+        return dto;
+    }
+    
+    public User userToEntity(UserDTOForm dto) {
+        if (dto == null) return null;
+
+        User user = new User();
+        user.setId(dto.getId());
+        user.setUsername(dto.getUsername());
+        user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword());
+        user.setEnabled(true); // Por defecto en true, ajustalo si tenés lógica de activación
+        return user;
     }
 
     private LocalityDTO localityToDTO(Locality locality) {
-        if (locality == null) return null;
+        if (locality == null)
+            return null;
         return new LocalityDTO(locality.getIdLocality(), locality.getName());
     }
 
     private Locality localityToEntity(LocalityDTO localityDTO) {
-        if (localityDTO == null) return null;
+        if (localityDTO == null)
+            return null;
         return new Locality(localityDTO.getIdLocality(), localityDTO.getName());
     }
+
+
 }
 

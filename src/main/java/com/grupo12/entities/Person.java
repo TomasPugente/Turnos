@@ -3,6 +3,7 @@ package com.grupo12.entities;
 import java.time.LocalDate;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Person {
 
     @Id
@@ -29,22 +31,11 @@ public class Person {
     @Column(name="dateOfBirth")
     private LocalDate dateOfBirth;
     
-    @Column(name="password")
-    private String password;
-    
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "contact_id")
     private Contact contact;
+    
 
-	public Person(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password, Contact contact) {
-		super();
-		this.idPerson = idPerson;
-		this.name = name;
-		this.dni = dni;
-		this.dateOfBirth = dateOfBirth;
-		this.password = password;
-		this.contact = contact;
-	}
     
     
 

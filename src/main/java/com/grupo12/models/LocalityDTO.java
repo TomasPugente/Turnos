@@ -1,19 +1,20 @@
 package com.grupo12.models;
 
 import jakarta.validation.constraints.Min;
-import lombok.Getter;
+import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class LocalityDTO {
 
+	@NotNull(message = "Debe seleccionar una localidad")
 	@Min(value = 1, message = "Debe seleccionar una localidad válida")
-    private Integer idLocality;
-
-    private String name;
+	private Integer idLocality;
+ 
+	
+	private String name;
 
 	public LocalityDTO(Integer idLocality, String name) {
 		this.idLocality = idLocality;
