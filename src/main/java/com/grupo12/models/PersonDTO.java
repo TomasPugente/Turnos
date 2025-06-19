@@ -34,20 +34,15 @@ public abstract class PersonDTO {
     @Past(message = "La fecha de nacimiento debe ser en el pasado")
     protected LocalDate dateOfBirth;
 
-    @NotBlank(message = "Debe ingresar su contraseña")
-    protected String password;
-
     @Valid
     protected ContactDTO contact;
 
-    public PersonDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password,
-            ContactDTO contact) {
+    public PersonDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth, ContactDTO contact) {
         super();
         this.idPerson = idPerson;
         this.name = name;
         this.dni = dni;
         this.dateOfBirth = dateOfBirth;
-        this.password = password;
         this.contact = contact;
     }
 

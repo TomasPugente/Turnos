@@ -15,21 +15,16 @@
 	<link href="/css/styles.css" rel="stylesheet" />
 </head>
 <body>
-	<a th:href="@{/}" class="btn btn-primary">Volver al inicio</a><br></br>
-    <h2>Consultar mis turnos</h2>
+	<a th:href="@{/}" class="btn btn-primary m-2 p-1">Volver al inicio</a><br></br>
+    <h2 class="m-1 p-1">Consultar mis turnos</h2>
 
 	<ul>
 	  <li th:each="t : ${turnos}" th:text="${t.idTurn} + ' - ' + ${t.status} + ' - ' + ${t.employee.name} + ' - ' + ${t.date.date}"></li>
 	</ul>
-    <form th:action="@{/client/my-turns}" method="post">
-        <label for="clientId">Ingresá tu ID de cliente:</label>
-        <input type="number" name="clientId" th:value="${clientId}" required />
-        <button type="submit">Ver Turnos</button>
-    </form>
 
     <p th:if="${error}" th:text="${error}"></p>
 
-	<div th:if="${turnosAgrupados}">
+	<div class="m-1 p-1" th:if="${turnosAgrupados}">
 	    <h3>Lista de turnos</h3>
 
 	    <div th:each="entry : ${turnosAgrupados}">
@@ -39,6 +34,7 @@
 	                <tr>
 	                    <th>Empleado</th>
 	                    <th>Fecha</th>
+						<th>Hora</th>
 	                    <th>Estado</th>
 	                    <th>Observación</th>
 	                </tr>
@@ -54,7 +50,7 @@
 						    <form th:action="@{/client/cancel-turn}" method="post">
 						        <input type="hidden" name="turnId" th:value="${turno.idTurn}" />
 						        <input type="hidden" name="clientId" th:value="${clientId}" />
-						        <button type="submit" 
+						        <button class="m-1 p-1 btn btn-primary" type="submit" 
 						                th:text="${turno.status.name() == 'CANCELADO' ? 'Reactivar' : 'Cancelar'}">
 						        </button>
 						    </form>

@@ -3,6 +3,7 @@ package com.grupo12.services.implementation;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.grupo12.entities.Client;
 import com.grupo12.entities.User;
 import com.grupo12.entities.UserRole;
 import com.grupo12.repositories.IUserRepository;
@@ -41,7 +43,8 @@ public class UserService implements UserDetailsService, IUserService {
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                user.getEnabled(), true, true, true,
+                user.getEnabled(),
+                true, true, true,
                 authorities);
     }
 
@@ -57,6 +60,7 @@ public class UserService implements UserDetailsService, IUserService {
     public User save(User user) {
         user.setPassword(pe.encode(user.getPassword()));
         user.setEnabled(true);
+        user.setEmail(user.getEmail());
         System.out.println("Saving user: " + user.getUsername());
         UserRole defaultRole = new UserRole(user, "ROLE_USER");
         user.getUserRoles().add(defaultRole);
@@ -73,4 +77,24 @@ public class UserService implements UserDetailsService, IUserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+	@Override
+	public Optional<Client> getByUser(User user) {
+		return userRepository.findByUsername(user);
+	}
+
+	@Override
+	public Optional<User> findByUsername(String username) {
+		return userRepository.findByUsername(username);
+	}
+
+	@Override
+	public User insertOrUpdate(User user) {
+		return userRepository.save(user);
+	}
+
+	@Override
+	public Optional<User> findByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
 }

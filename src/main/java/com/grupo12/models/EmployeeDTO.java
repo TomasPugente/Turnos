@@ -23,9 +23,9 @@ public class EmployeeDTO extends PersonDTO {
 
 	private Set<Turn> appointments;
 
-	public EmployeeDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password,
+	public EmployeeDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth,
 			ContactDTO contact, LocalDate entryDate, String cuit) {
-		super(idPerson, name, dni, dateOfBirth, password, contact);
+		super(idPerson, name, dni, dateOfBirth, contact);
 		this.entryDate = entryDate;
 		this.cuit = cuit;
 	}

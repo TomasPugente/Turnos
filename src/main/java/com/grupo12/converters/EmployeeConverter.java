@@ -15,7 +15,6 @@ public class EmployeeConverter {
                 employee.getName(),
                 employee.getDni(),
                 employee.getDateOfBirth(),
-                employee.getPassword(),
                 contactToDTO(employee.getContact()),
                 employee.getEntryDate(),
                 employee.getCuit());
@@ -27,7 +26,6 @@ public class EmployeeConverter {
                 employeeDTO.getName(),
                 employeeDTO.getDni(),
                 employeeDTO.getDateOfBirth(),
-                employeeDTO.getPassword(),
                 contactToEntity(employeeDTO.getContact()),
                 employeeDTO.getEntryDate(),
                 employeeDTO.getCuit());
@@ -40,7 +38,6 @@ public class EmployeeConverter {
                 contact.getIdContact(),
                 contact.getStreet(),
                 contact.getNumber(),
-                contact.getEmail(),
                 contact.getPhone(),
                 localityToDTO(contact.getLocality()));
     }
@@ -52,7 +49,6 @@ public class EmployeeConverter {
                 contactDTO.getIdContact(),
                 contactDTO.getStreet(),
                 contactDTO.getNumber(),
-                contactDTO.getEmail(),
                 contactDTO.getPhone(),
                 localityToEntity(contactDTO.getLocality()));
     }
