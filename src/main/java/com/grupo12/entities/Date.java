@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="date")
+@Table(name="fechas")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,10 +28,10 @@ public class Date {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idDate;
 
-    @Column(name="date")
+    @Column(name="fecha")
     private LocalDate date;
     
-    @Column(name="hour")
+    @Column(name="hora")
     private LocalTime hour;
 
     @OneToMany(mappedBy = "date")

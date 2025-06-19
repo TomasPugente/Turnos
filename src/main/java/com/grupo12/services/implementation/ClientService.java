@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.grupo12.converters.ClientConverter;
 import com.grupo12.entities.Client;
+import com.grupo12.entities.UserRole;
 import com.grupo12.models.ClientDTO;
 import com.grupo12.repositories.IClientRepository;
 import com.grupo12.services.IClientService;
@@ -18,7 +20,6 @@ import jakarta.transaction.Transactional;
 @Service("clientService")
 public class ClientService implements IClientService {
 
-	
 	@Autowired
 	@Qualifier("clientRepository")
 	private IClientRepository clientRepository;
@@ -26,42 +27,43 @@ public class ClientService implements IClientService {
 	@Autowired
 	@Qualifier("clientConverter")
 	private ClientConverter clientConverter;
-	
+
+	private final BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
+
 	@Override
-	public Optional<Client> getById(int idPerson) { //Excepcion para hacer despues
+	public Optional<Client> getById(int idPerson) { // Excepcion para hacer despues
 		return clientRepository.findById(idPerson); // Optional<Client> client = findById(idPerson);
-		                                            //.orElseThrow(() -> new RuntimeException("Cliente con id " + idPerson + " no encontrado"));
+													// .orElseThrow(() -> new RuntimeException("Cliente con id " +
+													// idPerson + " no encontrado"));
 	}
 
 	@Override
 	public List<Client> getAll() {
 		return clientRepository.findAll();
 	}
-	
+
 	@Override
 	@Transactional
 	public void insertOrUpdate(ClientDTO clientDTO) {
-	    Client client;
+		Client client;
 
-	    if (clientDTO.getIdPerson() != null) {
-	        // Buscar y actualizar el cliente existente
-	        client = clientRepository.findById(clientDTO.getIdPerson()).orElseThrow();
-	        clientConverter.updateEntityFromDTO(client, clientDTO);
-	    } else {
-	        // Crear un nuevo cliente desde el DTO
-	        client = clientConverter.DTOToEntity(clientDTO);
-	        client = clientRepository.save(client); // primer save para obtener ID
-	    }
+		if (clientDTO.getIdPerson() != null) {
+			// Buscar y actualizar el cliente existente
+			client = clientRepository.findByIdPerson(clientDTO.getIdPerson()).orElseThrow();
+			clientConverter.updateEntityFromDTO(client, clientDTO);
+		} else {
+			// Crear un nuevo cliente desde el DTO
+			client = clientConverter.DTOToEntity(clientDTO);
+			client = clientRepository.save(client); // primer save para obtener ID
+		}
 
-	    // Generar código si está vacío
-	    if (client.getCode() == null || client.getCode().isEmpty()) {
-	        String generatedCode = "CLT" + String.format("%05d", client.getIdPerson());
-	        client.setCode(generatedCode);
-	        clientRepository.save(client); // actualizar con el código generado
-	    }
+		// Generar código si está vacío
+		if (client.getCode() == null || client.getCode().isEmpty()) {
+			String generatedCode = "CLT" + String.format("%05d", client.getIdPerson());
+			client.setCode(generatedCode);
+			clientRepository.save(client); // actualizar con el código generado
+		}
 	}
-
-
 
 	@Override
 	public boolean remove(int idPerson) {
@@ -71,7 +73,7 @@ public class ClientService implements IClientService {
 		} catch (Exception e) {
 			return false;
 		}
-		
+
 	}
 
 	@Override
@@ -81,15 +83,23 @@ public class ClientService implements IClientService {
 
 	@Override
 	public boolean isSameClientDni(Integer idPerson, String dni) {
-	    Optional<Client> existingClient = clientRepository.findByDni(dni);
-	    
-	    if (existingClient.isEmpty()) {
-	        return false;
-	    }
+		Optional<Client> existingClient = clientRepository.findByDni(dni);
 
-	    // Compara si el cliente con ese DNI es el mismo que se está editando
-	    return existingClient.get().getIdPerson().equals(idPerson);
+		if (existingClient.isEmpty()) {
+			return false;
+		}
+
+		// Compara si el cliente con ese DNI es el mismo que se está editando
+		return existingClient.get().getIdPerson().equals(idPerson);
 	}
 
+	public Client save(Client client) {
 
+		client.getUser().setPassword(pe.encode(client.getUser().getPassword()));
+		client.getUser().setEnabled(true);
+		System.out.println("Saving user: " + client.getUser().getUsername());
+		UserRole defaultRole = new UserRole(client.getUser(), "ROLE_USER");
+		client.getUser().getUserRoles().add(defaultRole);
+		return clientRepository.save(client);
+	}
 }

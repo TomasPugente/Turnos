@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login - UNLa</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/styles.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            height: 650px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-card {
+            background-color: white;
+            padding: 2.5rem 4rem;
+            border-radius: 1rem;
+            box-shadow: 0 5px 15px;
+            width: 100%;
+            max-width: 370px;
+        }
+
+        .form-control {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .btn-primary {
+            background-color: #4e54c8;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            align-items: center;
+            padding: 0.75rem;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #3b40a4;
+            cursor: pointer;
+        }
+
+        h2 {
+            color: #4e54c8;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .text-center a {
+            color: #4e54c8;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .text-center a:hover {
+            color: #3b40a4;
+            text-decoration: underline;
+        }
+
+        .alert {
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card" text-align="center">
+        <h2>WELCOME</h2>
+
+        <form th:action="@{/loginprocess}" method="post">
+            <div  >
+                <input type="text" name="username" id="username" class="form-control" placeholder=" Username" required />
+            </div>
+
+            <div >
+                <input type="password" name="password" id="password" class="form-control" placeholder="Password" required />
+            </div>
+
+            <!-- Mensajes de error o logout -->
+            <div th:if="${param.error}" class="alert alert-danger text-center">
+                Wrong user or password
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success text-center">
+                Logout successful
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Log In</button>
+        </form>
+
+        <div class="text-center mt-3">
+            Don't have an account? <a th:href="@{/register}">Register</a>
+        </div>
+        <div class="text-center mt-2">
+            <a th:href="@{/forgotpassword}">Forgot your password?</a>
+        </div>
+    </div>
+    
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

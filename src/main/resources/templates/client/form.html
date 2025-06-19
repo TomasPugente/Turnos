@@ -1,113 +1,143 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Cliente</title>
-	<!-- Favicon-->
-	<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-	<!-- Bootstrap Icons-->
+	<title>Cliente</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<!-- Bootstrap Icons -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-	<!-- Google fonts-->
+	<!-- Google Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
-	<link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
-	<!-- SimpleLightbox plugin CSS-->
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
-	<!-- Core theme CSS (includes Bootstrap)-->
-	<link href="/css/styles.css" rel="stylesheet" />
+
+	<style>
+		body {
+			font-family: 'Merriweather Sans', sans-serif;
+			background-color: #f8f9fa;
+			padding: 2rem;
+		}
+
+		.card {
+			border-radius: 1rem;
+			box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+		}
+
+		.form-section {
+			margin-bottom: 2rem;
+		}
+
+		legend {
+			font-size: 1.25rem;
+			font-weight: bold;
+			margin-bottom: 1rem;
+		}
+
+		.form-label {
+			font-weight: 600;
+		}
+
+		.alert-danger {
+			margin-top: 0.25rem;
+			padding: 0.5rem;
+		}
+	</style>
 </head>
 <body>
-	<h1 th:text="${clientDTO?.idPerson == null ? 'Agregar Cliente' : 'Editar Cliente'}"></h1>
-<form class="row g-3 m-1 p-1" th:action="@{/clients/save}" th:object="${clientDTO}" method="post">
-	<!-- Poner el id sirve para poder editar el cliente -->
-	<input type="hidden" th:field="*{idPerson}" />
-	
-	<div class="col-md-6">
-      <label class="form-label" >DNI: <input class="form-control" type="number" th:field="*{dni}"/>
-		<div th:if="${#fields.hasErrors('dni')}" class="alert alert-danger">
-		  <p th:errors="*{dni}">el DNI debe tener 8 digitos </p>
-		</div>
-	  </label><br/>
-	</div>
-	
-	<div class="col-md-6">
-      <label class="form-label" >Nombre: <input class="form-control" type="text" th:field="*{name}"/>
-		        <div th:if="${#fields.hasErrors('name')}" class="alert alert-danger">
-					<p th:errors="*{name}"></p>
-				</div>
-		</label><br/>
-	</div>
-	
-	<div class="col-md-6">
-        <label class="form-label" >Fecha de Nacimiento: <input class="form-control" type="date" th:field="*{dateOfBirth}"/>
-			<div th:if="${#fields.hasErrors('dateOfBirth')}" class="alert alert-danger">
-				<p th:errors="*{dateOfBirth}"></p>
-			</div>	
-		</label><br/>
-	</div>
-	
-	<div class="col-md-6">
-      <label class="form-label" >Contraseña: <input class="form-control" type="password" th:field="*{password}"/>
-		        <div th:if="${#fields.hasErrors('password')}" class="alert alert-danger">
-					<p th:errors="*{password}"></p>
-				</div>
-		</label><br/>
-    </div>
-	
-    <!-- Datos de contacto -->
-    <fieldset class="row g-3">
-        <legend>Contacto</legend>
-		<div class="col-md-6">
-			<label class="form-label">Calle: <input class="form-control" type="text" th:field="*{contact.street}"/>
-				<div th:if="${#fields.hasErrors('contact.street')}" class="alert alert-danger">
-					<p th:errors="*{contact.street}"></p>
-				</div>
-			</label><br/>
-		</div>
-       
-		<div class="col-md-6">
-           <label class="form-label">Número: <input class="form-control" type="number" th:field="*{contact.number}"/>
-			  <div th:if="${#fields.hasErrors('contact.number')}" class="alert alert-danger">
-			     <p th:errors="*{contact.number}"></p>
-			   </div>
-		   </label><br/>
-		</div>
-		
-		<div class="col-md-6">
-          <label class="form-label">Email: <input class="form-control" type="email" th:field="*{contact.email}"/>
-			         <div th:if="${#fields.hasErrors('contact.email')}" class="alert alert-danger">
-						   <p th:errors="*{contact.email}"></p>
-					</div>
-			</label><br/>
-		</div>
-		
-		<div class="col-md-6">
-          <label class="form-label">Teléfono: <input class="form-control" type="text" th:field="*{contact.phone}"/>
-			  <div th:if="${#fields.hasErrors('contact.phone')}" class="alert alert-danger">
-			     <p th:errors="*{contact.phone}"></p>
-			  </div>
-		   </label><br/>
-		</div>
-		
-		<div class="col-md-6">
-		  <label class="form-label" for="locality">Localidad:
-			    <select class="form-select" th:field="*{contact.locality.idLocality}">
-						<option value="0">Seleccione una localidad</option>
-						<option th:each="locality : ${localities}"
-						        th:value="${locality.idLocality}"
-						        th:text="${locality.name}">
-						</option>
-			    </select>
-				
-			    <p th:if="${#fields.hasErrors('contact.locality.idLocality')}" class="alert alert-danger" th:errors="*{contact.locality.idLocality}"></p>
-			     
-		
-		  </label>
-		</div>
-		
-    </fieldset>
 
-	<div class="col-md-6">
-      <button type="submit" class="btn btn-primary">Guardar</button>
+<div class="container">
+	<div class="card p-4">
+		<h2 class="mb-4" th:text="${clientDTO?.idPerson == null ? 'Agregar Cliente' : 'Editar Cliente'}"></h2>
+
+		<form th:action="@{/clients/save}" th:object="${clientDTO}" method="post">
+			<input type="hidden" th:field="*{idPerson}" />
+
+			<!-- Datos personales -->
+			<div class="form-section">
+				<legend>Datos Personales</legend>
+				<div class="row g-3">
+					<div class="col-md-2">
+						<label class="form-label">DNI</label>
+						<input class="form-control" type="number" th:field="*{dni}" />
+						<div th:if="${#fields.hasErrors('dni')}" class="alert alert-danger" th:errors="*{dni}"></div>
+					</div>
+
+					<div class="col-md-2">
+						<label class="form-label">Nombre</label>
+						<input class="form-control" type="text" th:field="*{name}" />
+						<div th:if="${#fields.hasErrors('name')}" class="alert alert-danger" th:errors="*{name}"></div>
+					</div>
+
+					<div class="col-md-2">
+						<label class="form-label">Apellido</label>
+						<input class="form-control" type="text" th:field="*{surname}" />
+						<div th:if="${#fields.hasErrors('surname')}" class="alert alert-danger" th:errors="*{surname}"></div>
+					</div>
+
+					<div class="col-md-2">
+						<label class="form-label">Fecha de Nacimiento</label>
+						<input class="form-control" type="date" th:field="*{dateOfBirth}" />
+						<div th:if="${#fields.hasErrors('dateOfBirth')}" class="alert alert-danger" th:errors="*{dateOfBirth}"></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Datos de contacto -->
+			<div class="form-section">
+				<legend>Contacto</legend>
+				<div class="row g-3">
+					<div class="col-md-4">
+						<label class="form-label" for="locality">Localidad</label>
+						<select class="form-select" th:field="*{contact.locality.idLocality}">
+							<option value="0">Seleccione una localidad</option>
+							<option th:each="locality : ${localities}"
+									th:value="${locality.idLocality}"
+									th:text="${locality.name}">
+							</option>
+						</select>
+						<div th:if="${#fields.hasErrors('contact.locality.idLocality')}" class="alert alert-danger" th:errors="*{contact.locality.idLocality}"></div>
+					</div>
+
+					<div class="col-md-4">
+						<label class="form-label">Calle</label>
+						<input class="form-control" type="text" th:field="*{contact.street}" />
+						<div th:if="${#fields.hasErrors('contact.street')}" class="alert alert-danger" th:errors="*{contact.street}"></div>
+					</div>
+
+					<div class="col-md-4">
+						<label class="form-label">Número</label>
+						<input class="form-control" type="number" th:field="*{contact.number}" />
+						<div th:if="${#fields.hasErrors('contact.number')}" class="alert alert-danger" th:errors="*{contact.number}"></div>
+					</div>
+					<div class="col-md-4">
+						<label class="form-label">Email</label>
+						<input class="form-control" type="email" th:field="*{contact.email}" />
+						<div th:if="${#fields.hasErrors('contact.email')}" class="alert alert-danger" th:errors="*{contact.email}"></div>
+					</div>
+
+					<div class="col-md-4">
+						<label class="form-label">Teléfono</label>
+						<input class="form-control" type="text" th:field="*{contact.phone}" />
+						<div th:if="${#fields.hasErrors('contact.phone')}" class="alert alert-danger" th:errors="*{contact.phone}"></div>
+					</div>
+
+
+				</div>
+			</div>
+
+			<!-- Botón -->
+			<div class="text-end">
+				<button type="submit" class="btn btn-primary px-4">
+					<i class="bi bi-save"></i> Guardar
+				</button>
+			</div>
+		</form>
 	</div>
-</form>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

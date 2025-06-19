@@ -20,4 +20,9 @@ public class HomeController {
 	public RedirectView redirectToHomeIndex() {
 		return new RedirectView(ViewRouteHelper.ROUTE_INDEX);
 	}
+
+	@GetMapping("/administration")
+	public String redirectToAdministration() {
+		return ViewRouteHelper.ROUTE_ADMINISTRATION;
+	}
 }

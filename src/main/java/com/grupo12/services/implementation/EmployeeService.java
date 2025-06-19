@@ -3,6 +3,8 @@ package com.grupo12.services.implementation;
 import java.util.List;
 import java.util.Optional;
 
+import com.grupo12.repositories.ITurnRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -11,8 +13,10 @@ import com.grupo12.entities.Employee;
 import com.grupo12.models.EmployeeDTO;
 import com.grupo12.repositories.IEmployeeRepository;
 import com.grupo12.services.IEmployeeService;
+import org.springframework.stereotype.Service;
 
-public class EmployeeService implements IEmployeeService{
+@Service("employeeService")
+public class EmployeeService implements IEmployeeService {
 
 	@Autowired
 	@Qualifier("employeeRepository")
@@ -21,11 +25,14 @@ public class EmployeeService implements IEmployeeService{
 	@Autowired
 	@Qualifier("employeeConverter")
 	private EmployeeConverter employeeConverter;
-	
+
+	@Autowired
+	@Qualifier("turnRepository")
+	private ITurnRepository turnRepository;
+
 	@Override
-	public Optional<Employee> getById(int idPerson)  { //throws RuntimeException, Excepcion para hacer despues
-		return employeeRepository.findById(idPerson);// Optional<Client> client = findById(idPerson);
-		                                            //.orElseThrow(() -> new RuntimeException("Cliente con id " + idPerson + " no encontrado"));
+	public Optional<Employee> getByCuit(String cuit) {
+		return employeeRepository.findByCuit(cuit);
 	}
 
 	@Override
@@ -34,19 +41,20 @@ public class EmployeeService implements IEmployeeService{
 	}
 
 	@Override
-	public EmployeeDTO insertOrUpdate(EmployeeDTO employeeDTO) {
-		Employee employee = employeeRepository.save(employeeConverter.DTOToEntity(employeeDTO));
-		return employeeConverter.entityToDTO(employee);
+	public void insertOrUpdate(EmployeeDTO employeeDTO) {
+		employeeRepository.save(employeeConverter.DTOToEntity(employeeDTO));
 	}
 
+	@Transactional
 	@Override
-	public boolean remove(int idPerson) {
+	public boolean remove(Integer id) {
 		try {
-			employeeRepository.deleteById(idPerson);
+			turnRepository.deleteByEmployeeIdPersonAndClientIsNull(id);
+			employeeRepository.deleteById(id);
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
-		
+
 	}
 }

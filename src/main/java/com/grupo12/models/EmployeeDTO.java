@@ -6,27 +6,25 @@ import java.util.Set;
 import com.grupo12.entities.JobFunction;
 import com.grupo12.entities.Turn;
 
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class EmployeeDTO extends PersonDTO {
 
-    private LocalDate entryDate;
-    
-    private String cuit;
+	private LocalDate entryDate;
 
-    private Set<JobFunction> functions;
+	private String cuit;
 
-    private Set<Turn> appointments;
+	private Set<JobFunction> functions;
 
-	public EmployeeDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password,
-			     ContactDTO contact, LocalDate entryDate, String cuit) {
-		super(idPerson, name, dni, dateOfBirth, password, contact);
+	private Set<Turn> appointments;
+
+	public EmployeeDTO(Integer idPerson, String name, String surname, String dni, LocalDate dateOfBirth,
+			ContactDTO contact, UserDTO user, LocalDate entryDate, String cuit) {
+		super(idPerson, name, surname, dni, dateOfBirth, user, contact);
 		this.entryDate = entryDate;
 		this.cuit = cuit;
 	}

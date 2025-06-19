@@ -1,47 +1,41 @@
 package com.grupo12.models;
 
 
-
-
-import java.util.Date;
-
+import com.grupo12.entities.Date;
+import com.grupo12.entities.TurnStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class TurnDTO {
 
-    private int idTurn;
+	private Integer idTurn;
 
-    private String state;
- 
-    private boolean active;
-    
-    private String observation;
+	private TurnStatus status;
 
-    private ClientDTO client;
+	private boolean active;
 
-    private EmployeeDTO employee;
+	private String observation;
 
-    private Date date;
+	private ClientDTO client;
 
-	public TurnDTO(int idTurn, String state, boolean active, String observation, ClientDTO client, EmployeeDTO employee,
+	private EmployeeDTO employee;
+
+	private Date date;
+
+	public TurnDTO(int idTurn, TurnStatus status, boolean active, String observation, ClientDTO client, EmployeeDTO employee,
 			Date date) {
 		super();
 		this.idTurn = idTurn;
-		this.state = state;
+		this.status = status;
 		this.active = active;
 		this.observation = observation;
 		this.client = client;
 		this.employee = employee;
 		this.date = date;
 	}
-    
-    
-    
-    
+
 }

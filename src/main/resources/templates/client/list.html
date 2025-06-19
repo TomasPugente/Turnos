@@ -22,6 +22,7 @@
     <tr>
         <th>ID</th>
         <th>Nombre</th>
+        <th>Apellido</th>
         <th>DNI</th>
         <th>Acciones</th>
     </tr>
@@ -30,6 +31,7 @@
     <tr th:each="client : ${clients}">
         <td th:text="${client.idPerson}"></td>
         <td th:text="${client.name}"></td>
+        <td th:text="${client.surname}"></td>
         <td th:text="${client.dni}"></td>
         <td>
             <!-- Botones de editar o eliminar -->

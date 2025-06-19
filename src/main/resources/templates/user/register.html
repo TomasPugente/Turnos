@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/styles.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .register-card {
+        background-color: white;
+        padding: 2.5rem 3rem;
+        border-radius: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 580px;
+        margin: 0 auto;
+        height: 690px;
+        }
+
+
+        .form-control {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #4e54c8;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            padding: 0.75rem;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #3b40a4;
+        }
+
+        h3 {
+            color: #4e54c8;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .text-center a {
+            color: #4e54c8;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .text-center a:hover {
+            color: #3b40a4;
+            text-decoration: underline;
+        }
+
+        .form-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-card">
+        <h3>Create Your Account</h3>
+
+        <!-- Formulario de registro -->
+        <form th:action="@{/registeruser}" th:object="${client}" method="post">
+    <div class="row mb-3">
+        <div class="col">
+            <input type="text" th:field="*{name}" id="name" class="form-control" placeholder="Name" required />
+        </div>
+        <div class="col">
+            <input type="text" th:field="*{surname}" id="surname" class="form-control" placeholder="Surname" required />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col">
+            <input type="text" th:field="*{dni}" id="dni" class="form-control" placeholder="DNI" required />
+        </div>
+        <div class="col">
+            <input type="date" th:field="*{dateOfBirth}" id="dateOfBirth" class="form-control" placeholder="dd/mm/yyyy" required />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <input type="text" th:field="*{contact.phone}" id="phone" class="form-control" placeholder="Phone number" required />
+    </div>
+
+    <div class="mb-3">
+        <input type="text" th:field="*{user.username}" id="username" class="form-control" placeholder="Username" required />
+    </div>
+
+    <div class="mb-3">
+        <input type="email" th:field="*{user.email}" id="email" class="form-control" placeholder="example@mail.com" required />
+    </div>
+
+    <div class="mb-3">
+        <input type="password" th:field="*{user.password}" id="password" class="form-control" placeholder="Password" required minlength="6" />
+        <small class="form-text">Your password must be at least 6 characters long.</small>
+    </div>
+
+    <div class="mb-4">
+        <input type="password" th:field="*{user.confirmPassword}" id="confirmPassword" class="form-control" placeholder="Confirm your password" required minlength="6" />
+    </div>
+
+    <!-- Mensajes de error o éxito -->
+    <div th:if="${error}" class="alert alert-danger text-center">
+        <span th:text="${error}">An error has been ocurred</span>
+    </div>
+    <div th:if="${success}" class="alert alert-success text-center">
+        Account created successfully <a th:href="@{/login}">Log In</a>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+</form>
+
+
+        <div class="text-center mt-4">
+            <p>Already have an account? <a th:href="@{/login}">Log In</a></p>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
