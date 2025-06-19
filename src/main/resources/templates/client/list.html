@@ -18,7 +18,14 @@
 	
 	<a th:href="@{/}" class="m-1 p-1 btn btn-primary">Volver al inicio</a><br></br>
 	<h1 class="m-1 p-1">Clientes</h1>
-	<a href="/clients/form"><button type="button" class="btn btn-primary m-1 p-1">Agregar Cliente</button></a>
+	
+	<!-- Botón visible solo si el usuario NO tiene cliente -->
+	<div th:if="${!hasClient}">
+	    <a href="/clients/form">
+	        <button type="button" class="btn btn-primary m-1 p-1">Cargar datos adicionales</button>
+	    </a>
+	</div>
+	
 	<table class="m-1 p-1 table table-dark table-striped">
 	    <thead>
 	    <tr>

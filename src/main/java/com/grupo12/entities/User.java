@@ -30,7 +30,7 @@ public class User {
     @Column(name = "username", unique = true, nullable = false)
     private String username;
     
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @Column(name = "password", nullable = false)
@@ -53,3 +53,4 @@ public class User {
     private Set<UserRole> userRoles = new HashSet<UserRole>();
 
 }
+ 

@@ -22,10 +22,10 @@ public class EmployeeDTO extends PersonDTO {
 	private Set<JobFunction> functions;
 
 	private Set<Turn> appointments;
-
-	public EmployeeDTO(Integer idPerson, String name, String surname, String dni, LocalDate dateOfBirth,
-			ContactDTO contact, UserDTO user, LocalDate entryDate, String cuit) {
-		super(idPerson, name, surname, dni, dateOfBirth, user, contact);
+	
+	public EmployeeDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth,
+			ContactDTO contact, LocalDate entryDate, String cuit) {
+		super(idPerson, name, dni, dateOfBirth, contact);
 		this.entryDate = entryDate;
 		this.cuit = cuit;
 	}

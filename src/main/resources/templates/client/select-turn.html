@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+	    <title>Seleccionar Turno</title>
+		<!-- Favicon-->
+		<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+		<!-- Bootstrap Icons-->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+		<!-- Google fonts-->
+		<link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+		<!-- SimpleLightbox plugin CSS-->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
+		<!-- Core theme CSS (includes Bootstrap)-->
+		<link href="/css/styles.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="m-1 p-1">
+			<a th:href="@{/}" class="btn btn-primary">Volver al inicio</a>
+
+			<h2 class="m-1 p-1">Elegí un turno disponible</h2>
+
+			<!-- MOSTRAR ERROR -->
+			<div th:if="${error}" class="alert alert-danger" role="alert">
+			    <p th:text="${error}"></p>
+			</div>
+
+			<div class="m-1 p-1" th:if="${#lists.isEmpty(turnos)}">
+			    <p>No hay turnos disponibles.</p>
+			</div>
+			<div class="m-1 p-1" th:if="${!#lists.isEmpty(turnos)}">
+			    <p>Hay [[${#lists.size(turnos)}]] turnos disponibles.</p>
+			</div>
+
+			<form class="col-md-3" th:action="@{/client/select}" th:object="${requestTurnDTO}" method="post">
+
+			    <!-- Eliminamos el campo visible de clientId -->
+			    <input type="hidden" th:field="*{clientId}" />
+
+			    <label class="m-1" for="turnId">Turno disponible:</label>
+			    <select class="form-select" th:field="*{turnId}">
+			        <option value="" disabled selected>-- Seleccioná un turno --</option>
+					<option th:each="turno : ${turnos}" th:value="${turno.idTurn}">
+					    <span th:if="${turno.employee != null}" 
+					          th:text="'Turno con ' + ${turno.employee.name} + ' - ' + ${turno.date.date}"></span>
+					    <span th:unless="${turno.employee != null}" 
+					          th:text="'Turno sin empleado asignado - ' + ${turno.date.date}"></span>
+					</option>
+			    </select><br><br>
+
+			    <div th:if="${#fields.hasErrors('turnId')}" th:errors="*{turnId}"></div>
+
+			    <button class="btn btn-secondary m-1 p-1" type="submit">Confirmar turno</button>
+			</form>
+
+
+			 <p th:if="${param.success}">Turno asignado correctamente.</p>
+		</div>
+
+	</body>
+</html>

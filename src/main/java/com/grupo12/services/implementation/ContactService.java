@@ -1,5 +1,6 @@
 package com.grupo12.services.implementation;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,18 @@ public class ContactService implements IContactService {
         return contactRepository.findByIdContact(id);
     }
 
+
     @Override
+    @Transactional
     public Contact save(Contact contact) {
         return contactRepository.save(contact);
     }
+
+
+    @Override
+    @Transactional
+	public List<Contact> getAll() {
+		return contactRepository.findAll();
+	}
+
 }

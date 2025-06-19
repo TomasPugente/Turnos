@@ -47,6 +47,18 @@ public interface ITurnService {
 	
 	//public void reserveAppointment(Long idTurno, String username);
 
+    
+    void save(Turn turno);
+	Optional<TurnDTO> getTurnById(Integer id);
+	
+
+
+	//public Turn requestAnAppointment(Long idClient, Long idService, LocalDate date);
+	
+	public void reserveTurn(Long idTurno, String username);
+	
+	//public void reserveAppointment(Long idTurno, String username);
+	
 	
 	public void assignTurnToClient(Turn turn, Client client);
 	
@@ -54,11 +66,8 @@ public interface ITurnService {
     
     Map<String, List<Turn>> getTurnsGroupedByStatus(Client client);
     
-    void save(Turn turno);
-	Optional<TurnDTO> getTurnById(Integer id);
+
 	
 	
 }
-
-
 

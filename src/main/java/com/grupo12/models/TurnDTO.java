@@ -1,5 +1,8 @@
 package com.grupo12.models;
 
+
+
+
 import java.util.Date;
 
 //import com.grupo12.entities.Contact;
@@ -11,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
 
 
 @Getter
@@ -75,6 +79,7 @@ public class TurnDTO {
         this.idServicio = serviceId;
     }
 
+  
 	public void setReminderSent(Boolean reminderSent2) {
 		// TODO Auto-generated method stub
 		this.reminderSent=reminderSent2;
@@ -91,6 +96,7 @@ public class TurnDTO {
 		this.employee = employee;
 		this.date = date;
 	}
+
 
 	public Boolean getReminderSent() {
 		// TODO Auto-generated method stub

@@ -40,6 +40,19 @@ public class EmployeeConverter {
     	    employee.setCuit(employeeDTO.getCuit());
 
     	    return employee;
+   
+    }
+
+    public Employee DTOToEntity(EmployeeDTO employeeDTO) {
+        return new Employee(
+                employeeDTO.getIdPerson(),
+                employeeDTO.getName(),
+                employeeDTO.getDni(),
+                employeeDTO.getDateOfBirth(),
+                contactToEntity(employeeDTO.getContact()),
+                employeeDTO.getEntryDate(),
+                employeeDTO.getCuit());
+
     }
 
     private ContactDTO contactToDTO(Contact contact) {
@@ -51,7 +64,9 @@ public class EmployeeConverter {
             contact.getEmail(),
             contact.getPhone(),
             localityToDTO(contact.getLocality())
-        );
+            );
+
+
     }
 
     private Contact contactToEntity(ContactDTO contactDTO) {

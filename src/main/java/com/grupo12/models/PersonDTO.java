@@ -45,4 +45,14 @@ public abstract class PersonDTO {
     @Valid
     protected ContactDTO contact;
 
+
+    public PersonDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth, ContactDTO contact) {
+        super();
+        this.idPerson = idPerson;
+        this.name = name;
+        this.dni = dni;
+        this.dateOfBirth = dateOfBirth;
+        this.contact = contact;
+    }
+
 }
