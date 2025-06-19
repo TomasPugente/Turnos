@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Turnos Generados</title>
+</head>
+<body>
+    <h1>Turnos generados</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Hora inicio</th>
+            <th>Hora fin</th>
+            <th>Estado</th>
+        </tr>
+        <tr th:each="turn : ${turns}">
+            <td th:text="${turn.idTurn}">id</td>
+            <td th:text="${#dates.format(turn.startTime, 'dd/MM/yyyy')}">fecha</td>
+            <td th:text="${#dates.format(turn.startTime, 'HH:mm')}">hora inicio</td>
+            <td th:text="${#dates.format(turn.endTime, 'HH:mm')}">hora fin</td>
+            <td th:text="${turn.status}">estado</td>
+        </tr>
+    </table>
+</body>
+</html>

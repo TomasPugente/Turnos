@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Turnos para enviar recordatorio</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 90%;
+            margin: auto;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #ddd;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Turnos próximos para enviar recordatorio</h2>
+	<form method="post" th:action="@{/web/turns/send-reminders}">
+	    <table>
+	        <thead>
+	            <tr>
+	                <th><input type="checkbox" onclick="toggleAll(this)"/></th> <!-- Checkbox -->
+	                <th>ID</th>
+	                <th>Cliente</th>
+	                <th>Email</th>
+	                <th>Inicio</th>
+	                <th>Estado</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            <tr th:each="turno : ${turnos}">
+	                <td><input type="checkbox" name="selectedTurnIds" th:value="${turno.idTurn}" /></td>
+	                <td th:text="${turno.idTurn}">ID</td>
+	                <td th:text="${turno.clientName}">Cliente</td>
+	                <td th:text="${turno.email}">Email</td>
+	                <td th:text="${turno.startTime}">Inicio</td>
+	                <td th:text="${turno.status}">Estado</td>
+	            </tr>
+	        </tbody>
+	    </table>
+	    <button type="submit">Enviar recordatorios</button>
+	</form>
+
+    <script>
+        function toggleAll(source) {
+            let checkboxes = document.getElementsByName('selectedTurnIds');
+            for (let i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+    </script>
+</body>
+</html>
