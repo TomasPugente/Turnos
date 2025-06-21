@@ -9,6 +9,7 @@ import com.grupo12.repositories.IServiceRepository;
 import com.grupo12.repositories.ITurnRepository;
 import com.grupo12.services.implementation.TurnService;
 import com.grupo12.models.TurnDTO;
+import com.grupo12.models.TurnMultipleDTO;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.List;
 
@@ -220,6 +222,7 @@ public class TurnServiceTest {
         int duration = 30;
         LocalDateTime start = LocalDateTime.of(2025, 6, 20, 9, 0);
         LocalDateTime end = LocalDateTime.of(2025, 6, 20, 11, 0);
+       
 
         Employee emp = new Employee();
         emp.setIdPerson(employeeId);
@@ -233,9 +236,14 @@ public class TurnServiceTest {
         when(turnRepo.findConflictingTurnForEmployee(anyInt(), any(), any()))
             .thenReturn(List.of());  // sin solapamientos
         when(turnRepo.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-
+        TurnMultipleDTO mDto = new TurnMultipleDTO();
+        mDto.setEmployeeIdPerson(employeeId);
+        mDto.setIdServicio(serviceId);
+        mDto.setStartDate(start);
+        mDto.setEndDate(end);
+        mDto.setDurationMinutes(30);
         // Ejecutar
-        List<TurnDTO> created = turnService.enableMultipleTurns(employeeId, serviceId, start, end, duration);
+        List<TurnDTO> created = turnService.enableMultipleTurns(mDto);
 
         // Verificación
         assertEquals(4, created.size()); // 2 horas / 30 minutos = 4 turnos
