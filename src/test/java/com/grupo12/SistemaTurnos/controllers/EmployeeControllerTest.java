@@ -5,6 +5,7 @@ import com.grupo12.config.SecurityConfig;
 import com.grupo12.controllers.EmployeeController;
 import com.grupo12.controllers.TurnController;
 import com.grupo12.models.TurnDTO;
+import com.grupo12.models.TurnMultipleDTO;
 import com.grupo12.services.ITurnService;
 import com.grupo12.services.implementation.ServiceService;
 import com.grupo12.testConfig.TestSecurityConfig;
@@ -75,18 +76,19 @@ class EmployeeControllerTest {
     @Test
     @WithMockUser(username = "1", roles = {"EMPLOYEE"})
     void enableMultipleTurns_shouldRedirect() throws Exception {
-        List<TurnDTO> dummyTurns = List.of(new TurnDTO());
+    	 List<TurnDTO> dummyTurns = List.of(new TurnDTO());
 
-        when(turnService.enableMultipleTurns(anyInt(), anyInt(), any(), any(), anyInt()))
-                .thenReturn(dummyTurns);
+    	    when(turnService.enableMultipleTurns(any(TurnMultipleDTO.class)))
+    	            .thenReturn(dummyTurns);
 
-        mockMvc.perform(post("/employee/turns/enable-multiple")
-                        .param("idServicio", "1")
-                        .param("startTime", LocalDateTime.now().toString())
-                        .param("endTime", LocalDateTime.now().plusHours(2).toString())
-                        .param("duration", "30"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/employee/turns"));
+    	    mockMvc.perform(post("/employee/turns/enable-multiple")
+    	                    .param("employeeIdPerson", "1")
+    	                    .param("serviceId", "1")
+    	                    .param("startDate", "2025-07-07T09:00")
+    	                    .param("endDate", "2025-07-07T11:00")
+    	                    .param("durationMinutes", "30"))
+    	            .andExpect(status().is3xxRedirection())
+    	            .andExpect(redirectedUrl("/employee/turns"));
     }
 
     @Test
