@@ -30,6 +30,7 @@ public class TurnConverter {
 	        dto.setStartTime(turn.getStartTime());
 	        dto.setEndTime(turn.getEndTime());
 	        dto.setStatus(turn.getStatus().name()); // Enum → String
+	        
 
 	        if (turn.getClient() != null) {
 	            dto.setClientIdPerson(turn.getClient().getIdPerson());
@@ -59,7 +60,7 @@ public class TurnConverter {
 	            dto.setIdServicio(turn.getService().getIdServicio());
 	            dto.setServiceName(turn.getService().getName());
 	        }
-
+	        dto.setReminderSent(turn.isReminderSent());
 	        return dto;
 	    }
 		/*TurnDTO dto=modelMapper.map(turn, TurnDTO.class);
@@ -106,7 +107,19 @@ public class TurnConverter {
 			entity.setStatus(TurnStatus.valueOf(dto.getStatus()));//Convertir String a enum
 		}
 		return entity;*/
-		 return modelMapper.map(dto, Turn.class);
+//		 return modelMapper.map(dto, Turn.class);
+		Turn entity = modelMapper.map(dto, Turn.class);
+
+	    // Asegurarse de que reminderSent no sea null
+	    if (dto.getReminderSent() != null) {
+	        entity.setReminderSent((Boolean) dto.getReminderSent());
+	    } else {
+	        entity.setReminderSent(false); // o true, según tu lógica
+	    }
+
+	    return entity;
+		
+	
 	}
 	public void setModelMapper(ModelMapper modelMapper) {
 	    this.modelMapper = modelMapper;
