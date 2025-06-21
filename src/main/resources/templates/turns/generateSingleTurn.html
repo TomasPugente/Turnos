@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Habilitar Turno</title>
+    <style>
+        form {
+            width: 40%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Habilitar un nuevo turno</h2>
+
+<form th:action="@{/web/turns/enable/single}" method="post" th:object="${turno}">
+
+    <label for="employeeId">Empleado:</label>
+    <select th:field="*{employeeIdPerson}">
+        <option th:each="emp : ${empleados}" th:value="${emp.idPerson}" th:text="${emp.name}"></option>
+    </select>
+
+    <label for="serviceId">Servicio:</label>
+    <select th:field="*{idServicio}"><!--viene de turndto-->
+        <option th:each="srv : ${servicios}" th:value="${srv.idServicio}" th:text="${srv.serviceName}"></option>
+    </select>
+
+    <label for="startTime">Fecha y hora de inicio:</label>
+    <input type="datetime-local" th:field="*{startTime}" />
+
+    <button type="submit">Habilitar turno</button>
+</form>
+
+</body>
+</html>

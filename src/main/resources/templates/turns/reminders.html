@@ -6,7 +6,7 @@
     <style>
         table {
             border-collapse: collapse;
-            width: 90%;
+            width: 95%;
             margin: auto;
         }
         th, td {
@@ -20,35 +20,49 @@
         h2 {
             text-align: center;
         }
+		.enviado {
+		    color: green;
+		    font-weight: bold;
+		}
+		.pendiente {
+		    color: red;
+		}
     </style>
 </head>
 <body>
     <h2>Turnos próximos para enviar recordatorio</h2>
-	<form method="post" th:action="@{/web/turns/send-reminders}">
-	    <table>
-	        <thead>
-	            <tr>
-	                <th><input type="checkbox" onclick="toggleAll(this)"/></th> <!-- Checkbox -->
-	                <th>ID</th>
-	                <th>Cliente</th>
-	                <th>Email</th>
-	                <th>Inicio</th>
-	                <th>Estado</th>
-	            </tr>
-	        </thead>
-	        <tbody>
-	            <tr th:each="turno : ${turnos}">
-	                <td><input type="checkbox" name="selectedTurnIds" th:value="${turno.idTurn}" /></td>
-	                <td th:text="${turno.idTurn}">ID</td>
-	                <td th:text="${turno.clientName}">Cliente</td>
-	                <td th:text="${turno.email}">Email</td>
-	                <td th:text="${turno.startTime}">Inicio</td>
-	                <td th:text="${turno.status}">Estado</td>
-	            </tr>
-	        </tbody>
-	    </table>
-	    <button type="submit">Enviar recordatorios</button>
-	</form>
+    <form method="post" th:action="@{/web/turns/send-reminders}">
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" onclick="toggleAll(this)" /></th>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Email</th>
+                    <th>Empleado</th>
+                    <th>Servicio</th>
+                    <th>Inicio</th>
+                    <th>Estado</th>
+					<th>Recordatorio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="turno : ${turnos}">
+                    <td><input type="checkbox" name="selectedTurnIds" th:value="${turno.idTurn}" /></td>
+                    <td th:text="${turno.idTurn}">ID</td>
+                    <td th:text="${turno.clientName != null ? turno.clientName : 'Sin asignar'}">Cliente</td>
+                    <td th:text="${turno.clientEmail != null ? turno.clientEmail : '---'}">Email</td>
+                    <td th:text="${turno.employeeName != null ? turno.employeeName : 'Sin asignar'}">Empleado</td>
+                    <td th:text="${turno.serviceName != null ? turno.serviceName : '---'}">Servicio</td>
+                    <td th:text="${turno.startTime}">Inicio</td>
+                    <td th:text="${turno.status}">Estado</td>
+					<td th:text="${turno.reminderSent != null && turno.reminderSent ? 'Enviado' : 'Pendiente'}">Estado recordatorio</td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit">Enviar recordatorios</button>
+		
+    </form>
 
     <script>
         function toggleAll(source) {
@@ -60,3 +74,4 @@
     </script>
 </body>
 </html>
+

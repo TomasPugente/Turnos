@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Recordatorios enviados</title>
+    <title>Recordatorios Enviados</title>
     <style>
         table {
             border-collapse: collapse;
-            width: 80%;
+            width: 90%;
             margin: auto;
         }
         th, td {
@@ -19,31 +19,51 @@
         }
         h2 {
             text-align: center;
+            margin-top: 20px;
+        }
+        .volver {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .volver a {
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
         }
     </style>
 </head>
 <body>
-    <h2>Recordatorios enviados exitosamente</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID Turno</th>
-                <th>Cliente</th>
-                <th>Email</th>
-                <th>Hora del Turno</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="turno : ${enviados}">
-                <td th:text="${turno.idTurn}"></td>
-                <td th:text="${turno.clientName}"></td>
-                <td th:text="${turno.clientEmail}"></td>
-                <td th:text="${turno.startTime}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <div style="text-align:center; margin-top: 20px;">
-        <a href="/web/turns/reminders">Volver</a>
-    </div>
+
+<h2>📧 Recordatorios enviados correctamente</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID Turno</th>
+            <th>Cliente</th>
+            <th>Email</th>
+            <th>Empleado</th>
+            <th>Servicio</th>
+            <th>Inicio</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="turno : ${enviados}">
+            <td th:text="${turno.idTurn}">ID</td>
+            <td th:text="${turno.clientName}">Cliente</td>
+            <td th:text="${turno.clientEmail}">Email</td>
+            <td th:text="${turno.employeeName}">Empleado</td>
+            <td th:text="${turno.serviceName}">Servicio</td>
+            <td th:text="${turno.startTime}">Inicio</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="volver">
+    <a href="/web/turns/reminders">⬅ Volver a la lista de turnos</a>
+</div>
+
 </body>
 </html>

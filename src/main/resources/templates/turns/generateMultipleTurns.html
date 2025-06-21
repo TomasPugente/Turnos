@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Habilitar Turnos Múltiples</title>
+</head>
+<body>
+    <h1>Habilitar múltiples turnos</h1>
+
+    <form th:action="@{/web/turns/enable/multiple}" th:object="${turnMultiple}" method="post">
+        <label>Empleado:</label>
+        <select th:field="*{employeeIdPerson}" required>
+            <option th:each="empleado : ${empleados}" th:value="${empleado.idPerson}" th:text="${empleado.name}"></option>
+        </select>
+
+        <label>Servicio:</label>
+        <select th:field="*{serviceId}" required>
+            <option th:each="servicio : ${servicios}" th:value="${servicio.idServicio}" th:text="${servicio.serviceName}"></option>
+        </select>
+
+        <label>Fecha y hora de inicio:</label>
+        <input type="datetime-local" th:field="*{startDate}" required />
+
+        <label>Fecha y hora de fin:</label>
+        <input type="datetime-local" th:field="*{endDate}" required />
+
+        <label>Duración del turno (minutos):</label>
+        <input type="number" th:field="*{durationMinutes}" min="1" required />
+
+        <button type="submit">Generar turnos</button>
+    </form>
+</body>
+</html>

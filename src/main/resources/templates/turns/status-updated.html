@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Estado actualizado</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h2 style="text-align: center;">Estado del turno actualizado</h2>
+    <table border="1" style="margin: auto;">
+        <tr><th>ID</th><td th:text="${turno.idTurn}"></td></tr>
+        <tr><th>Cliente</th><td th:text="${turno.clientName} ?: 'Sin asignar'"></td></tr>
+        <tr><th>Estado nuevo</th><td th:text="${turno.status}"></td></tr>
+        <tr><th>Empleado</th><td th:text="${turno.employeeName}"></td></tr>
+        <tr><th>Horario</th><td th:text="${turno.startTime}"></td></tr>
+    </table>
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/web/turns/list"><button>Volver a la lista</button></a>
+    </div>
+</body>
+</html>

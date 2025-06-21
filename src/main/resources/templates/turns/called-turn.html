@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Turno llamado</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: auto;
+            width: 60%;
+        }
+        th, td {
+            border: 1px solid #666;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #ddd;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<h2>Próximo turno llamado</h2>
+<table>
+    <tr><th>ID</th><td th:text="${turno.idTurn}"></td></tr>
+    <tr><th>Cliente</th><td th:text="${turno.clientName != null ? turno.clientName : 'Sin asignar'}"></td>
+    <tr><th>Empleado</th><td th:text="${turno.employeeName}"></td></tr>
+    <tr><th>Servicio</th><td th:text="${turno.serviceName != null ? turno.serviceName : '---'}"></td>
+    <tr><th>Inicio</th><td th:text="${turno.startTime}"></td></tr>
+    <tr><th>Estado</th><td th:text="${turno.status}"></td></tr>
+</table>
+<div style="text-align: center; margin-top: 20px;">
+    <a th:href="@{/web/turns/reminders}">
+        <button type="button">Volver a la lista</button>
+    </a>
+</div>
+</body>
+</html>
