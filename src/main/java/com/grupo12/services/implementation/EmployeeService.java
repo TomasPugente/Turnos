@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import java.util.stream.Collectors;
 
 import com.grupo12.converters.EmployeeConverter;
 import com.grupo12.entities.Employee;
@@ -12,42 +13,49 @@ import com.grupo12.models.EmployeeDTO;
 import com.grupo12.repositories.IEmployeeRepository;
 import com.grupo12.services.IEmployeeService;
 
-public class EmployeeService implements IEmployeeService {
+@Service
+public class EmployeeService implements IEmployeeService{
 
+	private final IEmployeeRepository repository;
 	@Autowired
-	@Qualifier("employeeRepository")
 	private IEmployeeRepository employeeRepository;
 
 	@Autowired
-	@Qualifier("employeeConverter")
 	private EmployeeConverter employeeConverter;
 
+    public EmployeeService(IEmployeeRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public List<Employee> findAll() {
+        return repository.findAll();
+    }
+
 	@Override
-	public Optional<Employee> getById(int idPerson) { // throws RuntimeException, Excepcion para hacer despues
-		return employeeRepository.findById(idPerson);// Optional<Client> client = findById(idPerson);
-														// .orElseThrow(() -> new RuntimeException("Cliente con id " +
-														// idPerson + " no encontrado"));
+	public Optional<Employee> getById(int idPerson) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
 	}
 
 	@Override
-	public List<Employee> getAll() {
-		return employeeRepository.findAll();
+	public List<EmployeeDTO> getAll() {
+		// TODO Auto-generated method stub
+		return employeeRepository.findAll()
+	            .stream()
+	            .map(employeeConverter::entityToDTO)
+	            .collect(Collectors.toList());
 	}
 
 	@Override
 	public EmployeeDTO insertOrUpdate(EmployeeDTO employeeDTO) {
-		Employee employee = employeeRepository.save(employeeConverter.DTOToEntity(employeeDTO));
-		return employeeConverter.entityToDTO(employee);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public boolean remove(int idPerson) {
-		try {
-			employeeRepository.deleteById(idPerson);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

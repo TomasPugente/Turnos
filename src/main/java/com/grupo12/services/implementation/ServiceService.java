@@ -34,6 +34,8 @@ public class ServiceService implements IServiceService{
 	@Autowired
 	private ServicesConverter serviceConverter;
 	
+	
+	
 	@Override
 	public ServiceDTO createService(ServiceDTO serviceDTO) {
 		// TODO Auto-generated method stub
@@ -58,8 +60,8 @@ public class ServiceService implements IServiceService{
 	public ServiceDTO updateService(int id, ServiceDTO serviceDTO) {
 		// TODO Auto-generated method stub
 		com.grupo12.entities.Service existingService=serviceRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Servicio no encontrado con ID: "+id));
-		existingService.setName(serviceDTO.getName());
-		existingService.setDetail(serviceDTO.getDescription());
+		existingService.setName(serviceDTO.getServiceName());
+		existingService.setDetail(serviceDTO.getDetail());
 		existingService.setDurationMinutes(serviceDTO.getDurationMinutes());
 		com.grupo12.entities.Service updateService=serviceRepository.save(existingService);
 		return serviceConverter.toDTO(updateService);
@@ -72,6 +74,25 @@ public class ServiceService implements IServiceService{
 
 	}
 
+	@Override
+	public List<ServiceDTO> getAll() {
+		// TODO Auto-generated method stub
+		return serviceRepository.findAll()
+		        .stream()
+		        .map(service -> serviceConverter.toDTO(service))  // Asegurate de tener un serviceConverter
+		        .collect(Collectors.toList());
+		
+	}
+	public List<ServiceDTO> getAllDTO() {
+        return serviceRepository.findAll().stream().map(service ->
+        new ServiceDTO(
+            service.getIdServicio(),
+            service.getName(),
+            service.getDetail(),
+            service.getDurationMinutes()
+        )
+    ).collect(Collectors.toList());
+	}
 	
 
 }

@@ -1,5 +1,6 @@
 package com.grupo12.services.implementation;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import com.grupo12.entities.Employee;
 import com.grupo12.entities.Turn;
 import com.grupo12.entities.TurnStatus;
 import com.grupo12.models.TurnDTO;
+import com.grupo12.models.TurnMultipleDTO;
 import com.grupo12.repositories.IClientRepository;
 import com.grupo12.repositories.IEmployeeRepository;
 import com.grupo12.repositories.IServiceRepository;
@@ -210,53 +212,105 @@ public class TurnService implements ITurnService {
 	//CU009: Habilitar multiples turnos en una franja horaria
 	@Override
 	@Transactional
-	public List<TurnDTO> enableMultipleTurns(int employeeId, int serviceId, LocalDateTime startDate,
-			LocalDateTime endDate, int durationMinutes) {
+	public List<TurnDTO> enableMultipleTurns(TurnMultipleDTO dto) {
 		// TODO Auto-generated method stub
-		Employee employee=employeeRepository.findById(employeeId).orElseThrow(()-> new EntityNotFoundException("Empleado no encontrado con ID: "+employeeId));
-		com.grupo12.entities.Service service=serviceRepository.findById(serviceId).orElseThrow(()-> new EntityNotFoundException("Servicio no encontrado con ID: "+serviceId));
-		
-		if(durationMinutes<=0) {
-			throw new IllegalArgumentException("La duracion del turno debe ser un numero positivo de minutos!");
-		}
-		if(startDate.isAfter(endDate)) {
-			throw new IllegalArgumentException("La fecha de incio no puede ser posterior a la fecha de Fin!");
-		}
-		List<TurnDTO> createdTurns=new ArrayList<>();
-		LocalDateTime currentTurnStart=startDate;
-		
-		while(currentTurnStart.plusMinutes(durationMinutes).isBefore(endDate)|| currentTurnStart.plusMinutes(durationMinutes).isEqual(endDate)) {
-			LocalDateTime currentTurnEnd=currentTurnStart.plusMinutes(durationMinutes);
-			//Validar solapamiento antes de crear
-			List<Turn> conflictingTurns=turnRepository.findConflictingTurnForEmployee(employee.getIdPerson(), currentTurnStart, currentTurnEnd);
-			if(!conflictingTurns.isEmpty()) {
-				System.out.println("Saltando turno en "+currentTurnStart + " debido a conflicto");
-			}else {
-				Turn turn=new Turn();
-				turn.setEmployee(employee);
-				turn.setService(service);
-				turn.setStartTime(currentTurnStart);
-				turn.setEndTime(currentTurnEnd);
-				turn.setStatus(TurnStatus.PENDIENTE);
-				turn.setCreationTime(LocalDateTime.now());
-				Turn savedTurn=turnRepository.save(turn);
-				TurnDTO dto = turnConverter.toDTO(savedTurn);
-				dto.setServiceName(service.getName());
-				createdTurns.add(dto);
-			}
-			currentTurnStart=currentTurnEnd; //Avanzar al proximo inicio de turno
-		}
-		
-		return createdTurns;
+		int employeeId = dto.getEmployeeIdPerson();
+	    int serviceId = dto.getIdServicio();
+	    LocalDateTime startDate = dto.getStartDate();
+	    LocalDateTime endDate = dto.getEndDate();
+	    int durationMinutes = dto.getDurationMinutes();
+
+		    Employee employee = employeeRepository.findById(employeeId)
+		        .orElseThrow(() -> new EntityNotFoundException("Empleado no encontrado con ID: " + employeeId));
+
+		    com.grupo12.entities.Service service = serviceRepository.findById(serviceId)
+		        .orElseThrow(() -> new EntityNotFoundException("Servicio no encontrado con ID: " + serviceId));
+
+		    if (durationMinutes <= 0) {
+		        throw new IllegalArgumentException("La duración debe ser positiva.");
+		    }
+
+		    if (startDate.isAfter(endDate)) {
+		        throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la de fin.");
+		    }
+
+		    List<TurnDTO> createdTurns = new ArrayList<>();
+		    LocalDateTime currentTurnStart = startDate;
+
+		    while (!currentTurnStart.plusMinutes(durationMinutes).isAfter(endDate)) {
+		        LocalDateTime currentTurnEnd = currentTurnStart.plusMinutes(durationMinutes);
+
+		        List<Turn> conflictingTurns = turnRepository
+		            .findConflictingTurnForEmployee(employee.getIdPerson(), currentTurnStart, currentTurnEnd);
+
+		        if (conflictingTurns.isEmpty()) {
+		            Turn turn = new Turn();
+		            turn.setEmployee(employee);
+		            turn.setService(service);
+		            turn.setStartTime(currentTurnStart);
+		            turn.setEndTime(currentTurnEnd);
+		            turn.setStatus(TurnStatus.PENDIENTE);
+		            turn.setCreationTime(LocalDateTime.now());
+
+		            Turn savedTurn = turnRepository.save(turn);
+		            TurnDTO dtoTurn = turnConverter.toDTO(savedTurn);
+		            dtoTurn.setServiceName(service.getName());
+
+		            createdTurns.add(dtoTurn);
+		        } else {
+		            System.out.println("Saltando turno en " + currentTurnStart + " por conflicto.");
+		        }
+
+		        currentTurnStart = currentTurnEnd;
+		    }
+
+		    return createdTurns;
 	}
 
 	//CU011: Obtener turnos para recordatorios
+	//getUpComingTurnsForReminders
+
 	@Override
-	public List<TurnDTO> getUpComingTurnsForReminders(LocalDateTime fromTime, LocalDateTime toTime) {
+	public List<TurnDTO> findUpcomingTurns(LocalDateTime fromTime, LocalDateTime toTime) {
+	    List<TurnStatus> statusForReminder = Arrays.asList(TurnStatus.PENDIENTE, TurnStatus.EN_ATENCION);
+	    List<Turn> upcomingTurns = turnRepository.findByStartTimeBetweenAndStatusIn(fromTime, toTime, statusForReminder).stream()
+	    	.filter(t -> t.getReminderSent() == null || !t.getReminderSent())
+	    	    .collect(Collectors.toList());;
+
+	    return upcomingTurns.stream()
+	            .map(turnConverter::toDTO)
+	            .collect(Collectors.toList());
+	}
+	/*	@Override
+	public List<TurnDTO> findUpcomingTurns(LocalDateTime fromTime, LocalDateTime toTime) {
 		// TODO Auto-generated method stub
+		List<TurnStatus> statusForReminder = Arrays.asList(TurnStatus.PENDIENTE, TurnStatus.EN_ATENCION);
+	    List<Turn> upcomingTurns = turnRepository.findByStartTimeBetweenAndStatusIn(fromTime, toTime, statusForReminder);
+
+	    List<TurnDTO> dtos = new ArrayList<>();
+
+	    for (Turn turn : upcomingTurns) {
+	        if (turn.getClient() != null && turn.getClient().getContact().getEmail() != null) {
+	            String to = turn.getClient().getContact().getEmail();
+	            String subject = "Recordatorio de turno";
+	            String body = "Estimado/a " + turn.getClient().getName() +
+	                    ",\n\nLe recordamos que tiene un turno el día " + turn.getStartTime() +
+	                    ".\n\nGracias.";
+
+	            // Enviar el mail
+	            mailService.sendSimpleMail(to, subject, body);
+
+	            // Marcar como enviado
+	            turn.setReminderSent(true);
+	            turnRepository.save(turn); // ✅ guardar el cambio
+	        }
+
+	        dtos.add(turnConverter.toDTO(turn));
+	    }
+
+	    return dtos;
 		
-		
-		 List<TurnStatus> statusForReminder = Arrays.asList(TurnStatus.PENDIENTE, TurnStatus.EN_ATENCION);
+		/* List<TurnStatus> statusForReminder = Arrays.asList(TurnStatus.PENDIENTE, TurnStatus.EN_ATENCION);
 		 List<Turn> upcomingTurns = turnRepository.findByStartTimeBetweenAndStatusIn(fromTime, toTime, statusForReminder);
 
 		    List<TurnDTO> dtos = new ArrayList<>();
@@ -279,12 +333,32 @@ public class TurnService implements ITurnService {
 		        dtos.add(dto);
 		    }
 
-		    return dtos;
-		   }
+		    return dtos;*/
+		 //  }*/
 
 	@Override
 	public List<TurnDTO> sendRemindersTo(List<Integer> turnIds) {
-	    List<TurnDTO> enviados = new ArrayList<>();
+		List<TurnDTO> enviados = new ArrayList<>();
+	    for (int id : turnIds) {
+	        Turn turn = turnRepository.findById(id).orElse(null);
+	        if (turn != null && turn.getClient() != null && turn.getClient().getContact().getEmail() != null) {
+	            String to = turn.getClient().getContact().getEmail();
+	            String subject = "Recordatorio de turno";
+	            String body = "Hola " + turn.getClient().getName() + ", tenés un turno el " + turn.getStartTime();
+
+	            // Enviar el mail
+	            mailService.sendSimpleMail(to, subject, body);
+
+	            // Marcar como recordatorio enviado
+	            turn.setReminderSent(true);
+	            turnRepository.save(turn); // ✅ persistir el cambio
+
+	            // Agregar a la lista de enviados
+	            enviados.add(turnConverter.toDTO(turn));
+	        }
+	    }
+	    return enviados;/*
+		List<TurnDTO> enviados = new ArrayList<>();
 	    for (int id : turnIds) {
 	        Turn turn = turnRepository.findById(id).orElse(null);
 	        if (turn != null && turn.getClient() != null && turn.getClient().getContact().getEmail() != null) {
@@ -295,7 +369,7 @@ public class TurnService implements ITurnService {
 	            enviados.add(turnConverter.toDTO(turn));
 	        }
 	    }
-	    return enviados;
+	    return enviados;*/
 	}
 	@Override
 	public void deleteTurn(int id) {
