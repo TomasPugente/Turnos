@@ -1,7 +1,9 @@
 package com.grupo12.controllers;
 import com.grupo12.models.TurnDTO;
+import com.grupo12.models.TurnMultipleDTO;
 import com.grupo12.services.ITurnService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -9,17 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/turns")
 public class TurnController {
 	 @Autowired
 	    private ITurnService turnService;
+	 
 
 	    // CU008 - Llamar turno para empleado
 	 //@PostMapping("/turns/llamar/{id}")
-	 @GetMapping("/llamar/{id}")
+	 @GetMapping("/call-next/{id}")
 	 public TurnDTO callNextTurn(@PathVariable("id") int employeeId) {
-	     return turnService.callNextTurnForEmployee(employeeId);
+		  return turnService.callNextTurnForEmployee(employeeId);
 	 }
 	 
 	// CU009 - Habilitar un solo turno
@@ -48,8 +52,15 @@ public class TurnController {
 	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
 	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
 	            @RequestParam int durationMinutes) {
+		   TurnMultipleDTO dto = new TurnMultipleDTO();
+		   dto.setEmployeeIdPerson(employeeId);
+	    	dto.setIdServicio(serviceId);
+	    	dto.setStartDate(startDate);
+	    	dto.setEndDate(endDate);
+	    	dto.setDurationMinutes(durationMinutes);
 
-	        return turnService.enableMultipleTurns(employeeId, serviceId, startDate, endDate, durationMinutes);
+		  // List<TurnDTO> turnos = turnService.enableMultipleTurns(dto);
+	        return turnService.enableMultipleTurns(dto);
 	    }
 	    
 	 // CU010 - Registrar asistencia o inasistencia
@@ -59,8 +70,9 @@ public class TurnController {
 	        return turnService.updateTurnStatus(id, newStatus);
 	    }*/
 	   
-	   @GetMapping("/estado")
+	   @GetMapping("/update-status")
 	   public TurnDTO updateTurnStatusGET(@RequestParam int id, @RequestParam String newStatus) {
+		   
 	       return turnService.updateTurnStatus(id, newStatus);
 	   }
 
@@ -69,6 +81,7 @@ public class TurnController {
 	    public List<TurnDTO> getTurnsForReminder(
 	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
 	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
-	        return turnService.getUpComingTurnsForReminders(from, to);
+	    //    return turnService.getUpComingTurnsForReminders(from, to);
+	        return turnService.findUpcomingTurns(from, to);
 	    }
 }
