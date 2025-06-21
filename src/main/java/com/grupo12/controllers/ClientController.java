@@ -1,4 +1,4 @@
-/*package com.grupo12.controllers;
+package com.grupo12.controllers;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +80,7 @@ public class ClientController {
         if (id != null) {
             Optional<Client> client = clientService.getByIdWithUser(id);
             if (client.isPresent()) {
-                //model.addAttribute("clientDTO", clientConverter.entityToDTO(client.get())); // editar
+                model.addAttribute("clientDTO", clientConverter.entityToDTO(client.get())); // editar
             } else {
                 return "redirect:/clients";
             }
@@ -98,7 +98,7 @@ public class ClientController {
             User user = userOpt.get();
 
             // ✅ Creamos el UserDTO con los datos del usuario logueado
-            UserDTOForm userDTO = new UserDTOForm();
+            UserDTO userDTO = new UserDTO();
             userDTO.setId(user.getId());
             userDTO.setUsername(user.getUsername());
             userDTO.setEmail(user.getEmail());
@@ -106,12 +106,16 @@ public class ClientController {
 
             // ✅ Creamos el ClientDTO con ese UserDTO
             ClientDTO clientDTO = new ClientDTO();
-            //clientDTO.setUser(userDTO);
+            clientDTO.setUser(userDTO);
             
             // ✅ Agregar contacto con localidad vacía
             ContactDTO contact = new ContactDTO();
+            // Opcional: no hagas set de campos que no tienen valor todavía
+            contact.setLocality(new LocalityDTO());
             clientDTO.setContact(contact);
             contact.setLocality(new LocalityDTO());
+            
+           
 
             
 
@@ -137,6 +141,24 @@ public class ClientController {
             model.addAttribute("localities", localityService.getAll());
             return "client/form";
         }
+        // Paso 1: Buscamos el usuario ya existente
+        Optional<User> userOpt = userService.findByUsername(clientDTO.getUser().getUsername());
+        if (userOpt.isEmpty()) {
+            model.addAttribute("error", "No se encontró el usuario asociado");
+            model.addAttribute("localities", localityService.getAll());
+            return "client/form";
+        }
+
+        User user = userOpt.get();
+
+        // Paso 2: Convertimos el DTO a entidad Client
+        Client client = clientConverter.DTOToEntity(clientDTO);
+
+        // Paso 3: Establecemos la relación de ambos lados
+        client.setUser(user);
+        user.setPerson(client); // ⚠️ Esto es clave para que se guarde el idPerson correctamente
+        
+        
         clientService.insertOrUpdate(clientDTO);
         return "redirect:/clients";
     }
@@ -148,4 +170,4 @@ public class ClientController {
     }
      
 
-}*/
+}

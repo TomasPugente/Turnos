@@ -52,7 +52,7 @@ public class Person {
     private Contact contact;
     
 
-    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL)
     private User user;
 
     public Person(Integer idPerson, String name, String dni, LocalDate dateOfBirth, Contact contact,

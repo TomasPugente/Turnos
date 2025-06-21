@@ -11,4 +11,5 @@ public interface ILocalityRepository extends JpaRepository<Locality, Integer> {
     public Locality findByName(String name);
 
     public boolean existsByName(String name);
+    
 }

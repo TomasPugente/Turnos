@@ -7,9 +7,13 @@ import java.util.Set;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class ClientDTO extends PersonDTO {
@@ -17,13 +21,10 @@ public class ClientDTO extends PersonDTO {
 	private String code;
 	private Set<TurnDTO> appointmentHistory = new HashSet<>();
 	
-	@Valid
-	UserDTOForm user;	
   
-	public ClientDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth,
-			ContactDTO contact, UserDTOForm user, String code) {
-		super(idPerson, name, dni, dateOfBirth, contact);
-		this.user = user;
+	public ClientDTO(Integer idPerson, String name, String surname, String dni, LocalDate dateOfBirth,
+			ContactDTO contact, UserDTO user, String code) {
+		super(idPerson, name, surname, dni, dateOfBirth, contact, user);
 		this.code = code;
 	}		
 

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Generar Turnos Múltiples</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+    <h2>Habilitar Turnos Múltiples</h2>
+    <form action="/client/enable/multiple" method="post" class="row g-3">
+        
+        <div class="col-md-6">
+            <label for="employeeId" class="form-label">ID de Empleado:</label>
+            <input type="number" class="form-control" id="employeeId" name="employeeId" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="serviceId" class="form-label">ID del Servicio:</label>
+            <input type="number" class="form-control" id="serviceId" name="serviceId" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="startDate" class="form-label">Fecha y hora de inicio:</label>
+            <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="endDate" class="form-label">Fecha y hora de fin:</label>
+            <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="durationMinutes" class="form-label">Duración de cada turno (minutos):</label>
+            <input type="number" class="form-control" id="durationMinutes" name="durationMinutes" required min="1">
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Generar turnos</button>
+        </div>
+
+    </form>
+</body>
+</html>

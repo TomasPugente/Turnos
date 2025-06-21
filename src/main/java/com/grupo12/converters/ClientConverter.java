@@ -1,4 +1,4 @@
-/*package com.grupo12.converters;
+package com.grupo12.converters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,7 +32,6 @@ public class ClientConverter {
                 client.getDateOfBirth(),
                 contactToDTO(client.getContact()),
                 userToDTO(client.getUser()),
-                contactToDTO(client.getContact()), null,
                 client.getCode());
     }
 
@@ -44,9 +43,10 @@ public class ClientConverter {
                 clientDTO.getDni(),
                 clientDTO.getDateOfBirth(),
                 contactToEntity(clientDTO.getContact()),
-                userToEntity(clientDTO.getUser()),
-                clientDTO.getCode());
-                clientDTO.getCode(), null);
+                clientDTO.getCode(),
+                userToEntity(clientDTO.getUser())
+        		);
+    
 
         if (clientDTO.getIdPerson() != null) {
             client.setIdPerson(clientDTO.getIdPerson());
@@ -61,9 +61,19 @@ public class ClientConverter {
         existing.setName(dto.getName());
         existing.setSurname(dto.getSurname());
         existing.setDateOfBirth(dto.getDateOfBirth());
+        
+        if (existing.getContact() == null) {
+            existing.setContact(new Contact());
+        }
+
+        
         existing.getContact().setStreet(dto.getContact().getStreet());
         existing.getContact().setNumber(dto.getContact().getNumber());
         existing.getContact().setPhone(dto.getContact().getPhone());
+        
+        System.out.println("Street DTO: " + dto.getContact().getStreet());
+        System.out.println("Number DTO: " + dto.getContact().getNumber());
+        System.out.println("Existing Contact ID: " + (existing.getContact() != null ? existing.getContact().getIdContact() : "null"));
        // existing.setCode(dto.getCode());
 
         
@@ -76,7 +86,7 @@ public class ClientConverter {
         }
 
         if (dto.getContact().getLocality().getIdLocality() != null) {
-            Locality locality = localityService.getById(dto.getContact().getLocality().getIdLocality()).orElse(null);
+            Locality locality = localityService.findById(dto.getContact().getLocality().getIdLocality()).orElse(null);
             existing.getContact().setLocality(locality);
         } else {
             existing.getContact().setLocality(null);
@@ -105,10 +115,10 @@ public class ClientConverter {
                 localityToEntity(contactDTO.getLocality()));
     }
     
-    public UserDTOForm userToDTO(User user) {
+    public UserDTO userToDTO(User user) {
         if (user == null) return null;
 
-        UserDTOForm dto = new UserDTOForm();
+        UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
@@ -116,7 +126,7 @@ public class ClientConverter {
         return dto;
     }
     
-    public User userToEntity(UserDTOForm dto) {
+    public User userToEntity(UserDTO dto) {
         if (dto == null) return null;
 
         User user = new User();
@@ -141,5 +151,5 @@ public class ClientConverter {
     }
 
 
-}*/
+}
 

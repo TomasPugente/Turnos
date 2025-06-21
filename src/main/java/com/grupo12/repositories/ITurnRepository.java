@@ -33,7 +33,8 @@ import java.util.Optional;
 
 @Repository
 public interface ITurnRepository extends JpaRepository<Turn, Integer> {
-    List<Turn> findAvailableTurns();
+	@Query("SELECT t FROM Turn t WHERE t.status = 'PENDIENTE'")
+	List<Turn> findAvailableTurns(); // ✅ Funciona
 	
 
     
@@ -45,12 +46,14 @@ public interface ITurnRepository extends JpaRepository<Turn, Integer> {
 	List<Turn> findByEmployee_IdPersonAndStatusOrderByStartTimeAsc(int employeeId, TurnStatus status);
 	
 	//PARA CU008: Buscar el proximo turno pendiente para un empleado
-	@Query("SELECT t FROM Turn t WHERE t.employee.idPerson = :employeeId AND t.status = 'PENDIENTE' ORDER BY t.startTime ASC") 
+	/*@Query("SELECT t FROM Turn t WHERE t.employee.idPerson = :employeeId AND t.status = 'PENDIENTE' ORDER BY t.startTime ASC") 
+	List<Turn> findAvailableTurns();*/
 	
 	/*@Query("SELECT t FROM Turn t WHERE t.client IS NULL AND t.status = com.grupo12.entities.TurnStatus.PENDIENTE AND t.active = true")
-	List<Turn> findAvailableTurns();*/ 
+	List<Turn> findAvailableTurns();*/
 	
 	//Optional<Turn> findNextPendingTurnByEmployeedId(int employeeId);
+	@Query("SELECT t FROM Turn t WHERE t.employee.idPerson = :employeeId AND t.status = 'PENDIENTE'")
 	List<Turn>findNextPendingTurnByEmployeeId(int employeeId,Pageable pageable);
 	
 	//PARA CU009 (validacion de disponibilidad): Comprobar solapamientos 
@@ -65,6 +68,19 @@ public interface ITurnRepository extends JpaRepository<Turn, Integer> {
 	List<Turn> findByEmployee_IdPersonOrderByStartTimeAsc(int employeeId);
 	List<Turn> findByClientIdPersonOrderByStartTimeAsc(int clientId);
 	List<Turn> findByStatus(TurnStatus status);
+
+
+
+
+	Collection<Turn> findByEmployeeIdPersonOrderByStartTimeAsc(int employeeId);
+
+
+
+	Optional<Turn> findByIdTurn(Integer id);
+
+
+
+	void deleteByEmployeeIdPersonAndClientIsNull(Integer id);
 	
 }
 

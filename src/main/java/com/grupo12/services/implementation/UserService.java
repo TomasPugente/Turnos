@@ -1,4 +1,4 @@
-/*package com.grupo12.services.implementation;
+package com.grupo12.services.implementation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,11 +34,15 @@ public class UserService implements UserDetailsService, IUserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.FindByUsernameAndFetchRolesEagerly(username);
-        return buildUser(user, buildGrantedAuthorities(user.getUserRoles()));
+        
+        if (user == null) {
+            throw new UsernameNotFoundException("Usuario no encontrado con nombre de usuario: " + username);
+        }
+       
+        return buildUser(user, buildGrantedAuthorities(user.getUserRoles()));     
     }
 
-    private org.springframework.security.core.userdetails.User buildUser(User user,
-            List<GrantedAuthority> authorities) {
+    private org.springframework.security.core.userdetails.User buildUser(User user, List<GrantedAuthority> authorities) {
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
@@ -60,8 +64,26 @@ public class UserService implements UserDetailsService, IUserService {
         user.setPassword(pe.encode(user.getPassword()));
         user.setEnabled(true);
         user.setEmail(user.getEmail());
-        System.out.println("Saving user: " + user.getUsername());
+        
+        if (user.getPerson() == null) {
+            throw new IllegalArgumentException("User must be associated with a Person (e.g., Client)");
+        }
+        
+        if (user.getUserRoles() == null) {
+            user.setUserRoles(new HashSet<>());
+        }
 
+        
+        // Agregar ROLE_USER si aún no lo tiene
+        boolean hasRole = user.getUserRoles().stream()
+            .anyMatch(r -> r.getRole().equals("ROLE_USER"));
+
+        if (!hasRole) {
+            UserRole defaultRole = new UserRole(user, "ROLE_USER");
+            user.getUserRoles().add(defaultRole);
+        }
+        
+        //user.setPerson(user.getPerson());
         return userRepository.save(user);
     }
 
@@ -75,43 +97,30 @@ public class UserService implements UserDetailsService, IUserService {
         return userRepository.existsByEmail(email);
     }
 
-	@Override
-	public Optional<Client> getByUser(User user) {
-		return userRepository.findByUsername(user);
-	}
+    /*@Override
+    public Optional<Client> getByUser(User user) {
+        return userRepository.findByUser(user);
+    }*/
 
-	@Override
-	public Optional<User> findByUsername(String username) {
-		return userRepository.findByUsername(username);
-	}
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 
-	@Override
-	public User insertOrUpdate(User user) {
-		return userRepository.save(user);
-	}
+    @Override
+    public User insertOrUpdate(User user) {
+        return userRepository.save(user);
+    }
 
-	@Override
-	public Optional<User> findByEmail(String email) {
-		return userRepository.findByEmail(email);
-	}
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
-	@Override
-	public Optional<Client> getByUser(User user) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
-	}
+    @Override
+    public User findByResetToken(String resetToken) {
+        return userRepository.findByResetToken(resetToken);
+    }
+}
 
-	@Override
-	public Optional<User> findByUsername(String username) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
-	}
-
-	@Override
-	public User findByResetToken(String resetToken) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-}*/
 

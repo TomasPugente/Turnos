@@ -12,12 +12,16 @@ import com.grupo12.entities.Employee;
 public interface IEmployeeRepository extends JpaRepository<Employee, Integer> {
 	boolean existsByDni(String dni);
 	
-	@Query("SELECT e FROM Employee e WHERE e.contact.email = :email")
-	Optional<Employee> findByEmail(String email);
+	//@Query("SELECT e FROM Employee e WHERE e.contact.email = :email")
+	//Optional<Employee> findByEmail(String email);
+	
+	Optional<Employee> findByUserEmail(String email);
 
 	Optional<Employee> findById(int idPerson);// se hereda de jparepository
 
 	void deleteById(int idPerson);
 
-       Optional<Employee> findByDni(String dni);;
+    Optional<Employee> findByDni(String dni);
+
+	Optional<Employee> findByCuit(String cuit);;
 }

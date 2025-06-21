@@ -44,15 +44,17 @@ public abstract class PersonDTO {
     
     @Valid
     protected UserDTO user;
-
-    public PersonDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth, ContactDTO contact) {
-        super();
-        this.idPerson = idPerson;
-        this.name = name;
-        this.dni = dni;
-        this.dateOfBirth = dateOfBirth;
-        this.contact = contact;
-    }
+    
+ 
+    public PersonDTO(Integer idPerson, String name, String surname, String dni, LocalDate dateOfBirth, UserDTO user, ContactDTO contact) {
+			this.idPerson = idPerson;
+			this.name = name;
+			this.surname = surname;
+			this.dni = dni;
+			this.dateOfBirth = dateOfBirth;
+			this.user = user;
+			this.contact = contact;
+	}
 
 
 

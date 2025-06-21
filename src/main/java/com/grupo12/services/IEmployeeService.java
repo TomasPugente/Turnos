@@ -8,13 +8,13 @@ import com.grupo12.models.EmployeeDTO;
 
 public interface IEmployeeService {
 
-	public Optional<Employee> getById(int idPerson);
-
 	public List<Employee> getAll();
 
-	public EmployeeDTO insertOrUpdate(EmployeeDTO employeeDTO);
+	public void insertOrUpdate(EmployeeDTO employeeDTO);
 
-	public boolean remove(int idPerson);
+	boolean remove(Integer id);
 
-	public List<Employee> findAll();
+	Optional<Employee> getByCuit(String cuit);
+
+	Optional<Employee> getById(int idPerson);
 }

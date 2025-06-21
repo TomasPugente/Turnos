@@ -38,15 +38,13 @@
 			    <input type="hidden" th:field="*{clientId}" />
 
 			    <label class="m-1" for="turnId">Turno disponible:</label>
-			    <select class="form-select" th:field="*{turnId}">
-			        <option value="" disabled selected>-- Seleccioná un turno --</option>
-					<option th:each="turno : ${turnos}" th:value="${turno.idTurn}">
-					    <span th:if="${turno.employee != null}" 
-					          th:text="'Turno con ' + ${turno.employee.name} + ' - ' + ${turno.date.date}"></span>
-					    <span th:unless="${turno.employee != null}" 
-					          th:text="'Turno sin empleado asignado - ' + ${turno.date.date}"></span>
+				<select class="form-select" th:field="*{turnId}">
+				    <option value="" disabled selected>-- Seleccioná un turno --</option>
+					<option th:each="turno : ${turnos}"
+					        th:value="${turno.idTurn}"
+					        th:text="(${turno.employee} != null) ? 'Turno con ' + ${turno.employee.name} + ' - ' + ${turno.date.date} + ' - ' + ${turno.date.hour}: 'Turno sin empleado asignado - ' + ${turno.date.date} + ' - '+ ${turno.date.hour}">
 					</option>
-			    </select><br><br>
+				</select><br><br>
 
 			    <div th:if="${#fields.hasErrors('turnId')}" th:errors="*{turnId}"></div>
 

@@ -1,4 +1,4 @@
-/*package com.grupo12.converters;
+package com.grupo12.converters;
 
 import com.grupo12.entities.Contact;
 import com.grupo12.entities.Turn;
@@ -6,7 +6,7 @@ import com.grupo12.entities.TurnStatus;
 import com.grupo12.models.TurnDTO;
 import com.grupo12.models.ClientDTO;
 import com.grupo12.models.EmployeeDTO;
-//import com.grupo12.models.ServiceDTO;
+import com.grupo12.models.ServiceDTO;
 import com.grupo12.models.ContactDTO;
 
 
@@ -26,7 +26,7 @@ public class TurnConverter {
 
 	        dto.setIdTurn(turn.getIdTurn());
 	        dto.setActive(turn.isActive());
-	        dto.setCreationTime(turn.getCreationTime());
+	        dto.setCreationTime(turn.getCreatedAt());
 	        dto.setStartTime(turn.getStartTime());
 	        dto.setEndTime(turn.getEndTime());
 	        dto.setStatus(turn.getStatus().name()); // Enum → String
@@ -36,9 +36,9 @@ public class TurnConverter {
 	            dto.setClientName(turn.getClient().getName());
 	            dto.setClientDni(turn.getClient().getDni());
 	            dto.setClientDateOfBirth(turn.getClient().getDateOfBirth());
-	            dto.setClientPassword(turn.getClient().getPassword());
+	            dto.setClientPassword(turn.getClient().getUser().getPassword());
 	            if (turn.getClient().getContact() != null) {
-	                dto.setClientEmail(turn.getClient().getContact().getEmail());
+	                dto.setClientEmail(turn.getClient().getUser().getEmail());
 	            }
 	        }
 
@@ -47,31 +47,32 @@ public class TurnConverter {
 	            dto.setEmployeeName(turn.getEmployee().getName());
 	            dto.setEmployeeDni(turn.getEmployee().getDni());
 	            dto.setEmployeeDateOfBirth(turn.getEmployee().getDateOfBirth());
-	            dto.setEmployeePassword(turn.getEmployee().getPassword());
+	            dto.setEmployeePassword(turn.getEmployee().getUser().getPassword());
 	            dto.setEmployeeCuit(turn.getEmployee().getCuit());
 	            dto.setEmployeeEntryDate(turn.getEmployee().getEntryDate());
 	            if (turn.getEmployee().getContact() != null) {
-	                dto.setEmployeeEmail(turn.getEmployee().getContact().getEmail());
+	                dto.setEmployeeEmail(turn.getEmployee().getUser().getEmail());
 	            }
 	        }
 
 	        if (turn.getService() != null) {
-	            dto.setIdServicio(turn.getService().getIdServicio());
+	            dto.setIdServicio(turn.getService().getIdService());
 	            dto.setServiceName(turn.getService().getName());
 	        }
 
-	        return dto;
-	    }
-		TurnDTO dto=modelMapper.map(turn, TurnDTO.class);
+	   
+	    
+	
+		/*TurnDTO dto=modelMapper.map(turn, TurnDTO.class);
 		//Mapeo de Client, que hereda de Person
 		if(turn.getClient()!=null) {
 			dto.setClientIdPerson(turn.getClient().getIdPerson());
 			dto.setClientName(turn.getClient().getName());
 			dto.setClientDni(turn.getClient().getDni());
 			dto.setClientDateOfBirth(turn.getClient().getDateOfBirth());
-			dto.setClientPassword(turn.getClient().getPassword());
+			dto.setClientPassword(turn.getClient().getUser().getEmail());
 				if(turn.getClient().getContact()!=null) {
-					dto.setClientEmail(turn.getClient().getContact().getEmail());
+					dto.setClientEmail(turn.getClient().getUser().getEmail());
 				}
 			}
 		
@@ -82,22 +83,22 @@ public class TurnConverter {
 			dto.setEmployeeDni(turn.getEmployee().getDni());
 			dto.setEmployeeEntryDate(turn.getEmployee().getEntryDate());
 			dto.setEmployeeName(turn.getEmployee().getName());
-			dto.setEmployeePassword(turn.getEmployee().getPassword());
+			dto.setEmployeePassword(turn.getEmployee().getUser().getEmail());
 			if(turn.getEmployee().getContact()!=null) {
-				dto.setEmployeeEmail(turn.getEmployee().getContact().getEmail());
+				dto.setEmployeeEmail(turn.getEmployee().getUser().getEmail());
 			}
 			
 		}
 		if(turn.getService()!=null) {
-			dto.setIdServicio(turn.getService().getIdServicio());
+			dto.setIdServicio(turn.getService().getIdService());
 			dto.setServiceName(turn.getService().getName());
-		}
+		}*/
 		if (turn.getStatus() != null) {
 	        dto.setStatus(turn.getStatus().name());
 	    }
 		//dto.setStatus(turn.getStatus().name()); //convertir enum a String
 		return dto;
-	    
+	} 
 	
 	public Turn toEntity(TurnDTO dto) {
 	   Turn entity=modelMapper.map(dto,Turn.class);
@@ -106,10 +107,10 @@ public class TurnConverter {
 			entity.setStatus(TurnStatus.valueOf(dto.getStatus()));//Convertir String a enum
 		}
 		return entity;
-		 return modelMapper.map(dto, Turn.class);
+		 //return modelMapper.map(dto, Turn.class);
 	}
 	public void setModelMapper(ModelMapper modelMapper) {
 	    this.modelMapper = modelMapper;
 	}
-}*/
+}
 

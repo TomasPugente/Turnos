@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
+
 import com.grupo12.entities.Client;
 import com.grupo12.entities.Turn;
 
 
 import com.grupo12.models.TurnDTO;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +25,9 @@ public interface ITurnService {
 	
 	public List<Turn> GetAvailableAppointments(); 
 	
-	public void reserveTurn(Long idTurno, String username);
+	public void reserveTurn(Integer idTurno, String username);
 	
+	//@Query("SELECT t FROM Turn t WHERE TYPE(t.employee) = Employee")
 	public List<Turn> getAvailableTurns();
 	
 	//public void reserveAppointment(Long idTurno, String username);
@@ -37,7 +42,7 @@ public interface ITurnService {
 	
 	
 	TurnDTO createTurn(TurnDTO turnDTO);
-	Optional<Turn> getTurnById(int id);
+	//Optional<Turn> getTurnById(Integer id);
 	List<TurnDTO> getAllTurns();
 	List<TurnDTO> getTurnsByEmployeeId(int employeeId);
 	List<TurnDTO> getTurnsByClientId(int clientId);
@@ -51,7 +56,7 @@ public interface ITurnService {
 	//CU009: Habilitar un solo turno(para crear disponibilidad)
 	TurnDTO enableSingleTurn(TurnDTO turnDTO);
 	//Metodo para habilitar multiples turnos/franjas
-	List<TurnDTO> enableMultipleTurns(int employeeId, int serviceId, LocalDateTime startDate, LocalDateTime endDate, int durationMinutes);
+	List<TurnDTO> enableMultipleTurns(int employeeId, Long serviceId, LocalDateTime startDate, LocalDateTime endDate, int durationMinutes);
 	
 	//CU011: Obtener turnos para recordatorios
 	List<TurnDTO> getUpComingTurnsForReminders(LocalDateTime fromTime, LocalDateTime toTime);
@@ -59,5 +64,13 @@ public interface ITurnService {
 	List<TurnDTO> sendRemindersTo(List<Integer> turnIds);
 	
 	void deleteTurn(int id);
+
+	void reserveAppointment(Integer idTurno, String username);
+
+	Optional<Turn> getTurnById(Integer id);
+	
+	public Optional<TurnDTO> getTurnDTOById(int id);
+
+	Turn requestAnAppointment(Long idClient, Long idService, LocalDate date);
 }
 

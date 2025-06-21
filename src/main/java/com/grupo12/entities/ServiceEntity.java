@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Service {
+public class ServiceEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,15 +30,19 @@ public class Service {
     
     @Column(name="detail")
     private String detail;
+    
+    @Column(name = "duration_minutes", nullable = false)
+    private Integer durationMinutes;
 
     @ManyToMany(mappedBy = "services")
     private Set<Date> dates;
 
-	public Service(Integer idService, String name, String detail) {
+	public ServiceEntity(Integer idService, String name, String detail, Integer durationMinutes) {
 		super();
 		this.idService = idService;
 		this.name = name;
 		this.detail = detail;
+		this.durationMinutes = durationMinutes;
 	}
     
     

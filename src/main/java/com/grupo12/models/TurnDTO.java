@@ -17,7 +17,7 @@ import lombok.Data;
 
 
 
-@Getter
+
 @Setter
 @Data
 @NoArgsConstructor
@@ -66,7 +66,7 @@ public class TurnDTO {
     
     //Campos para el servicio
     private String serviceName;
-    private int serviceId;
+    private Long serviceId;
     
     public int getEmployeeId() {
         return employeeIdPerson;
@@ -76,11 +76,11 @@ public class TurnDTO {
         this.employeeIdPerson = employeeId;
     }
 
-    public int getServiceId() {
+    public Long getServiceId() {
         return serviceId;
     }
 
-    public void setServiceId(int serviceId) {
+    public void setServiceId(Long serviceId) {
         this.serviceId = serviceId;
     }
     /*public Employee(Integer idPerson, String name, String dni, LocalDate dateOfBirth, String password, Contact contact,

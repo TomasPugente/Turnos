@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.grupo12.entities.Client;
+import com.grupo12.entities.Person;
 import com.grupo12.entities.User;
 
 
@@ -23,8 +24,11 @@ public interface IClientRepository extends JpaRepository<Client, Serializable> {
 	
 	Optional<Client> findByUserUsername(String username);
 	
+	//Optional<Client> findByUsername(String username);
+	
     @Query("SELECT c FROM Client c LEFT JOIN FETCH c.user WHERE c.idPerson = :id")
     Optional<Client> getByIdWithUser(@Param("id") Integer id);
 	
+    Optional<Client> findByUser(User user);
 	
 }

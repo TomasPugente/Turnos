@@ -12,7 +12,7 @@ public interface IUserService {
 
     boolean existsByEmail(String email);
     
-    Optional<Client> getByUser(User user);
+    //Optional<Client> getByUser(User user);
     
     Optional<User> findByUsername(String username);
     

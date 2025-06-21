@@ -37,6 +37,15 @@
 	</div>
 	
 	<div class="col-md-6">
+	  <label class="form-label">Apellido:
+	    <input class="form-control" type="text" th:field="*{surname}" />
+	    <div th:if="${#fields.hasErrors('surname')}" class="alert alert-danger">
+	      <p th:errors="*{surname}"></p>
+	    </div>
+	  </label><br/>
+	</div>
+	
+	<div class="col-md-6">
 	  <label class="form-label">Nombre de Usuario:
 	    <input class="form-control" type="text" th:field="*{user.username}" />
 	    <div th:if="${#fields.hasErrors('user.username')}" class="alert alert-danger">
@@ -60,6 +69,15 @@
 				</div>
 		</label><br/>
     </div>
+	
+	<div class="col-md-6">
+	  <label class="form-label">Confirmar Contraseña:
+	    <input class="form-control" type="password" th:field="*{user.confirmPassword}" />
+	    <div th:if="${#fields.hasErrors('user.confirmPassword')}" class="alert alert-danger">
+	      <p th:errors="*{user.confirmPassword}"></p>
+	    </div>
+	  </label><br/>
+	</div>
 	
     <!-- Datos de contacto -->
     <fieldset class="row g-3">

@@ -2,6 +2,7 @@ package com.grupo12.services.implementation;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,15 +23,15 @@ public class LocalityService implements ILocalityService {
 		this.localityRepository = localityRepository;
 	}
 
-	@Override
-	public Optional<Locality> getById(int idLocality) {
-		return localityRepository.findById(idLocality);
-	}
 
-	@Override
-	public List<Locality> getAll() {
-		return localityRepository.findAll();
-	}
+    @Override
+    public List<LocalityDTO> getAll() {
+        // transformar entidades a DTO si hace falta
+        List<Locality> entities = localityRepository.findAll();
+        return entities.stream()
+                       .map(e -> new LocalityDTO(e.getIdLocality(), e.getName()))
+                       .collect(Collectors.toList());
+    }
 
 	@Override
 	public LocalityDTO insertOrUpdate(LocalityDTO localityDTO) {
@@ -54,6 +55,11 @@ public class LocalityService implements ILocalityService {
 
 	public void setModelMapper(ModelMapper modelMapper) {
 		this.modelMapper = modelMapper;
+	}
+
+	@Override
+	public Optional<Locality> findById(Integer idLocality) {
+		return localityRepository.findById(idLocality);
 	}
 
 }

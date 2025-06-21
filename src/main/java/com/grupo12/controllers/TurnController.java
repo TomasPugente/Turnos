@@ -2,6 +2,7 @@ package com.grupo12.controllers;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -59,6 +60,50 @@ public class TurnController {
     
     @GetMapping("/select")
     public String selectTurn(Model model) {
+    	System.out.println("[DEBUG] Entró al método GET /select");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("[DEBUG] Entró a Authentication");
+        String username = auth.getName();
+        System.out.println("[DEBUG] Entró a auth.getName()");
+
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado."));
+        System.out.println("[DEBUG] userService.findByUsername(username)");
+        Client client = clientService.getByUsername(user)
+                .orElseThrow(() -> new ClientNotFoundException("Cliente no encontrado."));
+        System.out.println("[DEBUG] clientService.getByUsername(user)");
+
+        RequestTurnDTO requestTurnDTO = new RequestTurnDTO();
+        System.out.println("[DEBUG] new RequestTurnDTO()");
+        requestTurnDTO.setClientId(client.getIdPerson());
+        System.out.println("[DEBUG] client.getIdPerson()");
+
+        model.addAttribute("requestTurnDTO", requestTurnDTO);  // ESTE es clave!
+        System.out.println("[DEBUG] model.addAttribute(\"requestTurnDTO\", requestTurnDTO)");
+
+        List<Turn> turnosDisponibles = new ArrayList<>();
+        try {
+            turnosDisponibles = turnService.getAvailableTurns();
+            System.out.println("[DEBUG] Cantidad de turnos disponibles: " + turnosDisponibles.size());
+            turnosDisponibles.forEach(t -> System.out.println(t.getIdTurn() + " - " + t.getDate() + " - " + t.getEmployee()));
+            System.out.println("[DEBUG] turnService.getAvailableTurns(); ejecutado");
+            model.addAttribute("turnos", turnosDisponibles); // ✅ ESTA LÍNEA FALTABA
+        } catch (Exception e) {
+            System.out.println("[ERROR] Falló getAvailableTurns(): " + e.getMessage());
+            e.printStackTrace(); // Esto te da la traza exacta
+            model.addAttribute("error", "Ocurrió un error al obtener los turnos.");
+            return "client/select-turn"; // o una página de error si preferís
+        };
+        return "client/select-turn";
+    }
+    /*@GetMapping("/select")
+    public String selectTurn(Model model) {
+    	
+        if (result.hasErrors()) {
+            model.addAttribute("turnos", turnService.getAvailableTurns());
+            model.addAttribute("requestTurnDTO", dto);  // <-- Importante!
+            return "client/select-turn";
+        }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         
@@ -71,24 +116,19 @@ public class TurnController {
         // Crear el DTO y setear el clientId automáticamente
         RequestTurnDTO requestTurnDTO = new RequestTurnDTO();
         requestTurnDTO.setClientId(client.getIdPerson());
-
         model.addAttribute("requestTurnDTO", requestTurnDTO);
-
-        // Asumimos que ya tenés una lista de turnos disponibles
-        List<Turn> turnosDisponibles = turnService.getAvailableTurns(); 
-        model.addAttribute("turnos", turnosDisponibles);
-        
-        System.out.println("Tamaño de la lista de turnos: " + turnosDisponibles.size());
-        turnosDisponibles.forEach(t -> System.out.println("Turno ID: " + t.getIdTurn()));
-
+        model.addAttribute("turnos", turnService.getAvailableTurns());
         return "client/select-turn";
-    }
+    }*/
+    
 
     
-    @PostMapping("/select")
-    public String asignTurn(@ModelAttribute @Valid RequestTurnDTO dto, BindingResult result, Model model) {
+    /*@PostMapping("/select")
+    public String asignTurn(@ModelAttribute("requestTurnDTO") @Valid RequestTurnDTO dto, BindingResult result, Model model) {
+    	System.out.println("[DEBUG] Entró al método POST /select");
         if (result.hasErrors()) {
             model.addAttribute("turnos", turnService.getAvailableTurns());
+            model.addAttribute("requestTurnDTO", dto);
             return "client/select-turn";
         }
 
@@ -104,7 +144,54 @@ public class TurnController {
         model.addAttribute("error", "Cliente o turno no válido");
         model.addAttribute("turnos", turnService.getAvailableTurns());
         return "client/select-turn";
+    }*/
+    
+    @PostMapping("/select")
+    public String asignTurn(@ModelAttribute("requestTurnDTO") @Valid RequestTurnDTO dto, BindingResult result, Model model) {
+        System.out.println("[DEBUG] Turno ID: " + dto.getTurnId());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("[DEBUG] Username logueado: " + username);
+
+        Optional<Client> optionalClient = clientService.getByUsername(username);
+        Optional<Turn> optionalTurn = turnService.getTurnById(dto.getTurnId());
+
+        System.out.println("[DEBUG] Turno encontrado: " + optionalTurn.isPresent());
+        System.out.println("[DEBUG] Cliente encontrado: " + optionalClient.isPresent());
+
+        if (optionalTurn.isPresent() && optionalClient.isPresent()) {
+            turnService.assignTurnToClient(optionalTurn.get(), optionalClient.get());
+            return "redirect:/client/select?success";
+        }
+
+        model.addAttribute("error", "Cliente o turno no válido");
+        model.addAttribute("turnos", turnService.getAvailableTurns());
+        model.addAttribute("requestTurnDTO", dto);
+        return "client/select-turn";
     }
+    
+
+    
+    /*@PostMapping("/select")
+    public String asignTurn(@ModelAttribute @Valid RequestTurnDTO dto, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("turnos", turnService.getAvailableTurns());
+            model.addAttribute("requestTurnDTO", dto);  // <--- obligatorio
+            return "client/select-turn";
+        }
+
+        Optional<Client> optionalClient = clientService.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Optional<Turn> optionalTurn = turnService.getTurnById(dto.getTurnId());
+
+        if (optionalTurn.isPresent() && optionalClient.isPresent()) {
+            turnService.assignTurnToClient(optionalTurn.get(), optionalClient.get());
+            return "redirect:/client/select?success";
+        }
+
+        model.addAttribute("error", "Cliente o turno no válido");
+        model.addAttribute("turnos", turnService.getAvailableTurns());
+        model.addAttribute("requestTurnDTO", dto);  // <--- obligatorio también aquí
+        return "client/select-turn";
+    }*/
     
     @GetMapping("/my-turns")
     public String showTurns(Model model) {
@@ -192,6 +279,12 @@ public class TurnController {
 
         return "redirect:/client/my-turns";
     }
+    
+    @GetMapping("/enable-multiple-form")
+    public String showEnableMultipleForm() {
+        return "turns/enable-multiple"; // Cambiá la ruta si lo pusiste en otra carpeta
+    }
+
 
 
 	    // CU008 - Llamar turno para empleado
@@ -223,7 +316,7 @@ public class TurnController {
 	   @GetMapping("/enable/multiple")//---> para usarlo al mostrar en el explorador
 	    public List<TurnDTO> enableMultipleTurns(
 	            @RequestParam int employeeId,
-	            @RequestParam int serviceId,
+	            @RequestParam Long serviceId,
 	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
 	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
 	            @RequestParam int durationMinutes) {

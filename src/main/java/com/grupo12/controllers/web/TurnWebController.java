@@ -26,7 +26,7 @@ public class TurnWebController {
     @GetMapping("/generados")
     public String mostrarTurnosGenerados(
             @RequestParam int employeeId,
-            @RequestParam int serviceId,
+            @RequestParam Long serviceId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam int durationMinutes,
@@ -41,7 +41,7 @@ public class TurnWebController {
     @GetMapping("/turnos/seleccionar")
     public String mostrarTurnosDisponibles(
             @RequestParam int employeeId,
-            @RequestParam int serviceId,
+            @RequestParam Long serviceId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam int durationMinutes,

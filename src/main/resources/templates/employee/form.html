@@ -1,0 +1,162 @@
+<!DOCTYPE html>Add commentMore actions
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Empleados</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+
+  <!-- Custom Styles -->
+  <style>
+    body {
+      font-family: 'Merriweather Sans', sans-serif;
+      background-color: #f8f9fa;
+      padding: 2rem;
+    }
+
+    .card {
+      box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+      border-radius: 1rem;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .form-check {
+      margin-bottom: 0.5rem;
+    }
+
+    legend {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+    }
+  </style>
+
+  <script>
+    function splitDateTime() {
+      const datetimeValue = document.getElementById("fechaDummy").value;
+      if (!datetimeValue) return;
+      const [fecha] = datetimeValue.split("T");
+      document.getElementById("fechaInput").value = fecha;
+    }
+
+    function splitDateTime2() {
+      const datetimeValue = document.getElementById("fechaDummy2").value;
+      if (!datetimeValue) return;
+      const [fecha] = datetimeValue.split("T");
+      document.getElementById("fechaInput2").value = fecha;
+    }
+  </script>
+</head>
+<body>
+
+<div class="container">
+  <div class="card p-4">
+    <h2 class="mb-4" th:text="${employeeDTO?.cuit == null ? 'Agregar Empleado' : 'Editar Empleado'}"></h2>
+
+    <form th:action="@{/employees/save}" th:object="${employeeDTO}" method="post">
+      <input type="hidden" th:field="*{idPerson}" />
+
+      <!-- Sección: Datos de la persona -->
+      <div class="form-section">
+        <legend>Datos de la persona</legend>
+        <div class="row g-3">
+
+          <div class="col-md-3">
+            <label class="form-label">Fecha de nacimiento</label>
+            <input type="date" class="form-control"
+                   id="fechaDummy2"
+                   th:value="${employeeDTO.dateOfBirth != null} ? ${#temporals.format(employeeDTO.dateOfBirth, 'yyyy-MM-dd')} : ''"
+                   onchange="splitDateTime2()"
+                   th:readonly="${cuit != null}" />
+            <input type="hidden" th:field="*{dateOfBirth}" id="fechaInput2" />
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">DNI</label>
+            <input type="number" class="form-control" th:field="*{dni}" th:readonly="${cuit != null}" />
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" th:field="*{name}" th:readonly="${cuit != null}" />
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Apellido</label>
+            <input type="text" class="form-control" th:field="*{surname}" th:readonly="${cuit != null}" />
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Sección: Datos del empleado -->
+      <div class="form-section">
+        <legend>Datos del empleado</legend>
+        <div class="row g-3">
+
+          <div class="col-md-3">
+            <label class="form-label">Fecha de entrada</label>
+            <input type="date" class="form-control"
+                   id="fechaDummy"
+                   th:value="${employeeDTO.entryDate != null} ? ${#temporals.format(employeeDTO.entryDate, 'yyyy-MM-dd')} : ''"
+                   onchange="splitDateTime()" />
+            <input type="hidden" th:field="*{entryDate}" id="fechaInput" />
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">CUIT</label>
+            <input type="number" class="form-control" th:field="*{cuit}" th:readonly="${cuit != null}" />
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Sección: Funciones -->
+      <div class="form-section">
+        <legend>Funciones</legend>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-check" th:each="func : ${allFunctions}">
+              <input class="form-check-input"
+                     type="checkbox"
+                     name="functionIds"
+                     th:id="'function_' + ${func.idJobFunction}"
+                     th:value="${func.idJobFunction}"
+                     th:checked="${assignedFunctionIds.contains(func.idJobFunction)}" />
+              <label class="form-check-label" th:for="'function_' + ${func.idJobFunction}" th:text="${func.name}"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón -->
+      <div class="text-end">
+        <button type="submit" class="btn btn-primary px-4">
+          <i class="bi bi-save"></i> Guardar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- Bootstrap Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

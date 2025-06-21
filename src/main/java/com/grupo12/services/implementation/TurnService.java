@@ -1,21 +1,20 @@
-/*package com.grupo12.services.implementation;
+package com.grupo12.services.implementation;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-//import com.grupo12.models.TurnDTO;
+import com.grupo12.models.TurnDTO;
 import com.grupo12.services.ITurnService;
 import com.grupo12.services.MailService;
 import com.grupo12.converters.TurnConverter;
-//import com.grupo12.converters.TurnConverter;
 import com.grupo12.entities.Client;
 import com.grupo12.entities.Employee;
-//import com.grupo12.entities.Service;
 import com.grupo12.entities.Turn;
 import com.grupo12.entities.TurnStatus;
-import com.grupo12.models.TurnDTO;
+import com.grupo12.entities.ServiceEntity;
 import com.grupo12.repositories.IClientRepository;
 import com.grupo12.repositories.IEmployeeRepository;
 import com.grupo12.repositories.IServiceRepository;
@@ -27,13 +26,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,9 +57,9 @@ public class TurnService implements ITurnService {
 	}
 
 	@Override
-	public void reserveTurn(Long idTurno, String username) {
-        Turn turn = turnRepository.findById(idTurno).orElseThrow();
-        Client client = clientRepository.findById(username).orElseThrow(); // según cómo manejes login
+	public void reserveTurn(Integer idTurno, String username) {
+        Turn turn = turnRepository.findByIdTurn(idTurno).orElseThrow();
+        Client client = clientRepository.findByUserUsername(username).orElseThrow(); // según cómo manejes login
 
         turn.setClient(client);
         turn.setStatus(TurnStatus.PENDIENTE);
@@ -75,14 +71,14 @@ public class TurnService implements ITurnService {
 	public Turn requestAnAppointment(Long idClient, Long idService, LocalDate date) {
         Client client = clientRepository.findById(idClient)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-        Service service = servicioRepository.findById(idService)
+        ServiceEntity service = serviceRepository.findById(idService)
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
-
+        
         Turn turn = new Turn();
         turn.setClient(client);
-        //turn.setService(service);
-        turn.setDate(date);
-        turn.setState("pendiente");
+        turn.setService(service);
+        turn.setDate(turn.getDate());
+        turn.setStatus(TurnStatus.PENDIENTE);
 
         return turnRepository.save(turn);
 	}
@@ -94,9 +90,9 @@ public class TurnService implements ITurnService {
 
 	//Sirve para un cliente logueado
 	@Override
-	public void reserveAppointment(Long idTurno, String username) {
-        Turn turn = turnRepository.findById(idTurno).orElseThrow();
-        Client client = clientRepository.findByUsername(username).orElseThrow(); // según cómo manejes login
+	public void reserveAppointment(Integer idTurno, String username) {
+        Turn turn = turnRepository.findByIdTurn(idTurno).orElseThrow();
+        Client client = clientRepository.findByUserUsername(username).orElseThrow(); // según cómo manejes login
 
         turn.setClient(client);
         turn.setStatus(TurnStatus.PENDIENTE);
@@ -163,7 +159,10 @@ public class TurnService implements ITurnService {
 		if(turnDTO.getClientIdPerson() != null) {
 			client=clientRepository.findById(turnDTO.getClientIdPerson()).orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con ID: "+turnDTO.getClientIdPerson()));
 		}
-		com.grupo12.entities.Service service=serviceRepository.findById(turnDTO.getIdServicio()).orElseThrow(()-> new EntityNotFoundException("Servicio no encontrado con ID: "+turnDTO.getIdServicio()));
+		Long serviceId = (long) turnDTO.getServiceId(); // asegurate que este método existe en TurnDTO
+		ServiceEntity service = serviceRepository.findById(serviceId)
+		    .orElseThrow(() -> new EntityNotFoundException("Servicio no encontrado con ID: " + serviceId));
+
 		
 		Employee employee=null;
 		if(turnDTO.getEmployeeIdPerson()!=null) {
@@ -197,7 +196,7 @@ public class TurnService implements ITurnService {
 	}
 	
 		@Override
-		public Optional<TurnDTO> getTurnById(int id) {
+		public Optional<TurnDTO> getTurnDTOById(int id) {
 			return turnRepository.findById(id).map(turnConverter::toDTO);
 		}
 		@Override
@@ -266,7 +265,9 @@ public class TurnService implements ITurnService {
 			throw new IllegalArgumentException("Empleado, servicio y hora de inicio son obligatorios para habilitar un turno!!");
 		}
 		Employee employee=employeeRepository.findById(turnDTO.getEmployeeIdPerson()).orElseThrow(()->new EntityNotFoundException("Empleado no encontrado con ID: "+turnDTO.getEmployeeIdPerson()));
-		com.grupo12.entities.Service service=serviceRepository.findById(turnDTO.getIdServicio()).orElseThrow(()-> new EntityNotFoundException("Servicio no encontrado con ID: "+turnDTO.getIdServicio()));
+		Long id = (long) turnDTO.getServiceId();
+		ServiceEntity service = serviceRepository.findById(id)
+		    .orElseThrow(() -> new EntityNotFoundException("Servicio no encontrado con ID: " + id));
 		Turn turn=new Turn();
 		turn.setEmployee(employee);
 		turn.setService(service);
@@ -292,11 +293,11 @@ public class TurnService implements ITurnService {
 	//CU009: Habilitar multiples turnos en una franja horaria
 	@Override
 	@Transactional
-	public List<TurnDTO> enableMultipleTurns(int employeeId, int serviceId, LocalDateTime startDate,
+	public List<TurnDTO> enableMultipleTurns(int employeeId, Long serviceId, LocalDateTime startDate,
 			LocalDateTime endDate, int durationMinutes) {
 		// TODO Auto-generated method stub
 		Employee employee=employeeRepository.findById(employeeId).orElseThrow(()-> new EntityNotFoundException("Empleado no encontrado con ID: "+employeeId));
-		com.grupo12.entities.Service service=serviceRepository.findById(serviceId).orElseThrow(()-> new EntityNotFoundException("Servicio no encontrado con ID: "+serviceId));
+		com.grupo12.entities.ServiceEntity service=serviceRepository.findById(serviceId).orElseThrow(()-> new EntityNotFoundException("Servicio no encontrado con ID: "+serviceId));
 		
 		if(durationMinutes<=0) {
 			throw new IllegalArgumentException("La duracion del turno debe ser un numero positivo de minutos!");
@@ -347,8 +348,8 @@ public class TurnService implements ITurnService {
 		        TurnDTO dto = turnConverter.toDTO(turn);
 
 		        // Verificamos que tenga cliente y mail
-		        if (turn.getClient() != null && turn.getClient().getContact().getEmail() != null) {
-		            String to = turn.getClient().getContact().getEmail();
+		        if (turn.getClient() != null && turn.getClient().getUser().getEmail() != null) {
+		            String to = turn.getClient().getUser().getEmail();
 		            String subject = "Recordatorio de turno";
 		            String body = "Estimado/a " + turn.getClient().getName() +
 		                    ",\n\nLe recordamos que tiene un turno el día " + turn.getStartTime() +
@@ -369,8 +370,8 @@ public class TurnService implements ITurnService {
 	    List<TurnDTO> enviados = new ArrayList<>();
 	    for (int id : turnIds) {
 	        Turn turn = turnRepository.findById(id).orElse(null);
-	        if (turn != null && turn.getClient() != null && turn.getClient().getContact().getEmail() != null) {
-	            String to = turn.getClient().getContact().getEmail();
+	        if (turn != null && turn.getClient() != null && turn.getClient().getUser().getEmail() != null) {
+	            String to = turn.getClient().getUser().getEmail();
 	            String subject = "Recordatorio de turno";
 	            String body = "Hola " + turn.getClient().getName() + ", tenés un turno el " + turn.getStartTime();
 	            mailService.sendSimpleMail(to, subject, body);
@@ -381,11 +382,22 @@ public class TurnService implements ITurnService {
 	}
 	@Override
 	public void deleteTurn(int id) {
-		// TODO Auto-generated method stub
 		turnRepository.deleteById(id);
 
 	}
 
+	@Override
+	public Optional<Turn> getTurnById(Integer id) {
+		return turnRepository.findByIdTurn(id);
+	}
 
-}*/
+
+
+
+
+
+	
+
+
+}
 

@@ -1,5 +1,6 @@
 package com.grupo12.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -51,7 +52,6 @@ public class Turn {
     
     @PrePersist
     protected void onCreate() {
-    	LocalDateTime createdAt = LocalDateTime.now();
     	if(status==null) {
     		status=TurnStatus.PENDIENTE;//Estado predeterminado para los turnos recién creados
     	}
@@ -71,10 +71,13 @@ public class Turn {
 	
 	@ManyToOne
 	@JoinColumn(name = "service_id")
-	private Service service;
+	private ServiceEntity service;
+	
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
 	public Turn(int idTurn, TurnStatus status, boolean active, String observation, Client client, Employee employee,
-			Date date, Service service) {
+			Date date, ServiceEntity service) {
 		super();
 		this.idTurn = idTurn;
 		this.status = status;

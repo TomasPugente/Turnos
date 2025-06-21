@@ -36,10 +36,8 @@ public interface IUserRepository extends JpaRepository<User, Serializable> {
     
     Optional<User> findByEmail(String email);
 	
-	@Query("SELECT u FROM User u JOIN FETCH u.userRoles WHERE u.username = :username")
+	@Query("SELECT u FROM User u LEFT JOIN FETCH u.userRoles WHERE u.username = :username")
 	public abstract User FindByUsernameAndFetchRolesEagerly(@Param("username") String username);
-
-	Optional<User> findByUsername(User user);
 
 	boolean existsByUsername(String username);
 
@@ -48,5 +46,10 @@ public interface IUserRepository extends JpaRepository<User, Serializable> {
     //User findByEmail(String email);
 
     User findByResetToken(String resetToken);
+
+	//Optional<Client> findByUser(User user);
+
+	Optional<User> findByUsername(String username);
+
 }
 

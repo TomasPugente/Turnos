@@ -1,4 +1,4 @@
-/*package com.grupo12.services.implementation;
+package com.grupo12.services.implementation;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-//import com.grupo12.converters.ClientConverter;
+import com.grupo12.converters.ClientConverter;
 import com.grupo12.entities.Client;
 
 import com.grupo12.entities.Contact;
@@ -73,9 +73,11 @@ public class ClientService implements IClientService {
 	        Optional<User> existingUser = userService.findByEmail(clientDTO.getUser().getEmail());
 
 	        if (existingUser.isEmpty()) {
-	            //User user = clientConverter.userToEntity(clientDTO.getUser());
-	            //User savedUser = userService.insertOrUpdate(user);
-	            //client.setUser(savedUser);
+	            User user = clientConverter.userToEntity(clientDTO.getUser());
+	            // 🔑 ASOCIAR el client al user antes de guardar
+	            user.setPerson(client);
+	            User savedUser = userService.insertOrUpdate(user);
+	            client.setUser(savedUser);
 	        } else {
 	            client.setUser(existingUser.get());
 	        }
@@ -91,7 +93,7 @@ public class ClientService implements IClientService {
 	        String generatedCode = "CLT" + String.format("%05d", client.getIdPerson());
 	        client.setCode(generatedCode);
 	    }
-
+	    System.out.println("Client to save: " + client.getIdPerson() + ", Contact street: " + client.getContact().getStreet());
 	    clientRepository.save(client); // segunda vez: ahora guarda con el código
 	}
 
@@ -128,10 +130,10 @@ public class ClientService implements IClientService {
 		return existingClient.get().getIdPerson().equals(idPerson);
 	}
 
-	@Override
-	public Optional<Client> getByUsername(User user) {
-		return clientRepository.findByUserUsername(user.getUsername());
-	}
+	/*public Optional<Client> getByUsername(User user) {
+	    if(user.getPerson() == null) return Optional.empty();
+	    return clientRepository.findByPerson(user.getPerson());
+	}*/
 
 	@Override
 	public Optional<Client> getByUsername(String username) {
@@ -145,17 +147,28 @@ public class ClientService implements IClientService {
 
 	@Override
 	public boolean existsByUser(User user) {
-		return clientRepository.existsByUser(user);
+		return clientRepository.findByUser(user).isPresent();
 	}
 
 	public Client save(Client client) {
-
-		client.getUser().setPassword(pe.encode(client.getUser().getPassword()));
-		client.getUser().setEnabled(true);
-		System.out.println("Saving user: " + client.getUser().getUsername());
-		UserRole defaultRole = new UserRole(client.getUser(), "ROLE_USER");
-		client.getUser().getUserRoles().add(defaultRole);
+		//client.getUser().setEnabled(true);
+		//System.out.println("Saving user: " + client.getUser().getUsername());
+	    // ✅ Guardar el cliente por primera vez (si es nuevo) para obtener ID
+	    if (client.getIdPerson() == null) {
+	        client = clientRepository.save(client); // ahora tiene ID
+	    }
+	    // ✅ Generar código si está vacío
+	    if (client.getCode() == null || client.getCode().isEmpty()) {
+	        String generatedCode = "CLT" + String.format("%05d", client.getIdPerson());
+	        client.setCode(generatedCode);
+	    }
 		return clientRepository.save(client);
 	}
+
+	@Override
+	public Optional<Client> getByUsername(User user) {
+		// TODO Auto-generated method stub
+		return clientRepository.findByUserUsername(user.getUsername());
+	}
 	
-}*/
+}

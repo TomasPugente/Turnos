@@ -33,9 +33,9 @@ public class UserDTO {
     
     
     
-    public boolean isPasswordConfirmed() {
+    /*public boolean passwordMatches() {
         return password != null && password.equals(confirmPassword);
-    }
+    }*/
     
     
 
