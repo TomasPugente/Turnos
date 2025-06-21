@@ -8,9 +8,9 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServiceDTO {
-	private int id;
-	private String name;
-	private String description;
+	private int idServicio;
+	private String serviceName;
+	private String detail;
 	private int durationMinutes;
 	
 }
