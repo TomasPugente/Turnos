@@ -10,4 +10,6 @@ public interface IServiceService {
 	List<ServiceDTO>getAllServices();
 	ServiceDTO updateService(int id,ServiceDTO serviceDTO);
 	void deleteService(int id);
+	List<ServiceDTO> getAll();
+	List<ServiceDTO> getAllDTO();
 }

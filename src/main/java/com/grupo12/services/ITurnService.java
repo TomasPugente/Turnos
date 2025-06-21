@@ -1,6 +1,8 @@
 package com.grupo12.services;
 
 import com.grupo12.models.TurnDTO;
+import com.grupo12.models.TurnMultipleDTO;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +24,14 @@ public interface ITurnService {
 	//CU009: Habilitar un solo turno(para crear disponibilidad)
 	TurnDTO enableSingleTurn(TurnDTO turnDTO);
 	//Metodo para habilitar multiples turnos/franjas
-	List<TurnDTO> enableMultipleTurns(int employeeId, int serviceId, LocalDateTime startDate, LocalDateTime endDate, int durationMinutes);
+	List<TurnDTO> enableMultipleTurns(TurnMultipleDTO dto);
 	
 	//CU011: Obtener turnos para recordatorios
-	List<TurnDTO> getUpComingTurnsForReminders(LocalDateTime fromTime, LocalDateTime toTime);
+	//List<TurnDTO> getUpComingTurnsForReminders(LocalDateTime fromTime, LocalDateTime toTime);
 	
 	List<TurnDTO> sendRemindersTo(List<Integer> turnIds);
 	
 	void deleteTurn(int id);
+	List<TurnDTO> findUpcomingTurns(LocalDateTime fromTime, LocalDateTime toTime);
+	
 }
