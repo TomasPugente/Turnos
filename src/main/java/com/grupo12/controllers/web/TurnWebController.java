@@ -1,5 +1,6 @@
 package com.grupo12.controllers.web;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,13 +9,19 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.grupo12.models.TurnDTO;
+import com.grupo12.models.TurnMultipleDTO;
+import com.grupo12.services.IEmployeeService;
+import com.grupo12.services.IServiceService;
 import com.grupo12.services.ITurnService;
+
 
 @Controller
 @RequestMapping("/web/turns")
@@ -22,7 +29,15 @@ public class TurnWebController {
 
     @Autowired
     private ITurnService turnService;
+    
+    @Autowired
+    private IEmployeeService employeeService;
 
+    @Autowired
+    private IServiceService serviceService;
+    
+
+    //vistas para CU011
     @GetMapping("/generados")
     public String mostrarTurnosGenerados(
             @RequestParam int employeeId,
@@ -31,76 +46,128 @@ public class TurnWebController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam int durationMinutes,
             Model model) {
-
-        List<TurnDTO> turnos = turnService.enableMultipleTurns(employeeId, serviceId, startDate, endDate, durationMinutes);
+    	TurnMultipleDTO dto = new TurnMultipleDTO();
+		   dto.setEmployeeIdPerson(employeeId);
+	    	dto.setIdServicio(serviceId);
+	    	dto.setStartDate(startDate);
+	    	dto.setEndDate(endDate);
+	    	dto.setDurationMinutes(durationMinutes);
+        List<TurnDTO> turnos = turnService.enableMultipleTurns(dto);
         model.addAttribute("turnos", turnos);
-        return "listTurns"; // nombre del archivo lista_turnos.html
+        return "turns/listTurns"; // nombre del archivo lista_turnos.html
     }
 
 
     @GetMapping("/turnos/seleccionar")
     public String mostrarTurnosDisponibles(
+    		
             @RequestParam int employeeId,
             @RequestParam int serviceId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam int durationMinutes,
             Model model) {
+    	TurnMultipleDTO dto = new TurnMultipleDTO();
+    	dto.setEmployeeIdPerson(employeeId);
+    	dto.setIdServicio(serviceId);
+    	dto.setStartDate(startDate);
+    	dto.setEndDate(endDate);
+    	dto.setDurationMinutes(durationMinutes);
 
-        List<TurnDTO> turnos = turnService.enableMultipleTurns(employeeId, serviceId, startDate, endDate, durationMinutes);
+    	List<TurnDTO> turnos = turnService.enableMultipleTurns(dto);
         model.addAttribute("turnos", turnos);
-        return "turnsView"; // Esto se refiere a un archivo `turnos_disponibles.html` en `src/main/resources/templates`
+        return "turns/turnsView"; // Esto se refiere a un archivo `turnos_disponibles.html` en `src/main/resources/templates`
     }
     
     @GetMapping("/form")
     public String mostrarFormulario() {
-        return "generateTurn"; // sin la extensión .html
+        return "turns/generateTurn"; // sin la extensión .html
     }
     
     @GetMapping("/reminders")
     public String mostrarTurnosParaRecordatorio(Model model) {
-        // Por ejemplo, los próximos 24h
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tomorrow = now.plusDays(1);
-        List<TurnDTO> turnos = turnService.getUpComingTurnsForReminders(now, tomorrow);
+        List<TurnDTO> turnos=turnService.findUpcomingTurns(now, tomorrow);
         model.addAttribute("turnos", turnos);
-        return "reminders";
+        return "turns/reminders";
     }
-    /*
-    @PostMapping("/send-reminders")
-    public String enviarRecordatoriosManual(RedirectAttributes redirectAttributes) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime tomorrow = now.plusDays(1);
-        turnService.getUpComingTurnsForReminders(now, tomorrow); // Ya incluye el envío de mails
-        redirectAttributes.addFlashAttribute("mensaje", "Recordatorios enviados correctamente.");
-        return "redirect:/web/turns/reminders";
-    }
-    @PostMapping("/send-reminders")
-    public String enviarRecordatorios(@RequestParam("selectedTurnIds") List<Integer> ids, Model model) {
-        List<TurnDTO> recordatorios = turnService.sendRemindersTo(ids); // nuevo método
-        model.addAttribute("enviados", recordatorios);
-        return "remindersResult"; // podés hacer una vista de éxito
-    }*/
     @PostMapping("/send-reminders")
     public String enviarRecordatorios(
             @RequestParam(value = "selectedTurnIds", required = false) List<Integer> ids,
             RedirectAttributes redirectAttributes,
             Model model) {
 
+        List<TurnDTO> enviados;
+
         if (ids == null || ids.isEmpty()) {
             // Envío automático para todos los turnos próximos
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime tomorrow = now.plusDays(1);
-            turnService.getUpComingTurnsForReminders(now, tomorrow); // ya incluye el envío
+         //   enviados = turnService.getUpComingTurnsForReminders(now, tomorrow); // ya incluye el envío
+            enviados=turnService.findUpcomingTurns(now, tomorrow);
             redirectAttributes.addFlashAttribute("mensaje", "Se enviaron recordatorios a todos los turnos próximos.");
         } else {
             // Envío manual sólo a los seleccionados
-            List<TurnDTO> enviados = turnService.sendRemindersTo(ids);
-            model.addAttribute("enviados", enviados);
+            enviados = turnService.sendRemindersTo(ids);
             redirectAttributes.addFlashAttribute("mensaje", "Se enviaron recordatorios a " + enviados.size() + " turno(s) seleccionado(s).");
         }
 
-        System.out.println("Turnos seleccionados: " + ids);
-        return "redirect:/web/turns/reminders";
+        // Marcar como enviados en memoria
+        for (TurnDTO dto : enviados) {
+            dto.setReminderSent(true);
+        }
+
+        model.addAttribute("enviados", enviados);
+        return "turns/remindersResult";
+    }
+    //vista para CU010
+    @GetMapping("/update-status-view")
+    public String updateTurnStatusGET(@RequestParam int id, @RequestParam String newStatus, Model model) {
+        TurnDTO turno = turnService.updateTurnStatus(id, newStatus);
+        model.addAttribute("turno", turno);
+        return "turns/status-updated";
+    }
+    
+    //vista para CU008 
+    @GetMapping("/call-next-view")
+    public String callNextTurn(@RequestParam("employeeId") int employeeId, Model model) {
+        TurnDTO turno = turnService.callNextTurnForEmployee(employeeId);
+        model.addAttribute("turno", turno);
+        return "turns/called-turn"; // nombre de la vista Thymeleaf en src/main/resources/templates
+    }
+    
+    //vistas para CU009
+    @GetMapping("/enable/single-form")
+    public String mostrarFormularioSingle(Model model) {
+        model.addAttribute("turno", new TurnDTO());
+        model.addAttribute("empleados", employeeService.getAll()); // Lista de empleados
+        model.addAttribute("servicios", serviceService.getAllDTO()); // Lista de servicios
+        return "turns/generateSingleTurn";
+    }
+
+    @PostMapping("/enable/single")
+    public String habilitarTurnoUnico(@ModelAttribute TurnDTO turno, RedirectAttributes redirectAttributes) {
+    	  if (turno.getEmployeeIdPerson() == null || turno.getServiceId() == 0 || turno.getStartTime() == null) {
+    	        throw new IllegalArgumentException("Empleado, servicio y hora de inicio son obligatorios para habilitar un turno!!");
+    	    }
+
+    	    turnService.enableSingleTurn(turno);
+    	    redirectAttributes.addFlashAttribute("mensaje", "Turno habilitado correctamente.");
+    	    return "redirect:/web/turns/form"; // o la vista que quieras
+    }
+    @GetMapping("/enable/multiple-form")
+    public String mostrarFormularioMultiple(Model model) {
+        model.addAttribute("turnoMultiple", new TurnMultipleDTO());
+        model.addAttribute("empleados", employeeService.getAll());
+        model.addAttribute("servicios", serviceService.getAll());
+        return "turns/generateMultipleTurns";
+    }
+
+    @PostMapping("/enable/multiple")
+    public String habilitarTurnosMultiples(@ModelAttribute TurnMultipleDTO dto, RedirectAttributes redirectAttributes) {
+        turnService.enableMultipleTurns(dto);
+        redirectAttributes.addFlashAttribute("mensaje", "Turnos generados correctamente.");
+        return "redirect:/web/turns/form";
     }
 }
