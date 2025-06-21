@@ -32,8 +32,8 @@ public class TurnReminderScheduler {
 		
 		System.out.println("Ejecutando scheduler de recordatorios de turnos entre "+reminderWindowStartDateTime + " y "+reminderWindowEnd);
 		
-		List<TurnDTO> upcomingTurns=turnService.getUpComingTurnsForReminders(reminderWindowStartDateTime, reminderWindowEnd);
-		
+	//	List<TurnDTO> upcomingTurns=turnService.getUpComingTurnsForReminders(reminderWindowStartDateTime, reminderWindowEnd);
+		List<TurnDTO> upcomingTurns=turnService.findUpcomingTurns(reminderWindowStartDateTime, reminderWindowEnd );
 		if(upcomingTurns.isEmpty()) {
 			System.out.println("No hay turnos proximos en el rango definido para enviar recordatorios");
 			return;
