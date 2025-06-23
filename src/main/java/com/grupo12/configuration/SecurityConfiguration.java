@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                                                 .requestMatchers(
                                                                 "/css/**", "/js/**", "/images/**",
                                                                 "/vendor/bootstrap/**",
-                                                                "/login", "/register", "/register/**",
+                                                                "/login", "/register", "/register/", "/registeruser/**",
                                                                 "/forgotpassword", "/forgotpassword/**", "/index",
                                                                 "/resetpassword", "/resetpassword/**")
                                                 .permitAll()
@@ -55,3 +55,4 @@ public class SecurityConfiguration {
         }
 
 }
+

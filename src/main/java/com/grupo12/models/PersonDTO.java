@@ -10,13 +10,17 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
+
 @Data
 @NoArgsConstructor
 @Valid
+@Getter
+@Setter
 public abstract class PersonDTO {
 
     // Pongo Integer para poder diferenciar entre: null → está creando un nuevo
@@ -48,11 +52,16 @@ public abstract class PersonDTO {
 
     public PersonDTO(Integer idPerson, String name, String dni, LocalDate dateOfBirth, ContactDTO contact) {
         super();
+    }
+    
+    public PersonDTO(Integer idPerson, String name, String surname, String dni, LocalDate dateOfBirth, ContactDTO contact, UserDTO user) {
         this.idPerson = idPerson;
         this.name = name;
+        this.surname = surname;
         this.dni = dni;
         this.dateOfBirth = dateOfBirth;
         this.contact = contact;
+        this.user = user;
     }
 
 }

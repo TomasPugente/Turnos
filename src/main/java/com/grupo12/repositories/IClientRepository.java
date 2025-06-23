@@ -25,6 +25,8 @@ public interface IClientRepository extends JpaRepository<Client, Serializable> {
 	
     @Query("SELECT c FROM Client c LEFT JOIN FETCH c.user WHERE c.idPerson = :id")
     Optional<Client> getByIdWithUser(@Param("id") Integer id);
+
+	Optional<Client> findByUser(User user);
 	
 	
 }

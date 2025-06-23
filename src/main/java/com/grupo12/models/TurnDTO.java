@@ -1,12 +1,5 @@
 package com.grupo12.models;
-
-
-
-
 import java.util.Date;
-
-//import com.grupo12.entities.Contact;
-
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import lombok.Getter;
@@ -16,22 +9,25 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 
-
-@Getter
 @Setter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor //Ya genera el constructor de todos los argumentos
 public class TurnDTO {
 
-    private int idTurn;
+
+    private Integer idTurn;
  
     private boolean active;
     private String observation;	
     private ClientDTO client;
     private EmployeeDTO employee;
     private Date date;
-    
+
+
+	public TurnDTO(Integer idTurn, String status, boolean active, String observation, ClientDTO client, EmployeeDTO employee,
+			Date date) {}
+    private Integer idService;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String status; //Representa el enum como String
@@ -58,10 +54,14 @@ public class TurnDTO {
     
     //Campos para el servicio
     private String serviceName;
+
     private Integer idServicio;
     
     //Campo para los recordatorios
     private Boolean reminderSent;
+
+    private Integer serviceId;
+
     
     public int getEmployeeId() {
         return employeeIdPerson;
@@ -71,12 +71,17 @@ public class TurnDTO {
         this.employeeIdPerson = employeeId;
     }
 
-    public int getServiceId() {
-        return idServicio;
-    }
 
     public void setServiceId(int serviceId) {
         this.idServicio = serviceId;
+    }
+    
+    public Integer getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Integer serviceId) {
+        this.serviceId = serviceId;
     }
 
   

@@ -1,5 +1,6 @@
 package com.grupo12.services.implementation;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import com.grupo12.entities.UserRole;
 import com.grupo12.entities.Contact;
 import com.grupo12.entities.User;
 import com.grupo12.models.ClientDTO;
+import com.grupo12.models.UserDTO;
 import com.grupo12.repositories.IClientRepository;
 import com.grupo12.repositories.IUserRepository;
 import com.grupo12.services.IClientService;
@@ -55,16 +57,21 @@ public class ClientService implements IClientService {
 	public List<Client> getAll() {
 		return clientRepository.findAll();
 	}
-
+	
+	
+	//Crea o modifica el cliente
 	@Override
 	public void insertOrUpdate(ClientDTO clientDTO) {
 	    Client client;
 
 	    if (clientDTO.getIdPerson() != null) {
+	        // Cliente existente: cargamos y actualizamos
 	        client = clientRepository.findById(clientDTO.getIdPerson()).orElseThrow();
 	        clientConverter.updateEntityFromDTO(client, clientDTO);
 	    } else {
+	        // Nuevo cliente: convertimos DTO a entidad
 	        client = clientConverter.DTOToEntity(clientDTO);
+	        client.setUser(null);  // IMPORTANTE: quitar usuario por ahora
 	    }
 
 	    // ✅ Manejar User si viene en el DTO
@@ -81,23 +88,49 @@ public class ClientService implements IClientService {
 	    }
 
 	    // ✅ Guardar el cliente por primera vez (si es nuevo) para obtener ID
+
+	    // 1. Guardar cliente sin usuario para obtener ID si es nuevo
 	    if (client.getIdPerson() == null) {
-	        client = clientRepository.save(client); // ahora tiene ID
+	        client = clientRepository.save(client);
 	    }
 
-	    // ✅ Generar código si está vacío
+	    // 2. Manejar User si viene en el DTO
+	    if (clientDTO.getUser() != null) {
+	        Optional<User> existingUserByEmail = userService.findByEmail(clientDTO.getUser().getEmail());
+	        User user;
+
+	        if (existingUserByEmail.isPresent()) {
+	            user = existingUserByEmail.get();
+	            // Actualizar atributos del usuario existente
+	            user.setUsername(clientDTO.getUser().getUsername());
+	            user.setPassword(clientDTO.getUser().getPassword());
+	            user.setEnabled(clientDTO.getUser().getEnabled());
+	            user.setResetToken(clientDTO.getUser().getResetToken());
+	            user.setUpdatedAt(LocalDateTime.now());
+	        } else {
+	        	//Crea un nuevo usuario
+	            user = clientConverter.userToEntity(clientDTO.getUser());
+	            user.setCreatedAt(LocalDateTime.now());
+	        }
+
+	        // Asociar user y client (cliente ya guardado con id)
+	        user.setPerson(client);
+	        client.setUser(user);
+
+	        // Guardar usuario (insert o update)
+	        user = userService.insertOrUpdate(user);
+
+	        // Guardar cliente actualizado con user asociado
+	        client = clientRepository.save(client);
+	    }
+
+	    // 3. Generar código cliente si está vacío
 	    if (client.getCode() == null || client.getCode().isEmpty()) {
 	        String generatedCode = "CLT" + String.format("%05d", client.getIdPerson());
 	        client.setCode(generatedCode);
+	        clientRepository.save(client);
 	    }
-
-	    clientRepository.save(client); // segunda vez: ahora guarda con el código
 	}
-
-	
-
-
-
 
 	@Override
 	public boolean remove(int idPerson) {
@@ -139,11 +172,6 @@ public class ClientService implements IClientService {
 	}
 
 	@Override
-	public Optional<Client> getByUsername(User user) {
-		return clientRepository.findByUserUsername(user.getUsername());
-	}
-
-	@Override
 	public Optional<Client> getByUsername(String username) {
 		return clientRepository.findByUserUsername(username);
 	}
@@ -155,7 +183,33 @@ public class ClientService implements IClientService {
 
 	@Override
 	public boolean existsByUser(User user) {
-		return clientRepository.existsByUser(user);
+		return clientRepository.findByUser(user).isPresent();
+	}
+
+	/*public Client save(Client client) {
+		//client.getUser().setEnabled(true);
+		//System.out.println("Saving user: " + client.getUser().getUsername());
+	    // ✅ Guardar el cliente por primera vez (si es nuevo) para obtener ID
+	    if (client.getIdPerson() == null) {
+	        client = clientRepository.save(client); // ahora tiene ID
+	    }
+	    // ✅ Generar código si está vacío
+	    if (client.getCode() == null || client.getCode().isEmpty()) {
+	        String generatedCode = "CLT" + String.format("%05d", client.getIdPerson());
+	        client.setCode(generatedCode);
+	    }
+		return clientRepository.save(client);
+	}*/
+
+	@Override
+	public Optional<Client> getByUsername(User user) {
+		return clientRepository.findByUserUsername(user.getUsername());
+	}
+
+	@Override
+	public void delete(Client client) {
+		clientRepository.delete(client);
+		
 	}
 
 }

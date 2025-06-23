@@ -19,7 +19,7 @@
 		<a th:href="@{/}" class="btn btn-primary">Volver al inicio</a><br></br>
 		<h2>Centro de Ayuda</h2>
 
-		<form th:action="@{/client/ayuda}" method="get">
+		<form th:action="@{/client/help}" method="get">
 		    <input type="text" name="query" th:value="${query}" placeholder="Buscar ayuda..." />
 		    <button  class="btn btn-primary" type="submit">Buscar</button>
 		</form>

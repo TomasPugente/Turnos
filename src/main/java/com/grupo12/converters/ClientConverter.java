@@ -42,10 +42,11 @@ public class ClientConverter {
                 clientDTO.getSurname(),
                 clientDTO.getDni(),
                 clientDTO.getDateOfBirth(),
-                contactToEntity(clientDTO.getContact()),
-                clientDTO.getCode(), 
+                contactToEntity(clientDTO.getContact()), 
                 userToEntity(clientDTO.getUser()),
-                clientDTO.getCode());
+                clientDTO.getCode()
+                );
+    
 
         if (clientDTO.getIdPerson() != null) {
             client.setIdPerson(clientDTO.getIdPerson());
@@ -60,10 +61,21 @@ public class ClientConverter {
         existing.setName(dto.getName());
         existing.setSurname(dto.getSurname());
         existing.setDateOfBirth(dto.getDateOfBirth());
+        
+        if (existing.getContact() == null) {
+            existing.setContact(new Contact());
+        }
+
+        
         existing.getContact().setStreet(dto.getContact().getStreet());
         existing.getContact().setNumber(dto.getContact().getNumber());
         existing.getContact().setPhone(dto.getContact().getPhone());
         existing.setCode(dto.getCode());
+        
+        System.out.println("Street DTO: " + dto.getContact().getStreet());
+        System.out.println("Number DTO: " + dto.getContact().getNumber());
+        System.out.println("Existing Contact ID: " + (existing.getContact() != null ? existing.getContact().getIdContact() : "null"));
+       // existing.setCode(dto.getCode());
 
         
         // ✅ Control de null para evitar NPE
@@ -75,7 +87,7 @@ public class ClientConverter {
         }
 
         if (dto.getContact().getLocality().getIdLocality() != null) {
-            Locality locality = localityService.getById(dto.getContact().getLocality().getIdLocality()).orElse(null);
+            Locality locality = localityService.findById(dto.getContact().getLocality().getIdLocality()).orElse(null);
             existing.getContact().setLocality(locality);
         } else {
             existing.getContact().setLocality(null);
@@ -115,7 +127,7 @@ public class ClientConverter {
         return dto;
     }
     
-    public User userToEntity(UserDTOForm dto) {
+    public User userToEntity(UserDTO dto) {
         if (dto == null) return null;
 
         User user = new User();

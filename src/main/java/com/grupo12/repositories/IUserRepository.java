@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.grupo12.entities.Client;
+import com.grupo12.entities.Person;
 import com.grupo12.entities.User;
 
 @Repository("userRepository")
@@ -28,5 +29,12 @@ public interface IUserRepository extends JpaRepository<User, Serializable> {
     Optional<User> findByEmail(String email);
 
 	public abstract User findByResetToken(String resetToken);
+
+    //User findByEmail(String email);
+
+	//Optional<Client> findByUser(User user);
+
+
+	Optional<User> findByEmailAndUsername(String email, String username);
 
 }

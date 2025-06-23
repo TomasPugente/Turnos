@@ -1,10 +1,12 @@
 package com.grupo12.controllers;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,14 +17,20 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.grupo12.entities.Client;
 import com.grupo12.entities.Contact;
+import com.grupo12.entities.Locality;
 import com.grupo12.entities.User;
 import com.grupo12.entities.UserRole;
 import com.grupo12.helpers.ViewRouteHelper;
 import com.grupo12.models.ClientDTO;
+import com.grupo12.services.IClientService;
+import com.grupo12.services.IContactService;
+import com.grupo12.services.ILocalityService;
+import com.grupo12.services.IUserService;
 import com.grupo12.services.implementation.ClientService;
 import com.grupo12.services.implementation.EmailService;
 import com.grupo12.services.implementation.UserService;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @Controller
@@ -34,10 +42,17 @@ public class UserController {
 
     @Autowired
     private EmailService emailService;
+    
+    @Autowired
+    private final IContactService contactService;
+   
+    @Autowired
+    private ILocalityService localityService;
 
-    public UserController(UserService userService, ClientService clientService) {
+    public UserController(UserService userService, ClientService clientService, IContactService contactService) {
         this.userService = userService;
         this.clientService = clientService;
+        this.contactService = contactService;
     }
 
     @GetMapping("/login")
@@ -85,13 +100,25 @@ public class UserController {
         return mv;
     }
 
+    @Transactional
     @PostMapping("/registeruser")
     public ModelAndView registeruser(@Valid @ModelAttribute("client") ClientDTO clientDTO,
             BindingResult bindingResult) {
+    	System.out.println("[DEBUG] Entró al método POST /registeruser");
         ModelAndView mv = new ModelAndView(ViewRouteHelper.USER_REGISTER);
+        System.out.println("ModelAndView");
         try {
 
+        	System.out.println("try");
+        	
             if (bindingResult.hasErrors()) {
+                System.out.println("Errores de validación detectados:");
+                bindingResult.getAllErrors().forEach(e -> System.out.println(" -> " + e.getDefaultMessage()));
+                return mv;
+            }
+
+            if (!clientDTO.getUser().getPassword().equals(clientDTO.getUser().getConfirmPassword())) {
+                mv.addObject("error", "Las contraseñas no coinciden.");
                 return mv;
             }
 
@@ -106,25 +133,55 @@ public class UserController {
             }
 
             Client client = new Client();
-
+            System.out.println("new Client");
+            
             client.setName(clientDTO.getName());
+            System.out.println("setName");
             client.setSurname(clientDTO.getSurname());
+            System.out.println("setSurName");
             client.setDni(clientDTO.getDni());
+            System.out.println("setDni");
             client.setDateOfBirth(clientDTO.getDateOfBirth());
+            System.out.println("setDateOfBirth");
 
             Contact contact = new Contact();
             contact.setPhone(clientDTO.getContact().getPhone());
             contact.setEmail(clientDTO.getUser().getEmail());
 
+            System.out.println("setPhone");
+            contact.setStreet(clientDTO.getContact().getStreet());
+            contact.setNumber(clientDTO.getContact().getNumber());
+            
+            Optional<Locality> locality = localityService.findById(clientDTO.getContact().getLocality().getIdLocality());
+            if (locality == null) {
+                mv.addObject("error", "Debe seleccionar una localidad válida.");
+                return mv;
+            }
+            contact.setLocality(locality.get());
+            contact = contactService.save(contact);
+            client.setContact(contact);
+            System.out.println("setContact");
+            
+         
+
             User user = new User();
             user.setUsername(clientDTO.getUser().getUsername());
+            System.out.println("setUsername");
             user.setEmail(clientDTO.getUser().getEmail());
-            user.setPassword(clientDTO.getUser().getPassword());
-            user.setEnabled(true);
+            System.out.println("setEmail");
 
-            UserRole defaultRole = new UserRole(user, "ROLE_USER");
-            user.getUserRoles().add(defaultRole);
-            client.setUser(user);
+            user.setPassword(clientDTO.getUser().getPassword()); 
+            System.out.println("setPassword");
+            
+
+            user.setEnabled(true);
+            System.out.println("setEnabled");
+            user.setPerson(client); // ¡Esto es clave!
+            User savedUser = userService.save(user);
+            
+            
+            
+            client.setUser(savedUser);
             clientService.save(client);
 
             emailService.sendSimpleMail(user.getEmail(), "Correo de prueba",
@@ -133,11 +190,15 @@ public class UserController {
             System.out.println("Correo enviado correctamente");
             mv.setViewName("redirect:/login?registered=true");
         } catch (Exception e) {
+        	e.printStackTrace();
             mv.addObject("error", "A problem has been ocurred: " + e.getMessage());
+            // Esto es CLAVE: para que Spring sepa que debe hacer rollback
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 
         }
         return mv;
     }
+
 
     @GetMapping("/forgotpassword")
     public String forgotpassword() {
@@ -148,7 +209,7 @@ public class UserController {
     public String forgotPasswordSubmit(@RequestParam("email") String email, Model model) {
         try {
 
-            User user = userService.findByEmail(email);
+            User user = userService.findByEmail(email).orElse(null);;
             if (user == null) {
                 model.addAttribute("error", "No user found with that email address.");
                 return ViewRouteHelper.FORGOT_PASSWORD;

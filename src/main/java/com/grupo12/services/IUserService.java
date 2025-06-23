@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.grupo12.entities.Client;
 import com.grupo12.entities.User;
 
+
 public interface IUserService {
     User save(User user);
 
@@ -16,7 +17,7 @@ public interface IUserService {
 
     User findByResetToken(String resetToken);
     
-    Optional<Client> getByUser(User user);
+   // Optional<Client> getByUser(User user);
     
     Optional<User> findByUsername(String username);
     
@@ -24,5 +25,9 @@ public interface IUserService {
 
 	Optional<User> findByEmail(String email);
 
+    //User findByEmail(String email); 
+    
+    Optional<User> findByEmailAndUsername(String email, String username);
+    
 }
 

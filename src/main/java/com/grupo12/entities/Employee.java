@@ -38,12 +38,15 @@ public class Employee extends Person {
     @OneToMany(mappedBy = "employee")
     private Set<Turn> appointments;
 
+
+   
+    
     public Employee(Integer idPerson, String name, String surname, String dni, LocalDate dateOfBirth,
-            Contact contact,
-            LocalDate entryDate, String cuit, User user) {
-        super(idPerson, name, dni, dateOfBirth, contact, user);
-        this.entryDate = entryDate;
-        this.cuit = cuit;
+            Contact contact, LocalDate entryDate, String cuit, User user, Set<JobFunction> functions) {
+		super(idPerson, name, surname, dni, dateOfBirth, contact, user);
+		this.entryDate = entryDate;
+		this.cuit = cuit;
+		this.functions = functions;
     }
 
 

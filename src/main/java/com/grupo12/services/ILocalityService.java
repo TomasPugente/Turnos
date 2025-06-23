@@ -8,12 +8,18 @@ import com.grupo12.models.LocalityDTO;
 
 public interface ILocalityService {
 
-	public Optional<Locality> getById(int idLocality);
+	//public Optional<Locality> getById(int idLocality);
 
 	public List<Locality> getAll();
 
 	public LocalityDTO insertOrUpdate(LocalityDTO localityDTO);
 
 	public boolean remove(int idLocality);
+
+	//public Optional<Locality> findById(Integer idLocality);
+
+	public Optional<Locality> getById(Integer idLocality);
+
+	public Optional<Locality> findById(Integer idLocality);
 
 }

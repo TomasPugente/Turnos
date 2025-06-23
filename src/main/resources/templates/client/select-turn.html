@@ -42,9 +42,9 @@
 			        <option value="" disabled selected>-- Seleccioná un turno --</option>
 					<option th:each="turno : ${turnos}" th:value="${turno.idTurn}">
 					    <span th:if="${turno.employee != null}" 
-					          th:text="'Turno con ' + ${turno.employee.name} + ' - ' + ${turno.date.date}"></span>
+					          th:text="'Turno con ' + ${turno.employee.name} + ' - ' + ${turno.date.date} + ' - ' + ${turno.date.hour}"></span>
 					    <span th:unless="${turno.employee != null}" 
-					          th:text="'Turno sin empleado asignado - ' + ${turno.date.date}"></span>
+					          th:text="'Turno sin empleado asignado - ' + ${turno.date.date} + ' - ' + ${turno.date.hour}"></span>
 					</option>
 			    </select><br><br>
 

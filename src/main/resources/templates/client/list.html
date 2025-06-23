@@ -17,12 +17,12 @@
 <br>
 	
 	<a th:href="@{/}" class="m-1 p-1 btn btn-primary">Volver al inicio</a><br></br>
-	<h1 class="m-1 p-1">Clientes</h1>
+	<h1 class="m-1 p-1">Cliente</h1>
 	
 	<!-- Botón visible solo si el usuario NO tiene cliente -->
 	<div th:if="${!hasClient}">
-	    <a href="/clients/form">
-	        <button type="button" class="btn btn-primary m-1 p-1">Cargar datos adicionales</button>
+	    <a th:href="@{/clients/form}" >
+			<button class="m-1 p-1 btn btn-primary" type="button" th:if="${clientDTO == null or clientDTO.idPerson == null}" onclick="cargarDatosAdicionales()">Cargar datos adicionales</button>
 	    </a>
 	</div>
 	
@@ -43,7 +43,7 @@
 	        <td>
 	            <!-- Botones de editar o eliminar -->
 				<a th:href="@{'/clients/form/' + ${client.idPerson}}"><button type="button" class="btn btn-secondary me-2 px-3 py-2">Editar</button></a> |
-				<a th:href="@{'/clients/delete/' + ${client.idPerson}}" onclick="return confirm('¿Seguro que deseas eliminar este cliente?')"><button type="button" class="btn btn-danger px-3 py-2">Eliminar</button></a>
+				<a th:if="${client.idPerson != null}" th:href="@{'/clients/delete/' + ${client.idPerson}}" onclick="return confirm('¿Seguro que deseas eliminar este cliente?')"><button type="button" class="btn btn-danger px-3 py-2">Eliminar</button></a>
 	        </td>
 	    </tr>
 	    </tbody>

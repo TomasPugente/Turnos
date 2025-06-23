@@ -6,10 +6,10 @@ import java.util.Optional;
 
 public interface IServiceService {
 	ServiceDTO createService(ServiceDTO serviceDTO);
-	Optional<ServiceDTO> getServiceById(int id);
+	Optional<ServiceDTO> getServiceById(Long id);
 	List<ServiceDTO>getAllServices();
-	ServiceDTO updateService(int id,ServiceDTO serviceDTO);
-	void deleteService(int id);
+	ServiceDTO updateService(Long id,ServiceDTO serviceDTO);
+	void deleteService(Long id);
 	List<ServiceDTO> getAll();
 	List<ServiceDTO> getAllDTO();
 }

@@ -99,10 +99,35 @@
             <input type="date" th:field="*{dateOfBirth}" id="dateOfBirth" class="form-control" placeholder="dd/mm/yyyy" required />
         </div>
     </div>
+	
+	<div class="mb-3">
+	    <input type="text" th:field="*{contact.phone}" id="phone" class="form-control" placeholder="Phone" required />
+	</div>
 
-    <div class="mb-3">
-        <input type="text" th:field="*{contact.phone}" id="phone" class="form-control" placeholder="Phone number" required />
-    </div>
+	<!-- Dirección: calle -->
+	<div class="mb-3">
+	    <input type="text" th:field="*{contact.street}" id="street" class="form-control" placeholder="Street" required />
+	</div>
+	
+	<div class="mb-3">
+	    <input type="number" th:field="*{contact.number}" id="number" class="form-control" placeholder="Street Number" required />
+	</div>
+	
+	<div class="mb-3">
+		    <select class="form-select" th:field="*{contact.locality.idLocality}">
+					<option value="0">Select a location</option>
+					<option th:each="locality : ${localities}"
+					        th:value="${locality.idLocality}"
+					        th:text="${locality.name}">
+					</option>
+		    </select>
+			
+		    <p th:if="${#fields.hasErrors('contact.locality.idLocality')}" class="alert alert-danger" th:errors="*{contact.locality.idLocality}"></p>
+		     
+
+	  </label>
+	</div>
+
 
     <div class="mb-3">
         <input type="text" th:field="*{user.username}" id="username" class="form-control" placeholder="Username" required />
@@ -113,13 +138,15 @@
     </div>
 
     <div class="mb-3">
-        <input type="password" th:field="*{user.password}" id="password" class="form-control" placeholder="Password" required minlength="6" />
-        <small class="form-text">Your password must be at least 6 characters long.</small>
+        <input type="password" th:field="*{user.password}" id="password" class="form-control" placeholder="Password"/>
+        <!--<small class="form-text">Your password must be at least 6 characters long.</small> required minlength="6"-->
     </div>
 
     <div class="mb-4">
-        <input type="password" th:field="*{user.confirmPassword}" id="confirmPassword" class="form-control" placeholder="Confirm your password" required minlength="6" />
+        <input type="password" th:field="*{user.confirmPassword}" id="confirmPassword" class="form-control" placeholder="Confirm your password"/>
     </div>
+	
+	
 
     <!-- Mensajes de error o éxito -->
     <div th:if="${error}" class="alert alert-danger text-center">

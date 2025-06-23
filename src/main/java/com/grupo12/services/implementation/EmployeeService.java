@@ -4,8 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import com.grupo12.converters.EmployeeConverter;
 import com.grupo12.entities.Employee;
@@ -14,9 +18,11 @@ import com.grupo12.repositories.IEmployeeRepository;
 import com.grupo12.services.IEmployeeService;
 
 @Service
-public class EmployeeService implements IEmployeeService{
+public class EmployeeService implements IEmployeeService {
 
+	@Autowired 
 	private final IEmployeeRepository repository;
+	
 	@Autowired
 	private IEmployeeRepository employeeRepository;
 
@@ -58,4 +64,10 @@ public class EmployeeService implements IEmployeeService{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+
+	public Optional<Employee> getByCuit(String cuit) {
+		return employeeRepository.findByCuit(cuit);
+	}
+	
 }

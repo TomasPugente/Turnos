@@ -39,14 +39,14 @@ public class ServiceService implements IServiceService{
 	@Override
 	public ServiceDTO createService(ServiceDTO serviceDTO) {
 		// TODO Auto-generated method stub
-		com.grupo12.entities.Service service=serviceConverter.toEntity(serviceDTO);
-		com.grupo12.entities.Service savedService=serviceRepository.save(service);
+		com.grupo12.entities.ServiceEntity service=serviceConverter.toEntity(serviceDTO);
+		com.grupo12.entities.ServiceEntity savedService=serviceRepository.save(service);
 
 		return serviceConverter.toDTO(savedService);
 	}
 	
 	@Override
-	public Optional<ServiceDTO>  getServiceById(int id){
+	public Optional<ServiceDTO>  getServiceById(Long id){
 		return serviceRepository.findById(id).map(serviceConverter::toDTO);
 	}
 	
@@ -57,18 +57,19 @@ public class ServiceService implements IServiceService{
 	}
 
 	@Override
-	public ServiceDTO updateService(int id, ServiceDTO serviceDTO) {
+	public ServiceDTO updateService(Long id, ServiceDTO serviceDTO) {
 		// TODO Auto-generated method stub
-		com.grupo12.entities.Service existingService=serviceRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Servicio no encontrado con ID: "+id));
-		existingService.setName(serviceDTO.getServiceName());
+		com.grupo12.entities.ServiceEntity existingService=serviceRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Servicio no encontrado con ID: "+id));
+		existingService.setName(serviceDTO.getName());
 		existingService.setDetail(serviceDTO.getDetail());
+		existingService.setDetail(serviceDTO.getDescription());
 		existingService.setDurationMinutes(serviceDTO.getDurationMinutes());
-		com.grupo12.entities.Service updateService=serviceRepository.save(existingService);
+		com.grupo12.entities.ServiceEntity updateService=serviceRepository.save(existingService);
 		return serviceConverter.toDTO(updateService);
 	}
 	
 	@Override
-	public void deleteService(int id) {
+	public void deleteService(Long id) {
 		// TODO Auto-generated method stub
 		serviceRepository.deleteById(id);
 
@@ -89,6 +90,7 @@ public class ServiceService implements IServiceService{
             service.getIdService(),
             service.getName(),
             service.getDetail(),
+            service.getDescription(),
             service.getDurationMinutes()
         )
     ).collect(Collectors.toList());

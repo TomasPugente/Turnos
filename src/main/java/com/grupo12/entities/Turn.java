@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.mail.Service;
 import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,7 +64,7 @@ public class Turn {
 
     @ManyToOne
     @JoinColumn(name = "idServicio")
-    private Service service;
+    private ServiceEntity service;
     
     @Column (name="start_time",nullable=false)
     private LocalDateTime startTime;
@@ -116,7 +117,6 @@ public class Turn {
     
     
 }
-
 
 
 

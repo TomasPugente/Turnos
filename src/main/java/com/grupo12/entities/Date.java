@@ -41,7 +41,7 @@ public class Date {
     @JoinTable(name = "date_service",
         joinColumns = @JoinColumn(name = "date_id"),
         inverseJoinColumns = @JoinColumn(name = "service_id"))
-    private Set<Service> services;
+    private Set<ServiceEntity> services;
 
 	public Date(Integer idDate, LocalDate date, LocalTime hour) {
 		super();

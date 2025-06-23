@@ -1,8 +1,5 @@
 package com.grupo12.entities;
-
 import java.time.LocalDate;
-
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -53,20 +50,9 @@ public class Person {
     @JoinColumn(name = "contact_id")
     private Contact contact;
     
-
-
-    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "person", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private User user;
 
-    public Person(Integer idPerson, String name, String dni, LocalDate dateOfBirth, Contact contact,
-            User user) {
-        super();
-        this.idPerson = idPerson;
-        this.name = name;
-        this.dni = dni;
-        this.dateOfBirth = dateOfBirth;
-        this.contact = contact;
-        this.user = user;
-    }
+   
 
 }

@@ -12,10 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.grupo12.models.FAQ;
 import com.grupo12.services.implementation.FAQService;
 
+
+
 @Controller
 @RequestMapping("/client")
 public class HelpController {
 
+	// CU017 - Ayuda al usuario
+	//Se pone una palabra en el buscador y busca todas la preguntas relecionadas a esa palabra
     @GetMapping("/help")
     public String verAyuda(Model model, @RequestParam(value = "query", required = false) String query) {
         List<FAQ> faqs = FAQService.getAll(); // Simulado

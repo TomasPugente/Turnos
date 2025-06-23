@@ -28,4 +28,8 @@ public interface IClientService {
 	public Optional<Client> getByUsername(User user);
 	
 	Optional<Client> getByIdWithUser(Integer id);
+
+	public Client save(Client client);
+
+	public void delete(Client client);
 }

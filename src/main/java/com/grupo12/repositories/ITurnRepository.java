@@ -18,6 +18,7 @@ import com.grupo12.entities.Turn;
 import com.grupo12.entities.TurnStatus;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +59,28 @@ public interface ITurnRepository extends JpaRepository<Turn, Integer> {
 	
 	/*@Query("SELECT t FROM Turn t WHERE t.client IS NULL AND t.status = com.grupo12.entities.TurnStatus.PENDIENTE AND t.active = true")
 	List<Turn> findAvailableTurns();*/
-   
-    List<Turn> findByClientIsNullAndStatus(TurnStatus status);
+	
+	
+	//PARA CU008: Buscar el proximo turno pendiente para un empleado
+	//@Query("SELECT t FROM Turn t WHERE t.employee.idPerson = :employeeId AND t.status = 'PENDIENTE' ORDER BY t.startTime ASC") 
+	
+	/*@Query("SELECT t FROM Turn t WHERE t.client IS NULL AND t.status = com.grupo12.entities.TurnStatus.PENDIENTE AND t.active = true")
+	List<Turn> findAvailableTurns();*/
+	
+	//Optional<Turn> findNextPendingTurnByEmployeedId(int employeeId);
+	
 
+    @Query("SELECT t FROM Turn t WHERE t.employee.idPerson = :idPerson AND t.status = 'PENDIENTE'")
+    List<Turn> findNextPendingTurnByEmployeeId(@Param("idPerson") Integer idPerson, Pageable pageable);
+
+
+
+	//Optional<Turn> findByIdTurn(Integer id);
+
+
+
+	Collection<Turn> findByEmployeeIdPersonOrderByStartTimeAsc(int employeeId);
+    
+    
 }
+

@@ -39,22 +39,11 @@ public class Contact {
     @JoinColumn(name = "locality_id")
     private Locality locality;
 
-    public Contact(int idContact, String street, String number, String email, String phone, Locality locality) {
-        super();
-        this.idContact = idContact;
-        this.street = street;
-        this.number = number;
-        this.email = email;
-        this.phone = phone;
-        this.locality = locality;
-    }
-
-	public Contact(Integer idContact, String street, String number, String email, String phone, Locality locality) {
+	public Contact(Integer idContact, String street, String number, String phone, Locality locality) {
 		super();
 		this.idContact = idContact;
 		this.street = street;
 		this.number = number;
-		this.email = email;
 		this.phone = phone;
 		this.locality = locality;
 	}

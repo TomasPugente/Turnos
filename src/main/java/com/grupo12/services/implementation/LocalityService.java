@@ -23,7 +23,7 @@ public class LocalityService implements ILocalityService {
 	}
 
 	@Override
-	public Optional<Locality> getById(int idLocality) {
+	public Optional<Locality> getById(Integer idLocality) {
 		return localityRepository.findById(idLocality);
 	}
 
@@ -54,6 +54,12 @@ public class LocalityService implements ILocalityService {
 
 	public void setModelMapper(ModelMapper modelMapper) {
 		this.modelMapper = modelMapper;
+	}
+
+	@Override
+	public Optional<Locality> findById(Integer idLocality) {
+		// TODO Auto-generated method stub
+		return localityRepository.findById(idLocality);
 	}
 
 }
