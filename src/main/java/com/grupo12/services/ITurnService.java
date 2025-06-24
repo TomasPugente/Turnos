@@ -82,6 +82,11 @@ public interface ITurnService {
 	List<Turn> getAvailableTurns();
 
 	public List<ServiceEntity> getAllServicios();
+
+	TurnDTO updateTurnStatus(Integer id, String newStatus);
+	
+
+
     
 }
 

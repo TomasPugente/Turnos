@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Lista de Empleados</title>
   <!-- Favicon-->
@@ -49,6 +49,13 @@
     <td th:text="${employee.entryDate}"></td>
     <td>
       <!-- Botones de editar o eliminar -->
+	  <!--<a th:href="@{'/web/turns/called-turn-next-view' + '?employeeId=' + ${employee.idPerson}}"><button type="button" class="btn btn-secondary me-2 px-3 py-2">Llamar turno</button></a>-->
+	  <a th:href="@{'/web/turns/call-next-view'(employeeId=${employee.idPerson})}" 
+	     class="btn btn-secondary me-2 px-3 py-2">
+	     Llamar turno
+	  </a>
+
+
       <a th:href="@{'/employees/form/' + ${employee.cuit}}"><button type="button" class="btn btn-secondary me-2 px-3 py-2">Editar</button></a> |
       <a th:href="@{'/employees/delete/' + ${employee.idPerson}}" onclick="return confirm('¿Seguro que deseas eliminar este empleado?')"><button type="button" class="btn btn-danger px-3 py-2">Eliminar</button></a>
     </td>

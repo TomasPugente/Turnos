@@ -175,11 +175,19 @@ public class TurnController {
             
             // Validar que el turno pertenezca al cliente logueado
             if (turno.getClient() != null && turno.getClient().getIdPerson().equals(optionalClient.get().getIdPerson())) {
-                if (turno.getStatus() == TurnStatus.PENDIENTE || turno.getStatus() == TurnStatus.EN_ATENCION) {
-                    turno.setStatus(TurnStatus.CANCELADO);
-                } else if (turno.getStatus() == TurnStatus.CANCELADO) {
-                    turno.setStatus(TurnStatus.PENDIENTE);
-                }
+            	
+            	if (turno.getStatus() == TurnStatus.PENDIENTE || turno.getStatus() == TurnStatus.EN_ATENCION) {
+            	    turno.setPreviousStatus(turno.getStatus()); // Guarda el estado actual
+            	    turno.setStatus(TurnStatus.CANCELADO);
+            	} else if (turno.getStatus() == TurnStatus.CANCELADO) {
+            	    if (turno.getPreviousStatus() != null) {
+            	        turno.setStatus(turno.getPreviousStatus());
+            	        turno.setPreviousStatus(null); // Limpia el estado previo
+            	    } else {
+            	        turno.setStatus(TurnStatus.PENDIENTE); // Por defecto
+            	    }
+            	}
+            	
                 turnService.save(turno);
             }
         }

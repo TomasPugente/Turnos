@@ -1,7 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Mis Turnos</title>
+	
+	<style>
+		table {
+		    width: 100%;
+		    border-collapse: collapse;
+		}
+
+		th, td {
+		    padding: 8px;
+		    text-align: center;
+		    border: 1px solid #444;
+		}
+	</style>
 	<!-- Favicon-->
 	<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 	<!-- Bootstrap Icons-->
@@ -31,33 +44,36 @@
 		    <div th:each="entry : ${turnosAgrupados}">
 		        <h4 th:text="${entry.key}"></h4>
 		        <table class="m-1 p-1 table table-dark table-striped">
-		            <thead>
+		           <thead>
 		                <tr>
 		                    <th>Empleado</th>
 		                    <th>Fecha</th>
 							<th>Hora</th>
 		                    <th>Estado</th>
 		                    <th>Observación</th>
+							<th>Cambiar estado</th>
 		                </tr>
 		            </thead>
-		            <tbody>
-		                <tr th:each="turno : ${entry.value}">
-		                    <td th:text="${turno.employee != null ? turno.employee.name : 'Empleado no asignado'}"></td>
-		                    <td th:text="${turno.date != null ? turno.date.date : 'Sin fecha'}"></td>
-		                    <td th:text="${turno.date} != null ? ${#temporals.format(turno.date.hour, 'HH:mm ')}"></td>
-		                    <td th:text="${turno.status}"></td>
-		                    <td th:text="${turno.observation}"></td>
-							<td>
-							    <form th:action="@{/client/cancel-turn}" method="post">
-							        <input type="hidden" name="turnId" th:value="${turno.idTurn}" />
-							        <input type="hidden" name="clientId" th:value="${clientId}" />
-							        <button class="m-1 p-1 btn btn-primary" type="submit" 
-							                th:text="${turno.status.name() == 'CANCELADO' ? 'Reactivar' : 'Cancelar'}">
-							        </button>
-							    </form>
-							</td>
-		                </tr>
-		            </tbody>
+					<tbody>
+					    <tr th:if="${#lists.isEmpty(entry.value)}">
+					        <td colspan="6">Sin turnos en esta categoría</td>
+					    </tr>
+					    <tr th:each="turno : ${entry.value}" th:unless="${#lists.isEmpty(entry.value)}">
+					        <td th:text="${turno.employee != null ? turno.employee.name : 'Empleado no asignado'}">Empleado</td>
+					        <td th:text="${turno.date != null ? turno.date.date : 'Sin fecha'}">Fecha</td>
+					        <td th:text="${turno.date} != null ? ${#temporals.format(turno.date.hour, 'HH:mm ')}">Hora</td>
+					        <td th:text="${turno.status}">Estado</td>
+					        <td th:text="${turno.observation}">Observación</td>
+					        <td>
+								<form th:action="@{/client/cancel-turn}" method="post">
+								    <input type="hidden" name="turnId" th:value="${turno.idTurn}" />
+								    <input type="hidden" name="clientId" th:value="${clientId}" /> 
+									<button class="btn btn-primary m-2 p-1" type="submit" th:text="${(turno.previousStatus == 'CANCELADO') && (turno.status == 'PENDIENTE' || turno.status == 'EN_ATENCION') ? 'Reactivado' : turno.status}">
+									</button>
+								</form>
+					        </td>
+					    </tr>
+					</tbody>
 		        </table>
 		    </div>
 		</div>

@@ -150,6 +150,28 @@ public class TurnService implements ITurnService {
             }
         }));
 	}
+	
+	/*@Override
+	public Map<String, List<Turn>> getTurnsGroupedByStatus(Client client) {
+	    List<Turn> allTurns = turnRepository.findByClient(client);
+
+	    Map<String, List<Turn>> grouped = new LinkedHashMap<>();
+	    grouped.put("Activos", new ArrayList<>());
+	    grouped.put("Pasados", new ArrayList<>());
+	    grouped.put("Cancelados", new ArrayList<>());
+	    grouped.put("Otros", new ArrayList<>());
+
+	    for (Turn t : allTurns) {
+	        switch (t.getStatus()) {
+	            case PENDIENTE, EN_ATENCION -> grouped.get("Activos").add(t);
+	            case ATENDIDO -> grouped.get("Pasados").add(t);
+	            case CANCELADO, AUSENTE -> grouped.get("Cancelados").add(t);
+	            default -> grouped.get("Otros").add(t);
+	        }
+	    }
+
+	    return grouped;
+	}*/
 
 	@Override
 	public void save(Turn turno) {
@@ -297,7 +319,7 @@ public class TurnService implements ITurnService {
 	
 		
 		//CU010: Actualizar estado de un turno 
-		/*@Override
+		@Override
 		@Transactional
 		public TurnDTO updateTurnStatus(Integer id,String newStatus) {
 			Turn turn=turnRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Turno no encontrado con ID: "+id));
@@ -315,44 +337,11 @@ public class TurnService implements ITurnService {
 			}catch(IllegalArgumentException e) {
 				throw new IllegalArgumentException("Estado de turno invalido: "+newStatus);
 			}
-		}*/
+		}
 	
 
 
-	//CU009: Habilitar un solo turno 
-	/*@Override
-	public TurnDTO enableSingleTurn(TurnDTO turnDTO) {
-		// TODO Auto-generated method stub
-		//Validaciones para habilitar un turno
-		if(turnDTO.getEmployeeIdPerson()==null || turnDTO.getServiceId()==null || turnDTO.getStartTime()==null) {
-			throw new IllegalArgumentException("Empleado, servicio y hora de inicio son obligatorios para habilitar un turno!!");
-		}
-		Employee employee=employeeRepository.findById(turnDTO.getEmployeeIdPerson()).orElseThrow(()->new EntityNotFoundException("Empleado no encontrado con ID: "+turnDTO.getEmployeeIdPerson()));
-		com.grupo12.entities.ServiceEntity service=serviceRepository.findById(turnDTO.getServiceId().longValue()).orElseThrow(()-> new EntityNotFoundException("Servicio no encontrado con ID: "+turnDTO.getServiceId()));
-		Turn turn=new Turn();
-		turn.setEmployee(employee);
-		turn.setService(service);
-		turn.setStartTime(turnDTO.getStartTime());
-		turn.setEndTime(turnDTO.getStartTime().plusMinutes(service.getDurationMinutes()));
-		turn.setStatus(TurnStatus.PENDIENTE); //Los turnos habilitados inician como PENDIENTE
-		turn.getDate().setDate(turnDTO.getDate());
-		turn.getDate().setHour(turnDTO.getHour());
-		
-		turn.setCreationTime(LocalDateTime.now());
-		//No se asigna cliente en este punto. el Cliente lo toma despues
-		
-		//Validar solapamiento con otros turnos del empleado
-		List<Turn> conflictingTurns=turnRepository.findConflictingTurnForEmployee(employee.getIdPerson(), turn.getStartTime(), turn.getEndTime());
-		if(!conflictingTurns.isEmpty()) {
-			throw new IllegalArgumentException("Ya existe un turno o disponibilidad para el empleado en este horario: "+conflictingTurns.get(0).getIdTurn());
-		}
-		
-		Turn savedTurn=turnRepository.save(turn);
-		TurnDTO dto = turnConverter.toDTO(savedTurn);
-	    dto.setServiceName(service.getName()); // 🔧 AGREGAR ESTA LÍNEA TAMBIÉN
-	    return dto;
-	}*/
-	
+    //CU009: Habilitar un turno en una franja horaria
 	public TurnDTO enableSingleTurn(TurnDTO turnDTO) {
 	    
 	    if (turnDTO.getEmployeeIdPerson() <= 0 || turnDTO.getServiceId() == null || turnDTO.getStartTime() == null) {
@@ -383,7 +372,7 @@ public class TurnService implements ITurnService {
 	    turn.setDate(findDate);
 	    turn.setObservation("Turno disponible");
 	    turn.setActive(true);
-	    turn.setReminderSent(true);
+	    turn.setReminderSent(false);
 	    turn.setStatus(TurnStatus.PENDIENTE);
 	    turn.setCreationTime(LocalDateTime.now());
 
@@ -401,14 +390,14 @@ public class TurnService implements ITurnService {
 
 
 	//CU009: Habilitar multiples turnos en una franja horaria
-	/*@Override
+	@Override
 	@Transactional
-	public List<TurnDTO> enableMultipleTurns(TurnMultipleDTO dto) {
+	public List<TurnDTO> enableMultipleTurns(TurnDTO dto) {
 		// TODO Auto-generated method stub
 		int employeeId = dto.getEmployeeIdPerson();
-	    Integer serviceId = dto.getIdServicio();
-	    LocalDateTime startDate = dto.getStartDate();
-	    LocalDateTime endDate = dto.getEndDate();
+	    Integer serviceId = dto.getServiceId();
+	    LocalDateTime startDate = dto.getStartTime();
+	    LocalDateTime endDate = dto.getEndTime();
 	    int durationMinutes = dto.getDurationMinutes();
 
 		    Employee employee = employeeRepository.findById(employeeId)
@@ -442,9 +431,23 @@ public class TurnService implements ITurnService {
 		            turn.setEndTime(currentTurnEnd);
 		    	    turn.setObservation("Turno disponible");
 		    	    turn.setActive(true);
-		    	    turn.setReminderSent(true);
+		    	    turn.setReminderSent(false);
 		            turn.setStatus(TurnStatus.PENDIENTE);
 		            turn.setCreationTime(LocalDateTime.now());
+		            
+		            // 👉 AÑADIR DATE
+		            LocalDate date = currentTurnStart.toLocalDate();
+		            LocalTime hour = currentTurnStart.toLocalTime();
+
+		            Date dateEntity = dateRepository.findByDateAndHour(date, hour)
+		                .orElseGet(() -> {
+		                    Date newDate = new Date();
+		                    newDate.setDate(date);
+		                    newDate.setHour(hour);
+		                    return dateRepository.save(newDate);
+		                });
+
+		            turn.setDate(dateEntity);
 		            
 
 		            Turn savedTurn = turnRepository.save(turn);
@@ -460,85 +463,11 @@ public class TurnService implements ITurnService {
 		    }
 
 		    return createdTurns;
-	}*/
-	
-	@Override
-	@Transactional
-	public List<TurnDTO> enableMultipleTurns(TurnDTO dto) {
-	    int employeeId = dto.getEmployeeIdPerson();
-	    Integer serviceId = dto.getServiceId();
-	    LocalDateTime startDate = dto.getStartTime();
-	    LocalDateTime endDate = dto.getEndTime();
-	    int durationMinutes = dto.getDurationMinutes();
-
-	    Employee employee = employeeRepository.findById(employeeId)
-	        .orElseThrow(() -> new EntityNotFoundException("Empleado no encontrado con ID: " + employeeId));
-
-	    com.grupo12.entities.ServiceEntity service = serviceRepository.findByIdService(serviceId.longValue())
-	        .orElseThrow(() -> new EntityNotFoundException("Servicio no encontrado con ID: " + serviceId));
-
-	    if (durationMinutes <= 0) {
-	        throw new IllegalArgumentException("La duración debe ser positiva.");
-	    }
-
-	    if (startDate.isAfter(endDate)) {
-	        throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la de fin.");
-	    }
-
-	    List<TurnDTO> createdTurns = new ArrayList<>();
-	    LocalDateTime currentTurnStart = startDate;
-
-	    while (!currentTurnStart.plusMinutes(durationMinutes).isAfter(endDate)) {
-	        LocalDateTime currentTurnEnd = currentTurnStart.plusMinutes(durationMinutes);
-
-	        List<Turn> conflictingTurns = turnRepository
-	            .findConflictingTurnForEmployee(employee.getIdPerson(), currentTurnStart, currentTurnEnd);
-
-	        if (conflictingTurns.isEmpty()) {
-	            // Obtener o crear el Date
-	            LocalDate date = currentTurnStart.toLocalDate();
-	            LocalTime hour = currentTurnStart.toLocalTime();
-
-	            Date findDate = dateRepository.findByDateAndHour(date, hour)
-	                .orElseGet(() -> {
-	                    Date newDateSlot = new Date();
-	                    newDateSlot.setDate(date);
-	                    newDateSlot.setHour(hour);
-	                    return dateRepository.save(newDateSlot);
-	                });
-
-	            // Crear y guardar el turno
-	            Turn turn = new Turn();
-	            turn.setEmployee(employee);
-	            turn.setService(service);
-	            turn.setStartTime(currentTurnStart);
-	            turn.setEndTime(currentTurnEnd);
-	            turn.setObservation("Turno disponible");
-	            turn.setActive(true);
-	            turn.setReminderSent(true);
-	            turn.setStatus(TurnStatus.PENDIENTE);
-	            turn.setCreationTime(LocalDateTime.now());
-	            turn.setDate(findDate); // Asociar la fecha
-
-	            Turn savedTurn = turnRepository.save(turn);
-	            TurnDTO dtoTurn = turnConverter.toDTO(savedTurn);
-	            dtoTurn.setServiceName(service.getName());
-
-	            createdTurns.add(dtoTurn);
-	        } else {
-	            System.out.println("Saltando turno en " + currentTurnStart + " por conflicto.");
-	        }
-
-	        currentTurnStart = currentTurnEnd;
-	    }
-
-	    return createdTurns;
 	}
-
+	
 
 	//CU011: Obtener turnos para recordatorios
 	//getUpComingTurnsForReminders
-
 	@Override
 	public List<TurnDTO> findUpcomingTurns(LocalDateTime fromTime, LocalDateTime toTime) {
 	    List<TurnStatus> statusForReminder = Arrays.asList(TurnStatus.PENDIENTE, TurnStatus.EN_ATENCION);

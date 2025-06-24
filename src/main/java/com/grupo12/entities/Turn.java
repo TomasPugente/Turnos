@@ -82,6 +82,10 @@ public class Turn {
     @Column(name = "reminder_sent")
     private Boolean reminderSent;
     
+    @Enumerated(EnumType.STRING)
+    @Column(name = "previous_status")
+    private TurnStatus previousStatus;
+    
     @PrePersist
     protected void onCreate() {
     	creationTime=LocalDateTime.now();

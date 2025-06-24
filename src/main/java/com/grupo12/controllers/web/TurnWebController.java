@@ -38,7 +38,16 @@ public class TurnWebController {
     private IServiceService serviceService;
     
 
-    //vistas para CU011
+  //vistas para CU011
+    @GetMapping("/list")
+    public String listarTodosLosTurnos(Model model) {
+        List<TurnDTO> turnos = turnService.getAllTurns();  // O el método que tengas para obtener todos los turnos
+        model.addAttribute("turnos", turnos);
+        return "turns/listTurns";  // Vista Thymeleaf que mostrará la lista
+    }
+
+    
+    
     @GetMapping("/generados")
     public String mostrarTurnosGenerados(
             @RequestParam int employeeId,
@@ -85,14 +94,27 @@ public class TurnWebController {
         return "turns/generateTurn"; // sin la extensión .html
     }
     
-    @GetMapping("/reminders")
+    /*@GetMapping("/reminders")
     public String mostrarTurnosParaRecordatorio(Model model) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tomorrow = now.plusDays(1);
         List<TurnDTO> turnos=turnService.findUpcomingTurns(now, tomorrow);
         model.addAttribute("turnos", turnos);
         return "turns/reminders";
+    }*/
+    
+    
+    @GetMapping("/reminders")
+    public String mostrarTurnosParaRecordatorio(Model model) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tomorrow = LocalDate.now().plusDays(1).atTime(23, 59);
+        List<TurnDTO> turnos = turnService.findUpcomingTurns(now, tomorrow);
+
+        System.out.println("🔍 Cantidad de turnos encontrados: " + turnos.size());
+        model.addAttribute("turnos", turnos);
+        return "turns/reminders";
     }
+
     @PostMapping("/send-reminders")
     public String enviarRecordatorios(
             @RequestParam(value = "selectedTurnIds", required = false) List<Integer> ids,
@@ -130,13 +152,28 @@ public class TurnWebController {
         return "turns/status-updated";
     }
     
-    //vista para CU008 
+
+    //vista para CU008  
     @GetMapping("/call-next-view")
     public String callNextTurn(@RequestParam("employeeId") int employeeId, Model model) {
-        TurnDTO turno = turnService.callNextTurnForEmployee(employeeId);
-        model.addAttribute("turno", turno);
-        return "turns/called-turn"; // nombre de la vista Thymeleaf en src/main/resources/templates
+        try {
+            TurnDTO turno = turnService.callNextTurnForEmployee(employeeId);
+
+            if (turno == null) {
+                model.addAttribute("errorMessage", "Este empleado no tiene turnos pendientes para llamar.");
+            } else {
+                model.addAttribute("turno", turno);
+                model.addAttribute("successMessage", "Turno llamado correctamente.");
+            }
+
+        } catch (IllegalStateException ex) {
+            model.addAttribute("errorMessage", "No hay turnos pendientes para el empleado con ID: "+ employeeId);
+            //ex.printStackTrace();
+        }
+        return "turns/called-turn";
     }
+
+
     
     //vistas para CU009
     @GetMapping("/enable/single-form")
@@ -160,24 +197,7 @@ public class TurnWebController {
 
     	 return "redirect:/web/turns/enable/single-form";// o la vista que quieras
     }
-    
-    /*@PostMapping("/enable/single")
-    public String habilitarTurnoUnico(@ModelAttribute TurnDTO turno, Model model) {
-        try {
-            turnService.enableSingleTurn(turno);
-            model.addAttribute("successMessage", "Turno habilitado correctamente.");
-        } catch (MissingTurnDataException ex) {
-            model.addAttribute("errorMessage", ex.getMessage());
-        }
-
-        // Volvés directo a la vista
-        model.addAttribute("turno", turno);
-        model.addAttribute("empleados", employeeService.getAll()); // ⚠️ Asegurate de volver a cargar estos
-        model.addAttribute("servicios", serviceService.getAllDTO());
-        return "redirect:/web/turns/enable/single-form"; // o el nombre correcto de tu vista
-    }*/
-
-    
+        
     @GetMapping("/enable/multiple-form")
     public String mostrarFormularioMultiple(Model model) {
         model.addAttribute("turnMultiple", new TurnDTO());
