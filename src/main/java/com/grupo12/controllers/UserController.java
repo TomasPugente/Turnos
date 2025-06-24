@@ -109,6 +109,7 @@ public class UserController {
     public ModelAndView registeruser(@Valid @ModelAttribute("client") ClientDTO clientDTO,
             BindingResult bindingResult) {
         ModelAndView mv = new ModelAndView(ViewRouteHelper.USER_REGISTER);
+        mv.addObject("localities", localityService.getAll());
         System.out.println("[DEBUG] Entró al método POST /registeruser");
         try {
 
