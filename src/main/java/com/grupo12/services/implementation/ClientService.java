@@ -47,10 +47,9 @@ public class ClientService implements IClientService {
 
 
 	@Override
-	public Optional<Client> getById(int idPerson) { // Excepcion para hacer despues
-		return clientRepository.findById(idPerson); // Optional<Client> client = findById(idPerson);
-													// .orElseThrow(() -> new RuntimeException("Cliente con id " +
-													// idPerson + " no encontrado"));
+	public Optional<Client> getById(int idPerson) { 
+		return clientRepository.findById(idPerson);
+													
 	}
 
 	@Override
@@ -111,6 +110,8 @@ public class ClientService implements IClientService {
 	        	//Crea un nuevo usuario
 	            user = clientConverter.userToEntity(clientDTO.getUser());
 	            user.setCreatedAt(LocalDateTime.now());
+	    		UserRole defaultRole = new UserRole(user, "ROLE_USER");
+	    		user.getUserRoles().add(defaultRole);
 	        }
 
 	        // Asociar user y client (cliente ya guardado con id)
@@ -162,12 +163,25 @@ public class ClientService implements IClientService {
 
 
 	public Client save(Client client) {
+	    // ⚠️ Asegurate de no hacer esto si getUser() es null
+	    if (client.getUser() != null) {
+	        System.out.println(client.getUser().getPassword());
+			client.getUser().setPassword(pe.encode(client.getUser().getPassword()));
+			client.getUser().setEnabled(true);
+			System.out.println("Saving user: " + client.getUser().getUsername());
+			UserRole defaultRole = new UserRole(client.getUser(), "ROLE_USER");
+			client.getUser().getUserRoles().add(defaultRole);
+	    }
+	    
+            client = clientRepository.save(client);
+	    //  Generar código cliente si está vacío
+	    if (client.getCode() == null || client.getCode().isEmpty()) {
+	        String generatedCode = "CLT" + String.format("%05d", client.getIdPerson());
+	        client.setCode(generatedCode);
+	        clientRepository.save(client);
+	    }
+	    
 
-		client.getUser().setPassword(pe.encode(client.getUser().getPassword()));
-		client.getUser().setEnabled(true);
-		System.out.println("Saving user: " + client.getUser().getUsername());
-		UserRole defaultRole = new UserRole(client.getUser(), "ROLE_USER");
-		client.getUser().getUserRoles().add(defaultRole);
 		return clientRepository.save(client);
 	}
 
@@ -185,22 +199,7 @@ public class ClientService implements IClientService {
 	public boolean existsByUser(User user) {
 		return clientRepository.findByUser(user).isPresent();
 	}
-
-	/*public Client save(Client client) {
-		//client.getUser().setEnabled(true);
-		//System.out.println("Saving user: " + client.getUser().getUsername());
-	    // ✅ Guardar el cliente por primera vez (si es nuevo) para obtener ID
-	    if (client.getIdPerson() == null) {
-	        client = clientRepository.save(client); // ahora tiene ID
-	    }
-	    // ✅ Generar código si está vacío
-	    if (client.getCode() == null || client.getCode().isEmpty()) {
-	        String generatedCode = "CLT" + String.format("%05d", client.getIdPerson());
-	        client.setCode(generatedCode);
-	    }
-		return clientRepository.save(client);
-	}*/
-
+	
 	@Override
 	public Optional<Client> getByUsername(User user) {
 		return clientRepository.findByUserUsername(user.getUsername());

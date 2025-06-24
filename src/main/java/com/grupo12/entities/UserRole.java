@@ -28,7 +28,7 @@ public class UserRole {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -46,5 +46,22 @@ public class UserRole {
     public UserRole(User user, String role) {
         this.user = user;
         this.role = role;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserRole)) return false;
+        UserRole that = (UserRole) o;
+        return role.equals(that.role) &&
+               user != null &&
+               that.user != null &&
+               user.getId() != null &&
+               user.getId().equals(that.user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(role, user != null ? user.getId() : null);
     }
 }

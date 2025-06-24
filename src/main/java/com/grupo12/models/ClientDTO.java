@@ -28,11 +28,7 @@ public class ClientDTO extends PersonDTO {
 		super(idPerson, name, surname, dni, dateOfBirth, contact, user);
 		this.code = code;
 	}
- 
-	
-    /*public String getUsername() {
-        return user != null ? user.getUsername() : null;
-    }*/
+
 
 }
 

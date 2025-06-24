@@ -1,48 +1,47 @@
 package com.grupo12.models;
-import java.util.Date;
-import java.time.LocalDateTime;
-import java.time.LocalDate;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 
-@Setter
 @Data
 @NoArgsConstructor
-@AllArgsConstructor //Ya genera el constructor de todos los argumentos
+@AllArgsConstructor
+@Getter
+@Setter
 public class TurnDTO {
 
-
+    // Turno
     private Integer idTurn;
- 
     private boolean active;
-    private String observation;	
-    private ClientDTO client;
-    private EmployeeDTO employee;
-    private Date date;
-
-
-	public TurnDTO(Integer idTurn, String status, boolean active, String observation, ClientDTO client, EmployeeDTO employee,
-			Date date) {}
-    private Integer idService;
+    private String observation;
+    private String status; // Representa el enum como String
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private String status; //Representa el enum como String
     private LocalDateTime creationTime;
-	
-    
-    //Campos para el cliente
+    //private Date date;
+    private LocalDate date;
+    private LocalTime hour;
+    private Boolean reminderSent;
+    private int durationMinutes;
+
+
+    // Cliente asociado
     private Integer clientIdPerson;
     private String clientName;
     private String clientDni;
     private LocalDate clientDateOfBirth;
     private String clientPassword;
     private String clientEmail;
-    
-    //Campos para el empleado
+
+    // Empleado asociado
     private Integer employeeIdPerson;
     private String employeeName;
     private String employeeDni;
@@ -51,61 +50,18 @@ public class TurnDTO {
     private String employeeEmail;
     private String employeeCuit;
     private LocalDate employeeEntryDate;
-    
-    //Campos para el servicio
+
+    // Servicio
+    private Integer serviceId;
     private String serviceName;
 
-    private Integer idServicio;
-    
-    //Campo para los recordatorios
-    private Boolean reminderSent;
+    // Métodos utilitarios si los necesitás
 
-    private Integer serviceId;
-
-    
     public int getEmployeeId() {
-        return employeeIdPerson;
+        return employeeIdPerson != null ? employeeIdPerson : 0;
     }
 
     public void setEmployeeId(int employeeId) {
         this.employeeIdPerson = employeeId;
     }
-
-
-    public void setServiceId(int serviceId) {
-        this.idServicio = serviceId;
-    }
-    
-    public Integer getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(Integer serviceId) {
-        this.serviceId = serviceId;
-    }
-
-  
-	public void setReminderSent(Boolean reminderSent2) {
-		// TODO Auto-generated method stub
-		this.reminderSent=reminderSent2;
-	}
-	
-	public TurnDTO(int idTurn, String status, boolean active, String observation, ClientDTO client, EmployeeDTO employee,
-			Date date) {
-		super();
-		this.idTurn = idTurn;
-		this.status = status;
-		this.active = active;
-		this.observation = observation;
-		this.client = client;
-		this.employee = employee;
-		this.date = date;
-	}
-
-
-	public Boolean getReminderSent() {
-		// TODO Auto-generated method stub
-		return reminderSent;
-	}
-	
 }

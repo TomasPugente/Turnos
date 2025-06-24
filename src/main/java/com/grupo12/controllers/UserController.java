@@ -1,5 +1,6 @@
 package com.grupo12.controllers;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,6 +65,7 @@ public class UserController {
         model.addAttribute("error", error);
         model.addAttribute("logout", logout);
         model.addAttribute("registered", registered != null);
+        
         return ViewRouteHelper.USER_LOGIN;
     }
 
@@ -95,30 +97,22 @@ public class UserController {
     public ModelAndView register() {
         ModelAndView mv = new ModelAndView();
         mv.addObject("client", new ClientDTO());
+        mv.addObject("localities", localityService.getAll());
         mv.setViewName(ViewRouteHelper.USER_REGISTER);
         System.out.println("getRegister");
         return mv;
     }
 
-    @Transactional
+ 
+
     @PostMapping("/registeruser")
     public ModelAndView registeruser(@Valid @ModelAttribute("client") ClientDTO clientDTO,
             BindingResult bindingResult) {
-    	System.out.println("[DEBUG] Entró al método POST /registeruser");
         ModelAndView mv = new ModelAndView(ViewRouteHelper.USER_REGISTER);
-        System.out.println("ModelAndView");
+        System.out.println("[DEBUG] Entró al método POST /registeruser");
         try {
 
-        	System.out.println("try");
-        	
             if (bindingResult.hasErrors()) {
-                System.out.println("Errores de validación detectados:");
-                bindingResult.getAllErrors().forEach(e -> System.out.println(" -> " + e.getDefaultMessage()));
-                return mv;
-            }
-
-            if (!clientDTO.getUser().getPassword().equals(clientDTO.getUser().getConfirmPassword())) {
-                mv.addObject("error", "Las contraseñas no coinciden.");
                 return mv;
             }
 
@@ -131,56 +125,43 @@ public class UserController {
                 mv.addObject("error", "Email is already in use.");
                 return mv;
             }
-
-            Client client = new Client();
-            System.out.println("new Client");
             
-            client.setName(clientDTO.getName());
-            System.out.println("setName");
-            client.setSurname(clientDTO.getSurname());
-            System.out.println("setSurName");
-            client.setDni(clientDTO.getDni());
-            System.out.println("setDni");
-            client.setDateOfBirth(clientDTO.getDateOfBirth());
-            System.out.println("setDateOfBirth");
-
+            // 1. Crear y guardar el Contact
             Contact contact = new Contact();
             contact.setPhone(clientDTO.getContact().getPhone());
-            contact.setEmail(clientDTO.getUser().getEmail());
-
-            System.out.println("setPhone");
+            //contact.setEmail(clientDTO.getUser().getEmail());
             contact.setStreet(clientDTO.getContact().getStreet());
             contact.setNumber(clientDTO.getContact().getNumber());
-            
-            Optional<Locality> locality = localityService.findById(clientDTO.getContact().getLocality().getIdLocality());
-            if (locality == null) {
+
+            Optional<Locality> localityOpt = localityService.findById(clientDTO.getContact().getLocality().getIdLocality());
+            if (localityOpt.isEmpty()) {
                 mv.addObject("error", "Debe seleccionar una localidad válida.");
                 return mv;
-            }
-            contact.setLocality(locality.get());
-            contact = contactService.save(contact);
+            } 
+            contact.setLocality(localityOpt.get());
+            contactService.save(contact);
+
+            Client client = new Client();
+
+            client.setName(clientDTO.getName());
+            client.setSurname(clientDTO.getSurname());
+            client.setDni(clientDTO.getDni());
+            client.setDateOfBirth(clientDTO.getDateOfBirth());
             client.setContact(contact);
-            System.out.println("setContact");
             
-         
+            // Guardamos el client para que genere el idPerson
+            client = clientService.save(client);
 
             User user = new User();
             user.setUsername(clientDTO.getUser().getUsername());
-            System.out.println("setUsername");
             user.setEmail(clientDTO.getUser().getEmail());
-            System.out.println("setEmail");
-
-            user.setPassword(clientDTO.getUser().getPassword()); 
-            System.out.println("setPassword");
-            
-
+            user.setPassword(clientDTO.getUser().getPassword());
             user.setEnabled(true);
-            System.out.println("setEnabled");
-            user.setPerson(client); // ¡Esto es clave!
-            User savedUser = userService.save(user);
+            user.setPerson(client);
             
-            
-            
+            // Primero guardar el usuario SIN roles
+            User savedUser = userService.registerWithDefaultRole(user);
+           
             client.setUser(savedUser);
             clientService.save(client);
 
@@ -192,8 +173,6 @@ public class UserController {
         } catch (Exception e) {
         	e.printStackTrace();
             mv.addObject("error", "A problem has been ocurred: " + e.getMessage());
-            // Esto es CLAVE: para que Spring sepa que debe hacer rollback
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 
         }
         return mv;

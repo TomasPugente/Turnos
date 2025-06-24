@@ -24,6 +24,9 @@ import java.util.Optional;
 
 @Repository
 public interface ITurnRepository extends JpaRepository<Turn, Integer> {
+	
+	
+	
 	//PARA CU008: Buscar turnos pendientes por empleado, ordenados por hora de inicio
 	List<Turn> findByEmployee_IdPersonAndStatusOrderByStartTimeAsc(int employeeId, TurnStatus status);
 	
@@ -47,10 +50,11 @@ public interface ITurnRepository extends JpaRepository<Turn, Integer> {
 
 	List<Turn> findByClient(Client client);
 
-	List<Turn> findByState(String string);
+	List<Turn> findByStatus(String status);
 
 	Optional<Turn> findById(Integer idTurno);
 
+	@Query("SELECT t FROM Turn t WHERE t.status = 'PENDIENTE' AND t.client IS NULL")
 	List<Turn> findAvailableTurns();
 	
 	
@@ -80,6 +84,8 @@ public interface ITurnRepository extends JpaRepository<Turn, Integer> {
 
 
 	Collection<Turn> findByEmployeeIdPersonOrderByStartTimeAsc(int employeeId);
+
+	void deleteByEmployeeIdPersonAndClientIsNull(Integer id);
     
     
 }

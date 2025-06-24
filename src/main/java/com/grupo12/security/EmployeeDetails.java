@@ -22,7 +22,7 @@ public class EmployeeDetails implements UserDetails{
 	//constructor que toma una entidad Employee y la convierte en EmployeeDetails
 	public EmployeeDetails(Employee employee) {
 		this.idEmployee=employee.getIdPerson();
-		this.username=employee.getContact().getEmail();
+		this.username=employee.getUser().getUsername();
 		this.password=employee.getUser().getPassword();
 		this.name=employee.getName();
 		

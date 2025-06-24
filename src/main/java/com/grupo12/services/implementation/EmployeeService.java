@@ -15,59 +15,54 @@ import com.grupo12.converters.EmployeeConverter;
 import com.grupo12.entities.Employee;
 import com.grupo12.models.EmployeeDTO;
 import com.grupo12.repositories.IEmployeeRepository;
+import com.grupo12.repositories.ITurnRepository;
 import com.grupo12.services.IEmployeeService;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class EmployeeService implements IEmployeeService {
 
-	@Autowired 
-	private final IEmployeeRepository repository;
-	
 	@Autowired
 	private IEmployeeRepository employeeRepository;
 
 	@Autowired
+	@Qualifier("employeeConverter")
 	private EmployeeConverter employeeConverter;
 
-    public EmployeeService(IEmployeeRepository repository) {
-        this.repository = repository;
-    }
-
-    @Override
-    public List<Employee> findAll() {
-        return repository.findAll();
-    }
+	@Autowired
+	private ITurnRepository turnRepository;
 
 	@Override
-	public Optional<Employee> getById(int idPerson) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
-	}
-
-	@Override
-	public List<EmployeeDTO> getAll() {
-		// TODO Auto-generated method stub
-		return employeeRepository.findAll()
-	            .stream()
-	            .map(employeeConverter::entityToDTO)
-	            .collect(Collectors.toList());
-	}
-
-	@Override
-	public EmployeeDTO insertOrUpdate(EmployeeDTO employeeDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean remove(int idPerson) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
 	public Optional<Employee> getByCuit(String cuit) {
 		return employeeRepository.findByCuit(cuit);
 	}
+
+	@Override
+	public List<Employee> getAll() {
+		return employeeRepository.findAll();
+	}
+
+	@Override
+	public void insertOrUpdate(EmployeeDTO employeeDTO) {
+		employeeRepository.save(employeeConverter.DTOToEntity(employeeDTO));
+	}
+
+	@Transactional
+	@Override
+	public boolean remove(Integer id) {
+		try {
+			turnRepository.deleteByEmployeeIdPersonAndClientIsNull(id);
+			employeeRepository.deleteById(id);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+
+	}
+
+	
+
+
 	
 }

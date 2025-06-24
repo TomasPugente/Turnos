@@ -191,8 +191,19 @@ public class TurnController {
 
 	 
 	// CU009 - Habilitar un solo turno
+    @GetMapping("/enable/single")
+    public String showEnableSingleTurnForm(Model model) {
+        TurnDTO turno = new TurnDTO();
+        model.addAttribute("turno", turno);
+
+        model.addAttribute("empleados", userService.findAllEmployees()); // ← tu método para traer empleados
+        model.addAttribute("servicios", turnService.getAllServicios()); // ← o como traigas los servicios
+
+        return "turns/generateSingleTurn";
+    }
+    
 	  // @PostMapping("/enable/single") //--> para usarlo en la aplicacion postman
-		 @GetMapping("/enable/single")
+		 @PostMapping("/enable/single")
 		 public TurnDTO enableSingleTurn(
 		     @RequestParam int employeeId,
 		     @RequestParam int serviceId,
@@ -201,7 +212,7 @@ public class TurnController {
 		 ) {
 			 TurnDTO turn = new TurnDTO();
 		    turn.setEmployeeIdPerson(employeeId); // ✅ Correcto
-		    turn.setIdServicio(serviceId);        // ✅ Correcto
+		    turn.setServiceId(serviceId);        // ✅ Correcto
 		    turn.setStartTime(startDate);
 		    turn.setEndTime(endDate);
 		    return turnService.enableSingleTurn(turn);
@@ -216,11 +227,11 @@ public class TurnController {
 	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
 	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
 	            @RequestParam int durationMinutes) {
-		   TurnMultipleDTO dto = new TurnMultipleDTO();
+		   TurnDTO dto = new TurnDTO();
 		   dto.setEmployeeIdPerson(employeeId);
-	    	dto.setIdServicio(serviceId);
-	    	dto.setStartDate(startDate);
-	    	dto.setEndDate(endDate);
+	    	dto.setServiceId(serviceId);
+	    	dto.setStartTime(startDate);
+	    	dto.setEndTime(endDate);
 	    	dto.setDurationMinutes(durationMinutes);
 
 		  // List<TurnDTO> turnos = turnService.enableMultipleTurns(dto);

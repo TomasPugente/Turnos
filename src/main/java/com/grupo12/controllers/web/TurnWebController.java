@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.grupo12.exceptions.MissingTurnDataException;
 import com.grupo12.models.TurnDTO;
 import com.grupo12.models.TurnMultipleDTO;
 import com.grupo12.services.IEmployeeService;
@@ -46,11 +47,11 @@ public class TurnWebController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam int durationMinutes,
             Model model) {
-    	TurnMultipleDTO dto = new TurnMultipleDTO();
+    	TurnDTO dto = new TurnDTO();
 		   dto.setEmployeeIdPerson(employeeId);
-	    	dto.setIdServicio(serviceId);
-	    	dto.setStartDate(startDate);
-	    	dto.setEndDate(endDate);
+	    	dto.setServiceId(serviceId);
+	    	dto.setStartTime(startDate);
+	    	dto.setEndTime(endDate);
 	    	dto.setDurationMinutes(durationMinutes);
         List<TurnDTO> turnos = turnService.enableMultipleTurns(dto);
         model.addAttribute("turnos", turnos);
@@ -67,11 +68,11 @@ public class TurnWebController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam int durationMinutes,
             Model model) {
-    	TurnMultipleDTO dto = new TurnMultipleDTO();
+    	TurnDTO dto = new TurnDTO();
     	dto.setEmployeeIdPerson(employeeId);
-    	dto.setIdServicio(serviceId);
-    	dto.setStartDate(startDate);
-    	dto.setEndDate(endDate);
+    	dto.setServiceId(serviceId);
+    	dto.setStartTime(startDate);
+    	dto.setEndTime(endDate);
     	dto.setDurationMinutes(durationMinutes);
 
     	List<TurnDTO> turnos = turnService.enableMultipleTurns(dto);
@@ -148,26 +149,47 @@ public class TurnWebController {
 
     @PostMapping("/enable/single")
     public String habilitarTurnoUnico(@ModelAttribute TurnDTO turno, RedirectAttributes redirectAttributes) {
-    	  if (turno.getEmployeeIdPerson() == null || turno.getServiceId() == 0 || turno.getStartTime() == null) {
-    	        throw new IllegalArgumentException("Empleado, servicio y hora de inicio son obligatorios para habilitar un turno!!");
-    	    }
+    	  System.out.println("🔧 POST recibido: " + turno);
+    	  
+    	  try {
+      	    turnService.enableSingleTurn(turno);
+      	    redirectAttributes.addFlashAttribute("successMessage", "Turno habilitado correctamente.");
+    	  } catch (MissingTurnDataException ex) {
+    		redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+    	  }
 
-    	    turnService.enableSingleTurn(turno);
-    	    redirectAttributes.addFlashAttribute("mensaje", "Turno habilitado correctamente.");
-    	    return "redirect:/web/turns/form"; // o la vista que quieras
+    	 return "redirect:/web/turns/enable/single-form";// o la vista que quieras
     }
+    
+    /*@PostMapping("/enable/single")
+    public String habilitarTurnoUnico(@ModelAttribute TurnDTO turno, Model model) {
+        try {
+            turnService.enableSingleTurn(turno);
+            model.addAttribute("successMessage", "Turno habilitado correctamente.");
+        } catch (MissingTurnDataException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
+        }
+
+        // Volvés directo a la vista
+        model.addAttribute("turno", turno);
+        model.addAttribute("empleados", employeeService.getAll()); // ⚠️ Asegurate de volver a cargar estos
+        model.addAttribute("servicios", serviceService.getAllDTO());
+        return "redirect:/web/turns/enable/single-form"; // o el nombre correcto de tu vista
+    }*/
+
+    
     @GetMapping("/enable/multiple-form")
     public String mostrarFormularioMultiple(Model model) {
-        model.addAttribute("turnoMultiple", new TurnMultipleDTO());
+        model.addAttribute("turnMultiple", new TurnDTO());
         model.addAttribute("empleados", employeeService.getAll());
         model.addAttribute("servicios", serviceService.getAll());
         return "turns/generateMultipleTurns";
     }
 
     @PostMapping("/enable/multiple")
-    public String habilitarTurnosMultiples(@ModelAttribute TurnMultipleDTO dto, RedirectAttributes redirectAttributes) {
+    public String habilitarTurnosMultiples(@ModelAttribute TurnDTO dto, RedirectAttributes redirectAttributes) {
         turnService.enableMultipleTurns(dto);
         redirectAttributes.addFlashAttribute("mensaje", "Turnos generados correctamente.");
-        return "redirect:/web/turns/form";
+        return "redirect:/web/turns/enable/multiple-form";
     }
 }

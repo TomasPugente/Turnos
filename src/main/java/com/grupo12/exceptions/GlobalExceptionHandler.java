@@ -50,4 +50,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleOtherExceptions(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno: " + ex.getMessage());
     }
+    
+    @ExceptionHandler(MissingTurnDataException.class)
+    public ResponseEntity<String> handleMissingData(MissingTurnDataException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 }

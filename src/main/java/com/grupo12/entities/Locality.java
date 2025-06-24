@@ -24,9 +24,15 @@ public class Locality {
     @Column(name="name")
     private String name;
 
+
 	public Locality(Integer idLocality, String name) {
 		super();
 		this.idLocality = idLocality;
+		this.name = name;
+	}
+
+	public Locality(String name) {
+		super();
 		this.name = name;
 	}
 

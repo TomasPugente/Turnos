@@ -41,8 +41,8 @@ public class EmployeeController {
 
     @GetMapping
     public String listEmployees(Model model) {
-        List<Employee> turns = employeeService.getAll().stream()
-                .map(employeeConverter::DTOToEntity)
+        List<EmployeeDTO> turns = employeeService.getAll().stream()
+                .map(employeeConverter::entityToDTO)
                 .collect(Collectors.toList());
         model.addAttribute("employees", turns);
         return "employee/list";

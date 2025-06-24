@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.grupo12.converters.ServicesConverter;
+import com.grupo12.entities.ServiceEntity;
 import com.grupo12.models.ServiceDTO;
 
 //import com.grupo12.entities.Service;
@@ -95,6 +96,8 @@ public class ServiceService implements IServiceService{
         )
     ).collect(Collectors.toList());
 	}
+
+
 	
 
 }

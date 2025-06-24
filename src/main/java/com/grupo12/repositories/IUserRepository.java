@@ -30,11 +30,6 @@ public interface IUserRepository extends JpaRepository<User, Serializable> {
 
 	public abstract User findByResetToken(String resetToken);
 
-    //User findByEmail(String email);
-
-	//Optional<Client> findByUser(User user);
-
-
 	Optional<User> findByEmailAndUsername(String email, String username);
 
 }

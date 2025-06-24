@@ -18,16 +18,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.grupo12.entities.Client;
+import com.grupo12.entities.Employee;
 import com.grupo12.entities.User;
 import com.grupo12.entities.UserRole;
 import com.grupo12.models.ClientDTO;
 import com.grupo12.repositories.IUserRepository;
+import com.grupo12.services.IEmployeeService;
 import com.grupo12.services.IUserService;
 
 @Service("userService")
 
 public class UserService implements UserDetailsService, IUserService {
 
+	@Autowired
+	private IEmployeeService employeeService;
+	
     @Autowired
     @Qualifier("userRepository")
     private IUserRepository userRepository;
@@ -62,33 +67,37 @@ public class UserService implements UserDetailsService, IUserService {
         return new ArrayList<>(authorities);
     }
 
-    @Override
+    
     public User save(User user) {
         user.setPassword(pe.encode(user.getPassword()));
         user.setEnabled(true);
-        user.setEmail(user.getEmail());
-        
-        if (user.getPerson() == null) {
-            throw new IllegalArgumentException("User must be associated with a Person (e.g., Client)");
-        }
-        
-        if (user.getUserRoles() == null) {
-            user.setUserRoles(new HashSet<>());
-        }
+        System.out.println("Saving user: " + user.getUsername());
 
-        
-        // Agregar ROLE_USER si aún no lo tiene
-        boolean hasRole = user.getUserRoles().stream()
+        return userRepository.save(user);
+    }
+    
+    public User registerWithDefaultRole(User user) {
+        user.setPassword(pe.encode(user.getPassword()));
+        user.setEnabled(true);
+
+        User savedUser = userRepository.save(user); // guardás primero el user
+
+        boolean hasRole = savedUser.getUserRoles().stream()
             .anyMatch(r -> r.getRole().equals("ROLE_USER"));
 
         if (!hasRole) {
-            UserRole defaultRole = new UserRole(user, "ROLE_USER");
-            user.getUserRoles().add(defaultRole);
+            UserRole defaultRole = new UserRole(savedUser, "ROLE_USER");
+            defaultRole.setCreatedAt(LocalDateTime.now());
+            defaultRole.setUpdatedAt(LocalDateTime.now());
+
+            // Asegurate de guardar el rol
+            savedUser.getUserRoles().add(defaultRole);
+            savedUser = userRepository.save(savedUser);
         }
-        
-        //user.setPerson(user.getPerson());
-        return userRepository.save(user);
+
+        return savedUser;
     }
+
 
     @Override
     public boolean existsByUsername(String username) {
@@ -101,55 +110,10 @@ public class UserService implements UserDetailsService, IUserService {
     }
     
 
-
-
-    /*@Override
-    public Optional<Client> getByUser(User user) {
-        return userRepository.findByUser(user);
-    }*/
-
     @Override
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-
-    /*@Override
-    public User insertOrUpdate(User user) {
-        // Validar si username ya existe y no es el mismo usuario
-        Optional<User> existingByUsername = userRepository.findByUsername(user.getUsername());
-        if (existingByUsername.isPresent() && 
-            (user.getId() == null || !existingByUsername.get().getId().equals(user.getId()))) {
-            throw new RuntimeException("El nombre de usuario ya está en uso");
-        }
-
-        // Validar si email ya existe y no es el mismo usuario
-        Optional<User> existingByEmail = userRepository.findByEmail(user.getEmail());
-        if (existingByEmail.isPresent() && 
-            (user.getId() == null || !existingByEmail.get().getId().equals(user.getId()))) {
-            throw new RuntimeException("El email ya está en uso");
-        }
-
-        // Actualizar usuario existente por ID
-        if (user.getId() != null) {
-            Optional<User> existingOpt = userRepository.findById(user.getId());
-            if (existingOpt.isPresent()) {
-                User existing = existingOpt.get();
-                existing.setUsername(user.getUsername());
-                existing.setEmail(user.getEmail());
-                existing.setPassword(user.getPassword()); // ⚠️ asegurate de hashear si corresponde
-                existing.setEnabled(user.getEnabled());
-                existing.setResetToken(user.getResetToken());
-                existing.setUpdatedAt(LocalDateTime.now());
-                existing.setPerson(user.getPerson()); // 👈 importante si hay relación con cliente/persona
-                return userRepository.save(existing);
-            }
-        }
-
-        // Si es nuevo o no se encontró por ID
-        user.setCreatedAt(LocalDateTime.now());
-        return userRepository.save(user);
-    }*/
-    
     
     @Override
     public User insertOrUpdate(User user) {
@@ -174,18 +138,6 @@ public class UserService implements UserDetailsService, IUserService {
             user.setPassword(pe.encode(user.getPassword()));
             
             
-            /*if (user.getUserRoles() == null) {
-                user.setUserRoles(new HashSet<>());
-            }
-
-            // Agregar ROLE_USER si aún no lo tiene
-            boolean hasRole = user.getUserRoles().stream()
-                .anyMatch(r -> r.getRole().equals("ROLE_USER"));
-
-            if (!hasRole) {
-                UserRole defaultRole = new UserRole(user, "ROLE_USER");
-                user.getUserRoles().add(defaultRole);
-            }*/
             System.out.println(">>> Entró al userRepository.save");
             return userRepository.save(user);
         }
@@ -205,6 +157,11 @@ public class UserService implements UserDetailsService, IUserService {
 	@Override
 	public Optional<User> findByEmailAndUsername(String email, String username) {
 		return userRepository.findByEmailAndUsername(email, username);
+	}
+
+	@Override
+	public List<Employee> findAllEmployees() {
+		return employeeService.getAll();
 	}
 
 

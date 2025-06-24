@@ -14,8 +14,5 @@ public interface IServiceRepository extends JpaRepository<ServiceEntity, Long> {
 
 	Optional<ServiceEntity> findByIdService(Long serviceId);
 
-	//Optional<ServiceDTO> findById(Integer serviceId);
-
-	//Optional<Turn> findById(Long serviceId);
 
 }

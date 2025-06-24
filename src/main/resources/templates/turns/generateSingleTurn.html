@@ -28,28 +28,65 @@
             text-align: center;
         }
     </style>
+	<!-- Favicon-->
+	<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+	<!-- Bootstrap Icons-->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+	<!-- Google fonts-->
+	<link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+	<!-- SimpleLightbox plugin CSS-->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
+	<!-- Core theme CSS (includes Bootstrap)-->
+	<link href="/css/styles.css" rel="stylesheet" />
+	<!-- Bootstrap Bundle con Popper.js -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+	<div class="m-1 p-1">
+		<a th:href="@{/}" class="m-1 p-1 btn btn-primary">Volver al inicio</a>
+		
+		<!-- Mensaje flash -->
+		<div th:if="${mensaje}" style="color: green; text-align: center; margin-bottom: 20px;">
+		    <p th:text="${mensaje}"></p>
+		</div>
+		<!-- Mensaje de éxito -->
+		<div th:if="${successMessage}" class="alert alert-success m-1 p-1" role="alert" style="text-align: center;">
+	        <p th:text="${successMessage}"></p>
+		</div>
+		
+		<!-- Mensaje de error -->
+		<div th:if="${errorMessage}" class="alert alert-danger m-1 p-1" role="alert" style="text-align: center;">
+		    <p th:text="${errorMessage}"></p>
+		</div>
+		
+	    <h2 class="m-1 p-1">Habilitar un nuevo turno</h2>
+	
+		<form th:action="@{/web/turns/enable/single}" method="post" th:object="${turno}">
+		
+		    <label for="employeeId">Se atiende con:</label>
+		    <select th:field="*{employeeIdPerson}">
+		        <option th:each="emp : ${empleados}" th:value="${emp.idPerson}" th:text="${emp.name + ' ' + emp.surname}"></option>
+		    </select>
+		
+		    <label for="serviceId">Servicio:</label>
+		    <select th:field="*{serviceId}"><!--viene de turndto-->
+		        <option th:each="srv : ${servicios}" th:value="${srv.idService}" th:text="${srv.name}"></option>
+		    </select>
+		
+		    <label for="startTime">Fecha y hora de inicio:</label>
+		    <input type="datetime-local" th:field="*{startTime}" />
+		
+		    <button type="submit">Habilitar turno</button>
+			
+		</form>
+		
 
-<h2>Habilitar un nuevo turno</h2>
 
-<form th:action="@{/web/turns/enable/single}" method="post" th:object="${turno}">
+		
+		
+	</div>
 
-    <label for="employeeId">Empleado:</label>
-    <select th:field="*{employeeIdPerson}">
-        <option th:each="emp : ${empleados}" th:value="${emp.idPerson}" th:text="${emp.name}"></option>
-    </select>
-
-    <label for="serviceId">Servicio:</label>
-    <select th:field="*{idServicio}"><!--viene de turndto-->
-        <option th:each="srv : ${servicios}" th:value="${srv.idServicio}" th:text="${srv.serviceName}"></option>
-    </select>
-
-    <label for="startTime">Fecha y hora de inicio:</label>
-    <input type="datetime-local" th:field="*{startTime}" />
-
-    <button type="submit">Habilitar turno</button>
-</form>
 
 </body>
 </html>

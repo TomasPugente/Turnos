@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.grupo12.entities.Client;
+import com.grupo12.entities.ServiceEntity;
 import com.grupo12.entities.Turn;
 
 
@@ -22,16 +23,9 @@ import java.util.Optional;
 
 public interface ITurnService {
 	
-	//public Turn requestAnAppointment(Long idClient, Long idService, LocalDate date);
-	
 	public List<Turn> GetAvailableAppointments(); 
 	
 	public void reserveTurn(Integer idTurno, String username);
-	
-	//@Query("SELECT t FROM Turn t WHERE TYPE(t.employee) = Employee")
-	public List<Turn> getAvailableTurns();
-	
-	//public void reserveAppointment(Long idTurno, String username);
 	
 	public void assignTurnToClient(Turn turn, Client client);
 	
@@ -77,13 +71,17 @@ public interface ITurnService {
 	public List<TurnDTO> enableMultipleTurns(int employeeId, int serviceId, LocalDateTime startDate,
 			LocalDateTime endDate, int durationMinutes);
 
-	List<TurnDTO> enableMultipleTurns(TurnMultipleDTO dto);
+	List<TurnDTO> enableMultipleTurns(TurnDTO dto);
 
 	List<TurnDTO> findUpcomingTurns(LocalDateTime fromTime, LocalDateTime toTime);
 
 	void reserveTurn(Long idTurno, String username);
 
-	TurnDTO reserveTurn(TurnDTO turnDTO, String username); 
+	TurnDTO reserveTurn(TurnDTO turnDTO, String username);
+
+	List<Turn> getAvailableTurns();
+
+	public List<ServiceEntity> getAllServicios();
     
 }
 

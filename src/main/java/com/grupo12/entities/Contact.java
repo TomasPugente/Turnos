@@ -29,9 +29,6 @@ public class Contact {
     @Column(name = "number")
     private String number;
 
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "phone")
     private String phone;
 

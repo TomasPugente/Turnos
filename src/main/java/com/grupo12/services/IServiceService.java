@@ -1,5 +1,6 @@
 package com.grupo12.services;
 
+import com.grupo12.entities.ServiceEntity;
 import com.grupo12.models.ServiceDTO;
 import java.util.List;
 import java.util.Optional;

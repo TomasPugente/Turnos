@@ -50,6 +50,13 @@ public class ServiceEntity {
 		this.detail = detail;
 		this.durationMinutes = durationMinutes;
 	}
+	
+	public ServiceEntity(String name, String detail, Integer durationMinutes) {
+		super();
+		this.name = name;
+		this.detail = detail;
+		this.durationMinutes = durationMinutes;
+	}
 
 
     

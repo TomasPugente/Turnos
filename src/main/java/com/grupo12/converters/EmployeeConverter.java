@@ -31,7 +31,7 @@ public class EmployeeConverter {
     		    employee.getSurname(),
     		    employee.getDni(),
     		    employee.getDateOfBirth(),
-    		    userToDTO(employee.getUser()),      // primero UserDTO
+    		    employee.getUser() != null ? userToDTO(employee.getUser()) : null,// primero UserDTO
     		    contactToDTO(employee.getContact()),// después ContactDTO
     		    employee.getEntryDate(),
     		    employee.getCuit()
